@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <script>
+        console.group('for');
+        for (let i = 0; i < 3; i++) {
+            console.log(`number ${i}!`);
+        }
+        console.groupEnd('for');
+
+        console.group('do while');
+        let i = 0;
+        do {
+            console.log(`number ${i}!`);
+            i++
+        } while (i <3);
+        console.groupEnd('do while');
+    </script>
+</body>
+
+</html>

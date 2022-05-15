@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        Check the console bruv
+        <script>
+            /*
+            Exersize 1
+            Write a function called add7 that takes one number and returns that number + 7.
+            */
+            function add7(addend) {
+                return addend + 7;
+            }
+            const otherAddend = 8;
+            console.log(add7(otherAddend));
+
+            /*
+            Exersize 2
+            Write a function called multiply that takes 2 numbers and returns their product.
+            */
+
+            function multiply(multiplicand, multiplier) {
+                return multiplicand * multiplier;
+            }
+            const multiplicand = 15;
+            const multiplier = 2;
+            console.log(multiply(multiplicand, multiplier));
+
+            /*
+            Exersize 3
+            Write a function called capitalize that takes a string and returns that string with only the first letter capitalized. 
+            Make sure that it can take strings that are lowercase, UPPERCASE or BoTh.
+            */
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+            }
+
+            console.log(capitalize("diSComBoBuLaTe"));
+
+            /*
+            Exersize 4
+            Write a function called lastLetter that takes a string and returns the very last letter of that string:
+                lastLetter("abcd") should return "d"
+            */
+
+            function lastLetter(str) {
+                return (typeof str == 'string') ? str.charAt(str.length -1) : 'not a string!';
+            }
+
+            console.log(lastLetter('abcdefg'));
+            console.log(lastLetter(123456789));
+
+            /*
+            Exersize 5
+            Parse psuedocode:
+                When the user inputs a number
+                Initialize a counter variable and set its value to zero
+                While counter is smaller than user inputted number increment the counter by one
+                Print the value of the counter variable
+            */
+
+            function countToANum(toCountTo) {
+                let n = 0;
+                while (n <= toCountTo) {
+                    console.log(n++);
+                }
+            }
+
+            countToANum(10);
+
+            /*
+            Exersize 6
+            Good ole' Fizz Buzz
+            3 fizz
+            5 buzz
+            3 & 5 fizz buzz
+            */
+
+            function fizzBuzz(endNum) {
+                console.log('doin a heckin fizzbuzz :3')
+                for (let i = 1; i <= endNum;i++) {
+                    let printStr;
+                    if (i % 3 == 0 && i % 5 == 0) {
+                       printStr = 'FizzBuzz';
+                    } else if (i % 3 == 0) {
+                        printStr = 'Fizz';
+                    } else if (i % 5 == 0) {
+                        printStr = 'Buzz';
+                    } else {
+                        printStr = i;
+                    }
+                    console.log(printStr);
+                }
+            }
+
+            fizzBuzz(30);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <script>
+        function isPrime(number) {
+            if (number === 1) {
+                return false;
+            }
+            for (let i = 2; i < number; i++) {
+                if (number % i === 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        console.log('1 is prime? '+isPrime(1));
+        console.log('5 is prime? '+isPrime(5));
+        console.log('6 is prime? '+isPrime(6));
+        console.log('7 is prime? '+isPrime(7));
+        console.log('13 is prime? '+isPrime(13));
+    </script>
+</body>
+
+</html>
