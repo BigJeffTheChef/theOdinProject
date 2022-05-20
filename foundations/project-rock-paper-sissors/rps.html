@@ -3,14 +3,23 @@
 
 <head>
     <title>Rock, Paper, Sissors</title>
-    <script src="rps.js"></script>
+    <script src="rps.js" defer></script>
 </head>
 
 <body>
-    check the console dawg!
-    <script>
-        game();
-    </script>
-</body>
+    <div class="buttons">
+        <button class="btn" id="rock">Rock</button>
+        <button class="btn" id="paper">Paper</button>
+        <button class="btn" id="sissors">Sissors</button>
+    </div>
+    <div class="roundResult">
+        <p class="scores"></p>
+        <p class="choices"></p>
+    </div>
+        
+    <div class="gameResult">
+        <p class="winMsg"></p>
+    </div>
+    </body>
 
 </html>
