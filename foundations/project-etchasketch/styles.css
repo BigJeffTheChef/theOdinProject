@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+.selection {
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 6px;
+    margin: 5px;
+    padding: 10px;
+}
+
+input {
+    flex: 1 0 auto;
+    border: 1px solid black;
+}
+
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    margin: 0;
+}
+
+.top {
+    height: 15vh;
+    width: 100vh;
+}
+
+.bottom {
+    height: 85vh;
+    width: 100vh;
+}
+
+.square {
+    flex: 1 0 auto;
+    border: 1px solid red;
+    box-sizing: border-box;
+}
+
+.drawn {
+    background-color: coral;
+    transition: ease-in-out;
+}
