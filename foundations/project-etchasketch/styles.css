@@ -1,3 +1,7 @@
+:root {
+    
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -27,13 +31,14 @@ input {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background-color: grey;
+    background-color: white;
     margin: 0;
 }
 
 .top {
     height: 15vh;
     width: 100vh;
+    margin-left: 10px;
 }
 
 .bottom {
@@ -43,11 +48,11 @@ input {
 
 .square {
     flex: 1 0 auto;
-    border: 1px solid red;
+    border: 0px solid red;
     box-sizing: border-box;
 }
 
 .drawn {
-    background-color: coral;
+    background-color: black;
     transition: ease-in-out;
 }
