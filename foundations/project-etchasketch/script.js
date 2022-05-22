@@ -22,19 +22,20 @@ clearButton.addEventListener('click', (e) => {
 });
 
 function buildGrid(size) {
-    
+
     let squaresPerSide = parseInt(size);
 
     // validate squares per side
     if (isNaN(squaresPerSide)) {
         selectionTextBox.value = `Invalid size, setting to ${DEFAULT_SQUARES}.`;
         squaresPerSide = DEFAULT_SQUARES;
-    } else if (squaresPerSide > MAX_SQUARES) {
-        selectionTextBox.value = `${squaresPerSide} is too large, setting to ${MAX_SQUARES}.`;
+    } else if (squaresPerSide > MAX_SQUARES || squaresPerSide < 0) {
+        selectionTextBox.value = `${squaresPerSide} is outside allowable range (0-${MAX_SQUARES}), setting to ${MAX_SQUARES}.`;
         squaresPerSide = MAX_SQUARES;
     } else {
         selectionTextBox.value = squaresPerSide;
     }
+
     currentSize = squaresPerSide;
 
     // remove old squares
@@ -51,7 +52,6 @@ function buildGrid(size) {
         square.style['height'] = size;
         square.style['background'] = 'rgba(0,0,0,0)';
         square.addEventListener('mouseover', () => {
-            //square.classList.add('drawn');
             adjustOpacity(square);
         });
 
@@ -61,10 +61,12 @@ function buildGrid(size) {
 }
 
 function adjustOpacity(square) {
-    const oldOpacity = square.style['background-color'].match(/[0-9].[0-9]|[0-9]/gm)[3];
-    const adjustedOpacity = parseFloat(oldOpacity) + 0.1;
-    const newOpacity = `rgba(0,0,0,${adjustedOpacity})`;
-    square.style['background-color'] = newOpacity;
+    if (square.style['background-color'].startsWith("rgba(0, 0, 0")) { // rgba(0, 0, 0, 1.0) is parsed to rgb(0, 0, 0) at least in firefox 22/05/2022
+        const oldOpacity = square.style['background-color'].match(/[0-9].[0-9]|[0-9]/gm)[3];
+        const adjustedOpacity = (parseFloat(oldOpacity) + 0.1 < 1) ? parseFloat(oldOpacity) + 0.1 : 1.0;
+        const newOpacity = `rgba(0,0,0,${adjustedOpacity})`;
+        square.style['background-color'] = newOpacity;
+    }
 }
 
 

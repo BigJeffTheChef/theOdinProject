@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Object exersizes</title>
+</head>
+
+<body>
+    <script>
+        // basic manipulation
+        console.group('basic');
+        let peter = {
+            name: 'Peter Marley',
+            age: 34,
+            dogs: 2,
+            craic: 0,
+        }
+
+        console.log(peter);
+
+        peter.age = 150;
+
+        console.log(peter);
+
+        delete peter.age;
+
+        console.log(peter);
+        console.groupEnd('basic');
+
+        // check for emptiness
+        console.group('emptiness');
+
+        console.log(isEmpty(peter));
+        console.log(isEmpty({}));
+        let jeff = {
+
+        };
+        console.log(isEmpty(jeff));
+
+        function isEmpty(obj) {
+            for (let prop in obj) {
+                return false;
+            }
+            return true;
+        }
+        console.groupEnd('emptiness');
+
+        // sum object properties
+
+        console.group('object sum');
+        let salaries = {
+            John: 100,
+            Ann: 160,
+            Pete: 130
+        }
+
+        console.log(sum(salaries));
+
+        function sum(obj) {
+            let sum = 0;
+            for (let prop in obj) {
+                const parsed = parseInt(obj[prop]);
+                sum += (isNaN(parsed) ? 0 : parsed);
+            }
+            return sum;
+        }
+        console.groupEnd('object sum');
+
+        // multiply numeric properties bt 2
+        console.group('multiply numeric properties by 2');
+
+        let menu = {
+            width: 200,
+            height: 300,
+            title: "My menu"
+        };
+
+        console.log(menu);
+        multiplyNumeric(menu);
+        console.log(menu);
+
+        function multiplyNumeric(obj) {
+            for (let prop in obj) {
+                let num = parseFloat(obj[prop]);
+                if (!isNaN(num)) {
+                    obj[prop] = num * 2;
+                }
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

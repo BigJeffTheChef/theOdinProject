@@ -34,23 +34,55 @@
       'Berne, Eric', 'Berra, Yogi', 'Berry, Wendell', 'Bevan, Aneurin', 'Ben-Gurion, David', 'Bevel, Ken', 'Biden, Joseph', 'Bennington, Chester', 'Bierce, Ambrose',
       'Billings, Josh', 'Birrell, Augustine', 'Blair, Tony', 'Beecher, Henry', 'Biondo, Frank'
     ];
-    
-    // Array.prototype.filter()
+
+    console.log('original array:')
+    console.log( inventors);
+
     // 1. Filter the list of inventors for those who were born in the 1500's
 
-    // Array.prototype.map()
-    // 2. Give us an array of the inventors first and last names
+    console.group('1');
+    const inventors1500s = inventors.filter(i => (i.year >= 1500 && i.year < 1600));
+    console.log(inventors1500s);
+    console.groupEnd('1');
 
-    // Array.prototype.sort()
+    // 2. Give us an array of the inventors first and last names
+    
+    console.group('2');
+    const inventorNames = inventors.map(i => `${i.first} ${i.last}`);
+    console.log(inventorNames);
+    console.groupEnd('2');
+
     // 3. Sort the inventors by birthdate, oldest to youngest
 
-    // Array.prototype.reduce()
+    console.group('3');
+    let inventors2 = structuredClone(inventors);
+    inventors2.sort((a,b) => {
+      return a.year - b.year;
+    });
+    console.log('inventors2: ')
+    console.table(inventors2);
+    console.table(inventorNames);
+    console.groupEnd('3');
+
+
     // 4. How many years did all the inventors live all together?
 
+    console.group('4');
+    const totalYears = inventors.reduce((total, inventor) => total + (inventor.passed - inventor.year),0);
+    console.log('total years: ' + totalYears);
+    console.groupEnd('4');
+
     // 5. Sort the inventors by years lived
+    console.group('5');
+    let investors3 = structuredClone(inventors);
+    investors3.sort((a,b) => (a.passed - a.year) - (b.passed - b.year));
+    console.table(investors3);
+    console.groupEnd('5');
+
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+    'https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris'.querySelectorAll('.mw-category-group ul li').forEach(element => console.log(element.textContent));
 
 
     // 7. sort Exercise
