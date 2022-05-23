@@ -74,23 +74,53 @@
 
     // 5. Sort the inventors by years lived
     console.group('5');
-    let investors3 = structuredClone(inventors);
-    investors3.sort((a,b) => (a.passed - a.year) - (b.passed - b.year));
-    console.table(investors3);
+    let inventors3 = structuredClone(inventors);
+    inventors3.sort((a,b) => (a.passed - a.year) - (b.passed - b.year));
+    console.table(inventors3);
     console.groupEnd('5');
 
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
-    'https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris'.querySelectorAll('.mw-category-group ul li').forEach(element => console.log(element.textContent));
+    document.querySelectorAll('.mw-category-group ul li').forEach(element => {
+      if (element.textContent.match('de')) {
+      console.log(element.textContent)
+    }
+    });
 
 
     // 7. sort Exercise
-    // Sort the people alphabetically by last name
+    // Sort the people alphabetically by last 
+    console.group('7');
+    let inventors4 = structuredClone(inventors);
+    inventors4.sort((a,b) => {
+      for (let i =0; i < a.last.length && i < b.last.length; i++) {
+        if (a.last.charAt(i) !== b.last.charAt(i)) {
+          let aVal = a.last.codePointAt(i);
+          let bVal = b.last.codePointAt(i);
+          return aVal - bVal; 
+        }
+      }
+      return 0;
+    });
+    console.table(inventors);
+    console.table(inventors4);
+    console.groupEnd('7');
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
+    console.group('8');
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+    const resultObj = data.reduce((totals, datum) => {
+      if (totals.hasOwnProperty(datum)) {
+        totals[datum] = totals[datum] + 1;
+      } else {
+        totals[datum] = 1;
+      }
+      return totals;
+    }, {});
+    console.log(resultObj);
+    console.groupEnd('8');
 
   </script>
 </body>
