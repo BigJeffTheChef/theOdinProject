@@ -34,10 +34,9 @@ function collapseBrackets(equation) {
     let parsed = false;
     while (!parsed) {
         let nestedParen = 0;
-        let begin = false;
+        let begin = false; // denotes a bracketed expression has been found and is being collapsed
         let startIndex, endIndex;
-        let equationLength = equation.length;
-        for (let i = 0; i < equationLength; i++) {
+        for (let i = 0; i < equation.length; i++) {
             if (equation[i] === '(') {
                 nestedParen++;
                 startIndex = i;
@@ -50,12 +49,52 @@ function collapseBrackets(equation) {
                 endIndex = i;
                 let collapsed = collapseBrackets(equation.slice(startIndex + 1, endIndex));
                 equation.splice(startIndex, endIndex - startIndex + 1, ...collapsed.toString().split(''));
-                equationLength = equation.length;
                 i = 0;
             }
         }
         parsed = true;
     }
+    return equation;
+}
+
+function collapseAddSub(equation) {
+    let result = null;
+    let operand = null;
+    let operator = null
+
+    let equationStr = equation.join('');
+    const FIND_OPERATORS_REGEX = /[+]|[-]/;
+    const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
+    for (let i = 0; i < equation.length; i++) {
+        if (equation[i].toString().match(FIND_OPERATORS_REGEX) != null) {
+            console.log('found an operator: ' + equation[i]);
+            operator = equation[i];
+        } else {
+            let num = equationStr.substring(i, equationStr.length).match(FIND_NUMBERS_REGEX)[0];
+            i += num.toString().length -1;
+            console.log('found a number: ' + num);
+            if (result === null) {
+                result = parseFloat(num);
+            } else {
+                operand = parseFloat(num);
+            }
+        }
+
+        if (operand != null || operator === '=') {
+            switch (operator) {
+                case '+':
+                    result += operand;
+                    break;
+                case '-':
+                    result -= operand;
+                    break;
+            }
+            operator = null;
+        }
+        operand = null;
+    }
+    clearArr(equation);
+    equation.push(result.toString());
     return equation;
 }
 
@@ -70,14 +109,18 @@ function arithmetic(equation) {
         equation = collapseBrackets(equation);
     }
 
-    let eStr = equation.join('');
-    const REGEX = /[+]|[-]|[*]|[\/]|[\^]/;
+    //equation = collapseMultiDiv(equation);
+    //equation = collapseAddSub(equation);
+
+    let equationStr = equation.join('');
+    const FIND_OPERATORS_REGEX = /[+]|[-]|[*]|[\/]|[\^]/;
+    const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
     for (let i = 0; i < equation.length; i++) {
-        if (equation[i].toString().match(REGEX) != null) {
+        if (equation[i].toString().match(FIND_OPERATORS_REGEX) != null) {
             console.log('found an operator: ' + equation[i]);
             operator = equation[i];
         } else {
-            let num = eStr.substring(i, eStr.length).match(/\d*\.?\d+/)[0];
+            let num = equationStr.substring(i, equationStr.length).match(FIND_NUMBERS_REGEX)[0];
             i += num.toString().length -1;
             console.log('found a number: ' + num);
             if (result === null) {
@@ -116,49 +159,6 @@ function arithmetic(equation) {
         }
         operand = null;
     }
-
-    // equation.forEach(e => {
-    //     let element = e.toString();
-    //     if (element.match(/\d+/)) {
-    //         if (result === null) {
-    //             result = parseFloat(element);
-    //         } else {
-    //             operand = parseFloat(element);
-    //         }
-    //     } else {
-    //         operator = element;
-    //     }
-
-    //     if (operand != null || operator === '=') {
-    //         switch (operator) {
-    //             case '+':
-    //                 result += operand;
-    //                 break;
-    //             case '-':
-    //                 result -= operand;
-    //                 break;
-    //             case '*':
-    //                 result *= operand;
-    //                 break;
-    //             case '/':
-    //                 if (operand === 0) {
-    //                     result = 'cannot divide by zero';
-    //                 } else {
-    //                     result /= operand;
-    //                 }
-    //                 break;
-    //             case '^':
-    //                 result = result ** operand;
-    //                 break;
-    //             case '=':
-    //                 console.log('operation complete, result is ' + result);
-    //                 operationComplete = true;
-    //         }
-    //         operator = null;
-    //     }
-
-    // });
-    resultOfCalc = result;
     return result;
 }
 
