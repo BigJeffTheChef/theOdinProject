@@ -83,10 +83,18 @@ button {
     margin: 2px;
 }
 
-.equalBtn {
+#equalBtn {
     width: var(--equal-btn-width);
     margin: 2px;
     background-color: #15eb4e;
+}
+
+#equalBtn:hover {
+    background-color: #04da3d;
+}
+
+#equalBtn:active {
+    background-color: red;
 }
 
 
