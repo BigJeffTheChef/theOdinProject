@@ -1,0 +1,42 @@
+body {
+    background-color: grey;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+}
+
+.display input {
+    background-color: black;
+    border: 1px solid white;
+    height:32px;
+    width: 200px;
+    padding: 0 5px;
+}
+
+.keypad {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+.keypad-nums {
+    flex-wrap: wrap;
+    flex: 0 0 32%;
+}
+
+.keypad-nums button {
+    width: 33%;
+}
+
+.keypad-ops {
+    flex-direction: column;
+}
+
+.keypad-ops button {
+    width: 25px;
+}
+
