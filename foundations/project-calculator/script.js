@@ -1,3 +1,4 @@
+console.log('hello');
 let operations = [];
 let operationComplete = false;
 let resultOfCalc = 0;
@@ -15,7 +16,7 @@ const displayCalc = document.querySelector('.current-calc');
 buttonClear.addEventListener('click', () => clear());
 buttonsNumpad.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
 buttonsOperations.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
-buttonEqual.addEventListener('click', () => displayMain.value = arithmetic(displayCalc.value.split('').filter(element => element !== ' ')));
+buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCalc.value));
 
 // functions
 
@@ -27,7 +28,7 @@ function clickButton(btn) {
 function collapseBrackets(equation) {
     // if no brackets, return simple arithmetic on equation
     if (equation.findIndex(element => element === '(') === -1) {
-        return arithmetic(equation);
+        return solve(equation);
     }
 
     // if there are brackets, recursively solve each bracket, then return the simple arithmetic
@@ -57,48 +58,48 @@ function collapseBrackets(equation) {
     return equation;
 }
 
-function collapseAddSub(equation) {
-    let result = null;
-    let operand = null;
-    let operator = null
+function collapseMultiplications(equation) {
 
-    let equationStr = equation.join('');
-    const FIND_OPERATORS_REGEX = /[+]|[-]/;
+    const FIND_OPERATORS_REGEX = /[*]/;
     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
-    for (let i = 0; i < equation.length; i++) {
-        if (equation[i].toString().match(FIND_OPERATORS_REGEX) != null) {
-            console.log('found an operator: ' + equation[i]);
-            operator = equation[i];
-        } else {
-            let num = equationStr.substring(i, equationStr.length).match(FIND_NUMBERS_REGEX)[0];
-            i += num.toString().length -1;
-            console.log('found a number: ' + num);
-            if (result === null) {
-                result = parseFloat(num);
-            } else {
-                operand = parseFloat(num);
-            }
-        }
 
-        if (operand != null || operator === '=') {
-            switch (operator) {
-                case '+':
-                    result += operand;
-                    break;
-                case '-':
-                    result -= operand;
-                    break;
+    // collapse multiplications
+
+    console.log('equation is: ' + equation);
+    let index = equation.findIndex((element) => element === '*');
+    while (index != -1) {
+        console.log('index is: ' + index);
+        let startIndex, endIndex;
+        for (let i = index-1; i >= -1; i--) {
+            if (i === -1) {
+                startIndex = 0;
+                break;
+            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
+                startIndex = i;
+                break;
             }
-            operator = null;
         }
-        operand = null;
+        for (let i = index+1; i <= equation.length; i++) {
+            if (i === equation.length) {
+                endIndex = equation.length -1;
+                break;
+            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
+                endIndex = i;
+                break;
+            }
+        }
+        let slice = equation.slice(startIndex, endIndex+1);
+        let result = arithmetic(slice.join('')); // currently causes stack overflow
+        equation.splice(startIndex, endIndex-startIndex+1, result);
+        index = equation.findIndex((element) => element === '*');
     }
-    clearArr(equation);
-    equation.push(result.toString());
+
     return equation;
 }
 
-function arithmetic(equation) {
+function solve(equation) {
+    // remove whitespace & conver to array of characters
+    equation = equation.split('').filter(element => element !== ' ');
 
     let result = null;
     let operand = null;
@@ -109,8 +110,40 @@ function arithmetic(equation) {
         equation = collapseBrackets(equation);
     }
 
-    //equation = collapseMultiDiv(equation);
-    //equation = collapseAddSub(equation);
+    if (equation.lastIndexOf('*') != -1) {
+        equation = collapseMultiplications(equation);
+    }
+
+    if (equation.lastIndexOf('/') != -1) {
+        //equation = collapseDivision(equation);
+    }
+    
+    if (equation.lastIndexOf('+') != -1) {
+        //equation = collapseAddition(equation);
+    }
+
+    if (equation.lastIndexOf('+') != -1) {
+        //equation = collapseSubtraction(equation);
+    }
+
+    return equation.join('');
+}
+
+function arithmetic(equation) {
+
+    // function checkValidChars(equationArr) {
+    //     const VALID_CHARS = '0123456789+-*/^()';
+    //     for (let element of equationArr) {
+    //         console.log(VALID_CHARS.findIndex((e) => e === element));
+    //     }
+    // }
+
+    // remove whitespace & conver to array of characters
+    equation = equation.split('').filter(element => element !== ' ');
+
+    let result = null;
+    let operand = null;
+    let operator = null;
 
     let equationStr = equation.join('');
     const FIND_OPERATORS_REGEX = /[+]|[-]|[*]|[\/]|[\^]/;
@@ -121,7 +154,7 @@ function arithmetic(equation) {
             operator = equation[i];
         } else {
             let num = equationStr.substring(i, equationStr.length).match(FIND_NUMBERS_REGEX)[0];
-            i += num.toString().length -1;
+            i += num.toString().length - 1;
             console.log('found a number: ' + num);
             if (result === null) {
                 result = parseFloat(num);
