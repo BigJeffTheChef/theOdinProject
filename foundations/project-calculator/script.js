@@ -97,6 +97,49 @@ function collapseMultiplications(equation) {
     return equation;
 }
 
+function collapse(equation, operator) {
+    
+    //'/['+operator+']/'
+    const FIND_OPERATORS_REGEX = new RegExp('['+operator+']');
+    const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
+
+    // establish base case
+    if (equation.join('').match(FIND_OPERATORS_REGEX) === null) {
+        return equation;
+    }
+
+    console.log('equation is: ' + equation);
+    let index = equation.findIndex((element) => element === '*');
+    while (index != -1) {
+        console.log('index is: ' + index);
+        let startIndex, endIndex;
+        for (let i = index-1; i >= -1; i--) {
+            if (i === -1) {
+                startIndex = 0;
+                break;
+            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
+                startIndex = i;
+                break;
+            }
+        }
+        for (let i = index+1; i <= equation.length; i++) {
+            if (i === equation.length) {
+                endIndex = equation.length;
+                break;
+            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
+                endIndex = i;
+                break;
+            }
+        }
+        let slice = equation.slice(startIndex, endIndex);
+        let result = arithmetic(slice.join('')); // currently causes stack overflow
+        equation.splice(startIndex, endIndex-startIndex, ...result.toString().split(''));
+        index = equation.findIndex((element) => element === '*');
+    }
+
+    return collapse(equation, operator);
+}
+
 function solve(equation) {
     // remove whitespace & conver to array of characters
     equation = equation.split('').filter(element => element !== ' ');
@@ -111,7 +154,7 @@ function solve(equation) {
     }
 
     if (equation.lastIndexOf('*') != -1) {
-        equation = collapseMultiplications(equation);
+        equation = collapse(equation, '*');
     }
 
     if (equation.lastIndexOf('/') != -1) {
@@ -138,14 +181,13 @@ function arithmetic(equation) {
     //     }
     // }
 
-    // remove whitespace & conver to array of characters
-    equation = equation.split('').filter(element => element !== ' ');
-
     let result = null;
     let operand = null;
     let operator = null;
 
-    let equationStr = equation.join('');
+    let equationStr = equation;
+    equation = equation.split('');
+    
     const FIND_OPERATORS_REGEX = /[+]|[-]|[*]|[\/]|[\^]/;
     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
     for (let i = 0; i < equation.length; i++) {
