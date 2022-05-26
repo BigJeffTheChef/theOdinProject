@@ -25,14 +25,14 @@ buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCal
 // functions
 /**
  * Called when user clicks a number button (0-9 and '.').
- * @param {HTML button node} btn 
+ * @param {keydown event or numeric character} btn 
  */
 function clickNumber(btn) {
     if (resultDelivered) {
         resultDelivered = false;
         displayCalc.value = '';
     }
-    displayCalc.value = displayCalc.value + btn.textContent;
+    displayCalc.value = displayCalc.value + displayMain.value;
 }
 
 /**
@@ -45,6 +45,42 @@ function clickOperator(btn) {
         displayCalc.value = displayMain.value;
     }
     displayCalc.value = displayCalc.value + btn.textContent;
+}
+
+
+function collapseBrackets(equation) {
+    // if no brackets, return simple arithmetic on equation
+    if (equation.findIndex(element => element === '(') === -1) {
+        return arithmetic(equation.join(''));
+    }
+
+    // if there are brackets, recursively solve each bracket, then return the simple arithmetic
+    let parsed = false;
+    while (!parsed) {
+        let nestedParen = 0;
+        let begin = false;
+        let startIndex, endIndex;
+        let equationLength = equation.length;
+        for (let i = 0; i < equationLength; i++) {
+            if (equation[i] === '(') {
+                nestedParen++;
+                startIndex = i;
+                begin = true;
+            } else if (equation[i] === ')') {
+                nestedParen--;
+            }
+            if (nestedParen === 0 && begin) {
+                begin = false;
+                endIndex = i;
+                let collapsed = collapseBrackets(equation.slice(startIndex + 1, endIndex));
+                equation.splice(startIndex, endIndex - startIndex + 1, ...collapsed.toString().split(''));
+                equationLength = equation.length;
+                i = 0;
+            }
+        }
+        parsed = true;
+    }
+    return equation;
 }
 
 /**
@@ -176,12 +212,10 @@ function arithmetic(equation) {
     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
     for (let i = 0; i < equation.length; i++) {
         if (equation[i].toString().match(FIND_OPERATORS_REGEX) != null) {
-            console.log('found an operator: ' + equation[i]);
             operator = equation[i];
         } else {
             let num = equationStr.substring(i, equationStr.length).match(FIND_NUMBERS_REGEX)[0];
             i += num.toString().length - 1;
-            console.log('found a number: ' + num);
             if (result === null) {
                 result = parseFloat(num);
             } else {
@@ -218,7 +252,8 @@ function arithmetic(equation) {
         }
         operand = null;
     }
-    return result.toString();
+    let returnVal = result.toString();
+    return returnVal;
 }
 
 /**
