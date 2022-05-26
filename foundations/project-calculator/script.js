@@ -5,6 +5,7 @@ const operators = {
     addition: '+',
     subtraction: '-',
 }
+const DIVIDE_BY_ZERO_MSG = 'cannot divide by zero!';
 let resultDelivered = false;
 
 // // capture nodes
@@ -20,7 +21,9 @@ const displayCalc = document.querySelector('.current-calc');
 buttonClear.addEventListener('click', () => clear());
 buttonsNumpad.forEach(btn => btn.addEventListener('click', () => clickNumber(btn)));
 buttonsOperations.forEach(btn => btn.addEventListener('click', () => clickOperator(btn)));
-buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCalc.value));
+buttonEqual.addEventListener('click', () => {
+    displayMain.value = solve(displayCalc.value)
+});
 
 // functions
 /**
@@ -137,6 +140,9 @@ function collapse(equation, operators) {
     }
     let slice = equation.slice(startIndex, endIndex);
     let result = arithmetic(slice.join('')); // currently causes stack overflow
+    if (result === DIVIDE_BY_ZERO_MSG) {
+        return DIVIDE_BY_ZERO_MSG;
+    }
 
     // replace basic arithmetic with result
     equation.splice(startIndex, endIndex - startIndex, ...result.split(''));
@@ -171,6 +177,9 @@ function solve(equation) {
 
     if (equation.lastIndexOf(operators.multiplication) != -1 || equation.lastIndexOf(operators.division) != -1) {
         equation = collapse(equation, [operators.multiplication, operators.division]);
+        if (equation === DIVIDE_BY_ZERO_MSG) {
+            return DIVIDE_BY_ZERO_MSG;
+        }
     }
 
     if (equation.lastIndexOf(operators.addition) != -1 || equation.lastIndexOf(operators.subtraction) != -1) {
@@ -236,7 +245,7 @@ function arithmetic(equation) {
                     break;
                 case '/':
                     if (operand === 0) {
-                        result = 'cannot divide by zero';
+                        return DIVIDE_BY_ZERO_MSG;
                     } else {
                         result /= operand;
                     }
