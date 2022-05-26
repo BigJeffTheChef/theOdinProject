@@ -166,8 +166,12 @@ function solve(equation) {
     let operand = null;
     let operator = null;
 
-    //recursively solve bracketed sub-problems to enforce order of operations
+    /*
+    order of operations
+    */
+
     if (equation.lastIndexOf('(') != -1) {
+        //recursively solve bracketed sub-problems to enforce order of operations
         equation = collapseBrackets(equation);
     }
 
@@ -178,6 +182,7 @@ function solve(equation) {
     if (equation.lastIndexOf(operators.multiplication) != -1 || equation.lastIndexOf(operators.division) != -1) {
         equation = collapse(equation, [operators.multiplication, operators.division]);
         if (equation === DIVIDE_BY_ZERO_MSG) {
+            resultDelivered = true;
             return DIVIDE_BY_ZERO_MSG;
         }
     }
