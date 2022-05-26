@@ -24,6 +24,14 @@ body {
     padding: 15px 15px;
 }
 
+.calculator {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
 .container {
     display: flex;
 }
