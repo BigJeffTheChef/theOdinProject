@@ -10,19 +10,19 @@ const operators = {
 }
 
 // // capture nodes
-// const buttonsNumpad = document.querySelectorAll('.numBtn');
-// const buttonsOperations = document.querySelectorAll('.opBtn');
-// const buttonClear = document.querySelector('.clearBtn');
-// const buttonEqual = document.querySelector('#equalBtn');
+const buttonsNumpad = document.querySelectorAll('.numBtn');
+const buttonsOperations = document.querySelectorAll('.opBtn');
+const buttonClear = document.querySelector('.clearBtn');
+const buttonEqual = document.querySelector('#equalBtn');
 
-// const displayMain = document.querySelector('.display');
-// const displayCalc = document.querySelector('.current-calc');
+const displayMain = document.querySelector('.display');
+const displayCalc = document.querySelector('.current-calc');
 
-// // add event listers to nodes
-// buttonClear.addEventListener('click', () => clear());
-// buttonsNumpad.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
-// buttonsOperations.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
-// buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCalc.value));
+// add event listers to nodes
+buttonClear.addEventListener('click', () => clear());
+buttonsNumpad.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
+buttonsOperations.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
+buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCalc.value));
 
 // functions
 
@@ -64,44 +64,44 @@ function collapseBrackets(equation) {
     return equation;
 }
 
-function collapseMultiplications(equation) {
+// function collapseMultiplications(equation) {
 
-    const FIND_OPERATORS_REGEX = /[*]/;
-    const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
+//     const FIND_OPERATORS_REGEX = /[*]/;
+//     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
 
-    // collapse multiplications
+//     // collapse multiplications
 
-    console.log('equation is: ' + equation);
-    let index = equation.findIndex((element) => element === '*');
-    while (index != -1) {
-        console.log('index is: ' + index);
-        let startIndex, endIndex;
-        for (let i = index-1; i >= -1; i--) {
-            if (i === -1) {
-                startIndex = 0;
-                break;
-            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
-                startIndex = i;
-                break;
-            }
-        }
-        for (let i = index+1; i <= equation.length; i++) {
-            if (i === equation.length) {
-                endIndex = equation.length -1;
-                break;
-            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
-                endIndex = i;
-                break;
-            }
-        }
-        let slice = equation.slice(startIndex, endIndex+1);
-        let result = arithmetic(slice.join('')); // currently causes stack overflow
-        equation.splice(startIndex, endIndex-startIndex+1, result);
-        index = equation.findIndex((element) => element === '*');
-    }
+//     console.log('equation is: ' + equation);
+//     let index = equation.findIndex((element) => element === '*');
+//     while (index != -1) {
+//         console.log('index is: ' + index);
+//         let startIndex, endIndex;
+//         for (let i = index-1; i >= -1; i--) {
+//             if (i === -1) {
+//                 startIndex = 0;
+//                 break;
+//             } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
+//                 startIndex = i;
+//                 break;
+//             }
+//         }
+//         for (let i = index+1; i <= equation.length; i++) {
+//             if (i === equation.length) {
+//                 endIndex = equation.length -1;
+//                 break;
+//             } else if (equation[i].match(FIND_NUMBERS_REGEX && equation[i] !== '.') === null) {
+//                 endIndex = i;
+//                 break;
+//             }
+//         }
+//         let slice = equation.slice(startIndex, endIndex+1);
+//         let result = arithmetic(slice.join('')); // currently causes stack overflow
+//         equation.splice(startIndex, endIndex-startIndex+1, result);
+//         index = equation.findIndex((element) => element === '*');
+//     }
 
-    return equation;
-}
+//     return equation;
+// }
 
 function collapse(equation, operator) {
     
@@ -123,7 +123,7 @@ function collapse(equation, operator) {
             if (i === -1) {
                 startIndex = 0;
                 break;
-            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
+            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
                 startIndex = i;
                 break;
             }
@@ -132,7 +132,7 @@ function collapse(equation, operator) {
             if (i === equation.length) {
                 endIndex = equation.length;
                 break;
-            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null) {
+            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
                 endIndex = i;
                 break;
             }
