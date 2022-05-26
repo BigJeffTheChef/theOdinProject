@@ -32,7 +32,7 @@ function clickNumber(btn) {
         resultDelivered = false;
         displayCalc.value = '';
     }
-    displayCalc.value = displayCalc.value + displayMain.value;
+    displayCalc.value = displayCalc.value + btn.textContent;
 }
 
 /**
