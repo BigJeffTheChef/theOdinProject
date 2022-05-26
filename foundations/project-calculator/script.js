@@ -104,9 +104,9 @@ function collapseBrackets(equation) {
 // }
 
 function collapse(equation, operator) {
-    
+
     //'/['+operator+']/'
-    const FIND_OPERATORS_REGEX = new RegExp('[\\'+operator+']');
+    const FIND_OPERATORS_REGEX = new RegExp('[\\' + operator + ']');
     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
 
     // establish base case
@@ -114,35 +114,29 @@ function collapse(equation, operator) {
         return equation;
     }
 
-    console.log('equation is: ' + equation);
     let index = equation.findIndex((element) => element === operator);
-    while (index != -1) {
-        console.log('index is: ' + index);
-        let startIndex, endIndex;
-        for (let i = index-1; i >= -1; i--) {
-            if (i === -1) {
-                startIndex = 0;
-                break;
-            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
-                startIndex = i;
-                break;
-            }
+    let startIndex, endIndex;
+    for (let i = index - 1; i >= -1; i--) {
+        if (i === -1) {
+            startIndex = 0;
+            break;
+        } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
+            startIndex = i + 1;
+            break;
         }
-        for (let i = index+1; i <= equation.length; i++) {
-            if (i === equation.length) {
-                endIndex = equation.length;
-                break;
-            } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
-                endIndex = i;
-                break;
-            }
-        }
-        let slice = equation.slice(startIndex, endIndex);
-        let result = arithmetic(slice.join('')); // currently causes stack overflow
-        equation.splice(startIndex, endIndex-startIndex, ...result.toString().split(''));
-        index = equation.findIndex((element) => element === operator);
     }
-
+    for (let i = index + 1; i <= equation.length; i++) {
+        if (i === equation.length) {
+            endIndex = equation.length;
+            break;
+        } else if (equation[i].match(FIND_NUMBERS_REGEX) === null && equation[i] !== '.') {
+            endIndex = i;
+            break;
+        }
+    }
+    let slice = equation.slice(startIndex, endIndex);
+    let result = arithmetic(slice.join('')); // currently causes stack overflow
+    equation.splice(startIndex, endIndex - startIndex, ...result.toString().split(''));
     return collapse(equation, operator);
 }
 
@@ -166,7 +160,7 @@ function solve(equation) {
     if (equation.lastIndexOf('/') != -1) {
         equation = collapse(equation, operators.division);
     }
-    
+
     if (equation.lastIndexOf('+') != -1) {
         equation = collapse(equation, operators.addition);
     }
@@ -193,7 +187,7 @@ function arithmetic(equation) {
 
     let equationStr = equation;
     equation = equation.split('');
-    
+
     const FIND_OPERATORS_REGEX = /[+]|[-]|[*]|[\/]|[\^]/;
     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
     for (let i = 0; i < equation.length; i++) {
