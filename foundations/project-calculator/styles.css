@@ -21,7 +21,7 @@ body {
     justify-content: center;
     align-items: center;
     margin: 15px;
-    padding: 15px;
+    padding: 15px 15px;
 }
 
 .container {
@@ -39,15 +39,21 @@ body {
 
 .screens {
     flex-direction: column;
+    flex: 1 0 auto;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.screen {
+    border: 1px solid black;
 }
 
 .screen.display {
     background-color: #074a0d;
     color: white;
-    border: 1px solid white;
     height:32px;
-    width: 200px;
     padding: 0 5px;
+    border-bottom-width: 0;
 }
 
 .keypad {
@@ -55,16 +61,16 @@ body {
     flex-direction: row;
     justify-content: space-around;
     align-items: stretch;
-    margin: 5px;
 }
 
 .keypad-nums {
     flex-wrap: wrap;
-    flex: 0 0 100px;
+    flex: 1 0 100px;
 }
 
 button {
-    border: 1px solid white;
+    border: 1px solid black;
+    border-radius: 5px;
 }
 
 .keypad-nums button {
@@ -81,6 +87,7 @@ button {
 .opBtn {
     width: var(--btn-width);
     margin: 2px;
+    background-color: aquamarine;
 }
 
 #equalBtn {
