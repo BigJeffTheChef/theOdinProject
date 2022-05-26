@@ -1,22 +1,28 @@
-console.log('hello');
 let operations = [];
 let operationComplete = false;
 let resultOfCalc = 0;
+const operators = {
+    exponent: '^',
+    multiplication: '*',
+    division: '/',
+    addition: '+',
+    subtraction: '-',
+}
 
-// capture nodes
-const buttonsNumpad = document.querySelectorAll('.numBtn');
-const buttonsOperations = document.querySelectorAll('.opBtn');
-const buttonClear = document.querySelector('.clearBtn');
-const buttonEqual = document.querySelector('#equalBtn');
+// // capture nodes
+// const buttonsNumpad = document.querySelectorAll('.numBtn');
+// const buttonsOperations = document.querySelectorAll('.opBtn');
+// const buttonClear = document.querySelector('.clearBtn');
+// const buttonEqual = document.querySelector('#equalBtn');
 
-const displayMain = document.querySelector('.display');
-const displayCalc = document.querySelector('.current-calc');
+// const displayMain = document.querySelector('.display');
+// const displayCalc = document.querySelector('.current-calc');
 
-// add event listers to nodes
-buttonClear.addEventListener('click', () => clear());
-buttonsNumpad.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
-buttonsOperations.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
-buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCalc.value));
+// // add event listers to nodes
+// buttonClear.addEventListener('click', () => clear());
+// buttonsNumpad.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
+// buttonsOperations.forEach(btn => btn.addEventListener('click', () => clickButton(btn)));
+// buttonEqual.addEventListener('click', () => displayMain.value = solve(displayCalc.value));
 
 // functions
 
@@ -100,7 +106,7 @@ function collapseMultiplications(equation) {
 function collapse(equation, operator) {
     
     //'/['+operator+']/'
-    const FIND_OPERATORS_REGEX = new RegExp('['+operator+']');
+    const FIND_OPERATORS_REGEX = new RegExp('[\\'+operator+']');
     const FIND_NUMBERS_REGEX = /\d*\.?\d+/;
 
     // establish base case
@@ -109,7 +115,7 @@ function collapse(equation, operator) {
     }
 
     console.log('equation is: ' + equation);
-    let index = equation.findIndex((element) => element === '*');
+    let index = equation.findIndex((element) => element === operator);
     while (index != -1) {
         console.log('index is: ' + index);
         let startIndex, endIndex;
@@ -134,7 +140,7 @@ function collapse(equation, operator) {
         let slice = equation.slice(startIndex, endIndex);
         let result = arithmetic(slice.join('')); // currently causes stack overflow
         equation.splice(startIndex, endIndex-startIndex, ...result.toString().split(''));
-        index = equation.findIndex((element) => element === '*');
+        index = equation.findIndex((element) => element === operator);
     }
 
     return collapse(equation, operator);
@@ -154,19 +160,19 @@ function solve(equation) {
     }
 
     if (equation.lastIndexOf('*') != -1) {
-        equation = collapse(equation, '*');
+        equation = collapse(equation, operators.multiplication);
     }
 
     if (equation.lastIndexOf('/') != -1) {
-        //equation = collapseDivision(equation);
+        equation = collapse(equation, operators.division);
     }
     
     if (equation.lastIndexOf('+') != -1) {
-        //equation = collapseAddition(equation);
+        equation = collapse(equation, operators.addition);
     }
 
     if (equation.lastIndexOf('+') != -1) {
-        //equation = collapseSubtraction(equation);
+        equation = collapse(equation, operators.subtraction);
     }
 
     return equation.join('');
@@ -249,3 +255,9 @@ function clearArr(arr) {
     }
 }
 
+module.exports = {
+    solve,
+    arithmetic,
+    collapseBrackets,
+    collapse
+};
