@@ -1,0 +1,49 @@
+:root {
+    --left-width: 300px;
+}
+
+* {
+    border: 1px solid red;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: aqua;
+}
+
+.container {
+    display: flex;
+}
+
+.long {
+    height: 100vh;
+}
+
+.left {
+    width: var(--left-width);
+    background: url(./bg.jpg) no-repeat left/100%;
+    position: relative;
+} 
+
+.left-text {
+    color: red;
+    position: absolute;
+    top: 50px;
+    width:100%;
+    background-color: rgba(20,20,20,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.left-text img {
+    margin: 0 5px 0 0;
+    width: 50px;
+}
+
+.right {
+    flex-flow: column nowrap;
+    width: max(30%, calc(100vw - var(--left-width)));
+    background-color: white;
+    margin: 50px 0;
+}
