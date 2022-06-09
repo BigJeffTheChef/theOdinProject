@@ -1,49 +1,127 @@
+/* LAYOUT */
+
 :root {
-    --left-width: 300px;
+    --left-width: 30%;
+    --form-padding: 10px;
+    --form-component-width: 48%;
 }
 
 * {
-    border: 1px solid red;
+    border: 0px solid red;
     padding: 0;
     margin: 0;
 }
 
 body {
-    background-color: aqua;
+    background-color: #EEE;
 }
 
-.container {
+.container-row {
     display: flex;
+    flex-direction: row;
 }
 
-.long {
+.container-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
     height: 100vh;
 }
 
 .left {
     width: var(--left-width);
-    background: url(./bg.jpg) no-repeat left/100%;
+    background: url(./bg.jpg) no-repeat center;
+    background-size: cover;
     position: relative;
 } 
 
 .left-text {
     color: red;
     position: absolute;
-    top: 50px;
+    top: 30%;
     width:100%;
     background-color: rgba(20,20,20,0.5);
     justify-content: center;
     align-items: center;
 }
 
-.left-text img {
+#odin-logo {
     margin: 0 5px 0 0;
     width: 50px;
 }
 
 .right {
+    margin-bottom: 50px;
     flex-flow: column nowrap;
     width: max(30%, calc(100vw - var(--left-width)));
+}
+
+.right-text {
+    padding: 50px 50px;
+}
+
+/* FORMS */
+
+form {
+    display: flex;
+    flex-flow: row wrap;
     background-color: white;
-    margin: 50px 0;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+form div {
+    padding: var(--form-padding);
+    width: calc(var(--form-component-width) - var(--form-padding));
+    flex-flow: row nowrap;
+    flex: 0 0 auto;
+}
+
+label {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+input {
+    box-sizing: border-box;
+    border: 1px solid rgb(200,200,200);
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px 1px rgba(200,200,200,0.5);
+    padding: 10px;
+    height: 2rem;
+}
+
+input:focus {
+    outline: none;
+    border-width: 2px;
+}
+
+.valid {
+    border-color: green;
+}
+
+.invalid {
+    border-color: red;
+}
+
+button {
+    border-radius: 5px;
+    font-weight: 900;
+    border: 0px;
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+}
+
+.submit {
+    padding: 50px;
+}
+
+.validation-message {
+    height: 1rem;
+    font-size: small;
+    color: red;
 }
