@@ -1,9 +1,10 @@
 /* LAYOUT */
 
 :root {
-    --left-width: 30%;
+    --left-width: 25%;
     --form-padding: 10px;
-    --form-component-width: 48%;
+    --form-component-width: 40%;
+    --left-padding: 50px;
 }
 
 * {
@@ -14,15 +15,18 @@
 
 body {
     background-color: #EEE;
+    height: 100vh;
 }
 
-.container-row {
+.container {
     display: flex;
+}
+
+.row {
     flex-direction: row;
 }
 
-.container-col {
-    display: flex;
+.col {
     flex-direction: column;
 }
 
@@ -35,16 +39,23 @@ body {
     background: url(./bg.jpg) no-repeat center;
     background-size: cover;
     position: relative;
-} 
+}
+
+@font-face {
+    font-family: norse;
+    src: url("./Norse-Bold.otf");
+}
 
 .left-text {
-    color: red;
+    color: white;
     position: absolute;
     top: 30%;
-    width:100%;
-    background-color: rgba(20,20,20,0.5);
+    width: 100%;
+    background-color: rgba(20, 20, 20, 0.5);
     justify-content: center;
     align-items: center;
+    font-family: norse;
+    font-size: 3rem;
 }
 
 #odin-logo {
@@ -53,50 +64,75 @@ body {
 }
 
 .right {
-    margin-bottom: 50px;
+    margin-top: 100px;
     flex-flow: column nowrap;
     width: max(30%, calc(100vw - var(--left-width)));
 }
 
-.right-text {
-    padding: 50px 50px;
+
+.right p {
+    width: 60%;
+    padding: 10px 0 10px var(--left-padding);
+    
+}
+
+.right > div > p:first-child {
+    padding-top: var(--left-padding);
+}
+
+.right > div > p:last-child {
+    padding-bottom: var(--left-padding);
 }
 
 /* FORMS */
 
-form {
+.form {
     display: flex;
-    flex-flow: row wrap;
-    background-color: white;
     justify-content: center;
     align-items: center;
-    padding-top: 1rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-flow: row wrap;
+    flex: 1 0 auto;
+    background-color: white;
+    width: 100%;
+    padding: 10px var(--left-padding) 0 var(--left-padding);
 }
 
-form div {
-    padding: var(--form-padding);
-    width: calc(var(--form-component-width) - var(--form-padding));
-    flex-flow: row nowrap;
+form>div>div {
+    padding: var(--form-padding) var(--form-padding) var(--form-padding) 0;
+    width: calc(var(--form-component-width) - calc(var(--form-padding)*2));
     flex: 0 0 auto;
+
+}
+
+form>div>div>p {
+    height: 1rem;
+    font-size: small;
+    color: red;
 }
 
 label {
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 3px;
 }
 
 input {
     box-sizing: border-box;
-    border: 1px solid rgb(200,200,200);
+    border: 1px solid #E5E7EB;
     border-radius: 3px;
-    box-shadow: 1px 1px 1px 1px rgba(200,200,200,0.5);
+    box-shadow: 1px 1px 1px 1px rgba(200, 200, 200, 0.5);
     padding: 10px;
     height: 2rem;
+    width: min(70%, 250px);
 }
 
 input:focus {
     outline: none;
     border-width: 2px;
+    box-shadow: inset 0 0 3px 3px rgb(215, 223, 224);
 }
 
 .valid {
@@ -111,17 +147,11 @@ button {
     border-radius: 5px;
     font-weight: 900;
     border: 0px;
-    background-color: green;
+    background-color: #596D48;
     color: white;
     padding: 10px 20px;
 }
 
 .submit {
-    padding: 50px;
-}
-
-.validation-message {
-    height: 1rem;
-    font-size: small;
-    color: red;
+    padding: 50px 50px 0 var(--left-padding);
 }

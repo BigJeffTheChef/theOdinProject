@@ -11,53 +11,62 @@
 </head>
 
 <body>
-    <div class="container-row content">
+    <div class="container row content">
         <div class="left">
-            <span class="left-text container-row">
+            <span class="left-text container row">
                 <img src="odinlogo.png" id="odin-logo">
-                A service?!
+                <p>A service?!</p>
             </span>
         </div>
-        <div class="right container-row">
-            <div class="right-text container-col">
-                <p>This is not a real online service! You know you need something like this in your life to help you realize your deepest dreams. Sign up <em>now</em> to get started.</p>
+        <div class="right container row">
+            <div class="right-text container col">
+                <p>This is not a real online service! You know you need something like this in your life to help you
+                    realize your deepest dreams. Sign up <em>now</em> to get started.</p>
                 <p>You know you want to!</p>
             </div>
             <form>
-                <div class="container-col field">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" name="first-name" minlength="1" required>
-                    <p id="first-name-message" class="validation-message"></p>
+                <div class="form container">
+                    <div class="container col">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" name="first-name" minlength="1" required>
+                        <p id="first-name-message"></p>
+                    </div>
+                    <div class="container col">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" name="last-name" minlength="1" required>
+                        <p id="last-name-message"></p>
+                    </div>
+                    <div class="container col">
+                        <label for="email">email</label>
+                        <input type="email" id="email" name="email" required>
+                        <p id="email-message"></p>
+                    </div>
+                    <div class="container col">
+                        <label for="phone-number">Phone Number</label>
+                        <input type="text" id="phone-number" name="phone-number" required>
+                        <p id="phone-number-message"></p>
+                    </div>
+                    <div class="container col">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="password" required>
+                        <p id="password-message"></p>
+                    </div>
+                    <div class="container col">
+                        <label for="password-confirm">Confirm Password</label>
+                        <input type="password" id="password-confirm" name="password-confirm" class="password-confirm"
+                            required>
+                        <p id="password-confirm-message"></p>
+                    </div>
                 </div>
-                <div class="container-col field">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" name="last-name" minlength="1" required>
-                    <p id="last-name-message" class="validation-message"></p>
+                <div class="submit">
+                    <button type="submit">Create Account</button>
                 </div>
-                <div class="container-col field">
-                    <label for="email">email</label>
-                    <input type="email" id="email" name="email" required>
-                    <p id="email-message" class="validation-message"></p>
-                </div>
-                <div class="container-col field">
-                    <label for="phone-number">Phone Number</label>
-                    <input type="text" id="phone-number" name="phone-number" required>
-                    <p id="phone-number-message" class="validation-message"></p>
-                </div>
-                <div class="container-col field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" class="password" required>
-                    <p id="password-message" class="validation-message"></p>
-                </div>
-                <div class="container-col field">
-                    <label for="password-confirm">Confirm Password</label>
-                    <input type="password" id="password-confirm" name="password-confirm" class="password-confirm" required>
-                    <p id="password-confirm-message" class="validation-message"></p>
-                </div>               
             </form>
-            <div class="submit">
-                <button>Create Account</button>
-            </div>
+            <div class="right-text">
+            <p>Already have an account? <a href="/login">Log in</a></p>
+        </div>
+
+
         </div>
     </div>
 </body>

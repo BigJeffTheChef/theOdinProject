@@ -34,11 +34,20 @@ phoneNumber.addEventListener(EVENT, () => validate(phoneNumber, phoneNumberMsg, 
 password.addEventListener(EVENT, () => validatePasswords());
 passwordConfirm.addEventListener(EVENT, () => validatePasswords());
 
-validate(firstName, firstNameMsg);
-validate(lastName, lastNameMsg);
-validatePasswords();
+function validateAll() {
+    console.log("doin it");
+    validate(firstName, firstNameMsg, REGEX_NAME, REJECT_NAME);
+    validate(lastName, lastNameMsg, REGEX_NAME, REJECT_NAME);
+    validate(email, emailMsg, REGEX_EMAIL, REJECT_EMAIL);
+    validate(phoneNumber, phoneNumberMsg, REGEX_PHONE_NUMBER, REJECT_PHONE_NUMBER);
+    validatePasswords();
+};
+
+validateAll();
+setInterval(() => validateAll(), 1000);
 
 // validation functions
+
 /**
  * Validate a first or last name
  * @param {input text element} inputField 
@@ -73,15 +82,15 @@ function validate(inputField, messageField, regex, rejectMsg) {
     }
 }
 
+/**
+ * Validate both password fields
+ */
 function validatePasswords() {
 
     const REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // 8 chars, 1 letter, 1 number
 
     const confirmed = password.value === passwordConfirm.value;
     const requirements = password.value.match(REGEX) != null;
-
-    console.log("confirmed:" + confirmed);
-    console.log("req:" + requirements)
 
     // accepted
     if (confirmed && requirements) {
