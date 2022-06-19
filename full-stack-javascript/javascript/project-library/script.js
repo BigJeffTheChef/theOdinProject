@@ -21,14 +21,18 @@ function displayBooks() {
 
 console.log('hi');
 
-const addBookBtn = document.querySelector('#add-book-button');
-const addBookModal = document.querySelector('.add-book-modal')
-const modalUnderlay = document.querySelector('.modal-underlay');
+const addBookBtn = document.querySelectorAll('.add-book-button');
+const modal = document.querySelector('.modal');
 const closeModalBtn = document.querySelector('#close-modal');
-addBookBtn.addEventListener('click', () => modalToggle());
+
+//addBookBtn.addEventListener('click', () => modalToggle());
+addBookBtn.forEach(b => (
+    b.addEventListener('click', () => modalToggle())
+));
+
 closeModalBtn.addEventListener('click', () => modalToggle());
 
 function modalToggle() {
-    addBookModal.classList.toggle('hidden');
-    modalUnderlay.classList.toggle('hidden');
+    // addBookModal.classList.toggle('hidden');
+    modal.classList.toggle('hidden');
 }
