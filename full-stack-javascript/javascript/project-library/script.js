@@ -51,6 +51,10 @@ function Book(title, author, pages, read) {
     this.read = read;
 }
 
+Book.prototype.toggleRead = function() {
+    this.read = (this.read) ? false : true;
+}
+
 function createCard(bookObj, index) {
     let bookCard = document.createElement('div');
 
@@ -90,7 +94,7 @@ function createCard(bookObj, index) {
     bookCardReadToggle.textContent = "T";
     bookCardReadToggle.setAttribute("title", "Toggle read");
     bookCardReadToggle.addEventListener('click', () => {
-        library[index].read = (library[index].read) ? false : true;
+        library[index].toggleRead();
         displayBooks();
     });
 
