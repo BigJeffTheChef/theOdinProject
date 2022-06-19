@@ -1,4 +1,5 @@
-const library = [];
+const library = [new Book("Test Book 1", "Test Author1", 100, true),
+new Book("Test Book 2", "Test Author 2", 1500, false)];
 
 // Page: Controls
 const addBookModalBtn = document.querySelectorAll('.add-book-button');
@@ -24,7 +25,7 @@ function showModal() {
     fieldTitle.value = "";
     fieldAuthor.value = "";
     fieldPages.value = "";
-    fieldRead.value = "";
+    fieldRead.checked = false;
     modalContainer.classList.remove("hidden");
 }
 
@@ -53,40 +54,59 @@ function Book(title, author, pages, read) {
 function createCard(bookObj, index) {
     let bookCard = document.createElement('div');
 
-    let bookCardHighlight = document.createElement('div');
+    let bookCardReadHighlight = document.createElement('div');
     let bookCardBody = document.createElement('div');
-    
+
     let bookCardTitle = document.createElement('p');
     let bookCardAuthor = document.createElement('p');
     let bookCardPages = document.createElement('p');
+
     let bookCardRemove = document.createElement('button');
+    let bookCardReadToggle = document.createElement('button');
 
     bookCard.classList.add('book-card');
-    bookCardHighlight.classList.add('book-card-highlight');
-    bookCardHighlight.classList.add((bookObj.read) ? "read" : "unread");
+    bookCardReadHighlight.classList.add('book-card-highlight');
+    bookCardReadHighlight.classList.add((bookObj.read) ? "read" : "unread");
     bookCardBody.classList.add('book-card-body');
+
     bookCardTitle.textContent = bookObj.title;
-    bookCardTitle.id = "card-title";
+    bookCardTitle.classList.add("card-title");
+
     bookCardAuthor.textContent = bookObj.author;
-    bookCardAuthor.id = "card-author";
-    bookCardPages.textContent = bookObj.pages;
-    bookCardPages.id = "card-pages";
+    bookCardAuthor.classList.add("card-author");
+
+    bookCardPages.textContent = bookObj.pages + " pages";
+    bookCardPages.classList.add("card-pages");
+
     bookCardRemove.textContent = "X";
-    bookCardRemove.id = "card-remove";
+    bookCardRemove.classList.add("card-remove");
+    bookCardRemove.setAttribute("title", "Delete book");
     bookCardRemove.addEventListener('click', () => {
         library.splice(index, 1);
         displayBooks();
     });
 
-    bookCardBody.append(bookCardTitle, bookCardAuthor, bookCardPages, bookCardRemove);
-    bookCard.append(bookCardHighlight, bookCardBody);
+    bookCardReadToggle.classList.add('card-read-toggle');
+    bookCardReadToggle.textContent = "T";
+    bookCardReadToggle.setAttribute("title", "Toggle read");
+    bookCardReadToggle.addEventListener('click', () => {
+        library[index].read = (library[index].read) ? false : true;
+        displayBooks();
+    });
+
+    bookCardBody.append(bookCardTitle,
+        bookCardAuthor,
+        bookCardPages,
+        bookCardRemove,
+        bookCardReadToggle);
+    bookCard.append(bookCardReadHighlight, bookCardBody);
     bookCard.setAttribute("data-index", index);
     return bookCard;
 }
 
 function displayBooks() {
     // remove old bookCards
-    for (let i = bookCards.childNodes.length - 1; i >= 0;i--) {
+    for (let i = bookCards.childNodes.length - 1; i >= 0; i--) {
         bookCards.removeChild(bookCards.childNodes[i]);
     }
 
@@ -98,6 +118,9 @@ function displayBooks() {
         bookCards.appendChild(card);
     }
 }
+
+// initial display of any books in library
+displayBooks();
 
 
 
