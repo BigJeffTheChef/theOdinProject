@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
-    <script src="script.js" defer></script>
+    <!-- <script src="intro.js" defer></script> -->
+    <script src="game.js" defer></script>
     <link href="styles.css" rel="stylesheet">
 </head>
+
 <body>
-    <div class="container">
-        <div id="board"></div>
-        <button id="display-board">Redisplay</button>
+    <div class="header">Tic-Tac-Toe</div>
+    
+    <div class="container-intro">
+        <div class="intro">
+            <p>Hello, welcome to Tic-Tac-Toe. Get 3 in a line to win (horizontally, vertically or diagonally).</p>
+            <p>Please enter the player names below</p>
+            <form class="name-select-form">
+                <label for="player1-name">Player 1 Name: <input type="text" id="player1-name" required
+                        pattern="^[A-Za-z]+$"></label>
+                <label for="player2-name">Player 2 Name: <input type="text" id="player2-name" required
+                        pattern="^[A-Za-z]+$"></label>
+            </form>
+            <button class="player-name-accept">Play!</button>
+        </div>
     </div>
 </body>
+
 </html>

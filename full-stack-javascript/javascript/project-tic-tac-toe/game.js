@@ -1,7 +1,68 @@
-// Constants
+// Declarations
 const BOARD_SIZE = 3;
 const PLAYERS = 2;
+
 let gameOver = false;
+let players = [];
+
+let board = createBoard(BOARD_SIZE);
+
+/*
+
+    INTRODUCTION
+
+*/
+
+const btnPlay = document.querySelector('.player-name-accept');
+btnPlay.addEventListener('click', processIntro);
+
+function processIntro(event) {
+    const p1Name = document.querySelector('#player1-name').value;
+    const p2Name = document.querySelector('#player2-name').value;
+    let p1Accept = validateName(p1Name);
+    let p2Accept = validateName(p2Name);
+    if (p1Accept && p2Accept) {
+        const container = document.querySelector('.container-intro');
+        container.classList.add('hidden');
+        setTimeout(() => {
+            document.querySelector('body').removeChild(container);
+            prepareGame(p1Name, p2Name);
+        }, 1000);
+
+    }
+}
+
+function validateName(nameToValidate) {
+    if (nameToValidate && typeof nameToValidate !== 'string') {
+        return false;
+    }
+    const REGEX = /^[A-Za-z]+$/;
+    if (nameToValidate && nameToValidate.match(REGEX)) {
+        return true;
+    }
+    return false;
+}
+
+function prepareGame(p1Name, p2Name) {
+    console.log(`p1: ${p1Name} p2: ${p2Name}`);
+    players = [player(1, p1Name, "X"), player(2, p2Name, "O")];
+    console.log(players);
+    currentPlayer = players[0];
+    const containerBoard = document.createElement('div');
+    const boardx = document.createElement('div');
+    const body = document.querySelector('body');
+    containerBoard.classList.add("container-board");
+    boardx.id = "board";
+    containerBoard.appendChild(boardx);
+    body.appendChild(containerBoard);
+    displayBoard(board);
+}
+
+/*
+
+    THE GAME
+
+*/
 
 /**
  * player factory
@@ -34,41 +95,17 @@ let player = (number, name, symbol) => {
     };
 }
 
-const btnRedisplay = document.querySelector('#display-board');
-btnRedisplay.addEventListener('click', () => displayBoard(board));
-
-/**
- * board module - generates 2d array for board
- */
-let board = (function (boardSize) {
+function createBoard(size) {
     const boardObj = [];
-    for (let i = 0; i < boardSize; i++) {
+    for (let i = 0; i < size; i++) {
         const row = [];
-        for (let j = 0; j < boardSize; j++) {
+        for (let j = 0; j < size; j++) {
             row.push(null);
         }
         boardObj.push(row);
     }
     return boardObj;
-})(BOARD_SIZE);
-
-// /**
-//  * players module - generates both players
-//  */
-// let players = (function(playersCount) {
-//     let p = [];
-//     for (let i = 0; i < playersCount; i++) {
-//         p.push(player(i+1,`player ${i+1}`));
-//     }
-//     return p;
-// })(PLAYERS);
-
-let p1 = player(1, "Alice", "X");
-let p2 = player(2, "Bob", "O");
-
-let players = [p1, p2];
-
-let currentPlayer = players[0];
+}
 
 function switchPlayer() {
     let currentNum = currentPlayer.getNumber();
@@ -81,9 +118,8 @@ function switchPlayer() {
     }
 }
 
-
 /**
- * display board function
+ * Builds the board div element and adds appropriate event handlers
  * @param {2d array} gameBoard a 2d array of players pieces 
  */
 function displayBoard(gameBoard) {
@@ -109,7 +145,6 @@ function displayBoard(gameBoard) {
                 cellDiv.classList.remove("empty");
                 cellDiv.textContent = cellContents.getSymbol();
             }
-
             boardDiv.appendChild(cellDiv);
         }
     }
@@ -117,9 +152,9 @@ function displayBoard(gameBoard) {
 
 const clickSquare = function (gameBoard, boardDiv, cellDiv, i, j) {
     if (!gameOver) {
-        console.log(gameBoard[i][j]);
         if (gameBoard[i][j] === null) {
             gameBoard[i][j] = currentPlayer;
+            console.log(gameBoard[i][j].getName());
             cellDiv.classList.remove("empty");
             cellDiv.textContent = currentPlayer.getSymbol();
             checkWinner(gameBoard, boardDiv, i, j);
@@ -241,7 +276,3 @@ function checkWinner(gameBoard, boardDiv, row, col) {
     }
 }
 
-
-
-// initial board display
-displayBoard(board);
