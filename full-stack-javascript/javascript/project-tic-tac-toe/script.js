@@ -1,6 +1,7 @@
 // Constants
 const BOARD_SIZE = 3;
 const PLAYERS = 2;
+let gameOver = false;
 
 /**
  * player factory
@@ -103,16 +104,7 @@ function displayBoard(gameBoard) {
             cellDiv.dataset.indexCol = j;
             if (cellContents == null) {
                 cellDiv.classList.add("empty");
-                cellDiv.addEventListener('click', () => {
-                    console.log(gameBoard[i][j]);
-                    if (gameBoard[i][j] === null) {
-                        gameBoard[i][j] = currentPlayer;
-                        cellDiv.classList.remove("empty");
-                        cellDiv.textContent = currentPlayer.getSymbol();
-                        checkWinner(gameBoard, boardDiv, i, j);
-                        switchPlayer();
-                    }
-                });
+                cellDiv.addEventListener('click', () => clickSquare(gameBoard, boardDiv, cellDiv, i, j));
             } else {
                 cellDiv.classList.remove("empty");
                 cellDiv.textContent = cellContents.getSymbol();
@@ -121,20 +113,19 @@ function displayBoard(gameBoard) {
             boardDiv.appendChild(cellDiv);
         }
     }
-    if (winFound) {
-        for (let i = 0; i < boardDiv.childNodes.length; i++) {
-            boardDiv.childNodes[i].classList.remove('empty');
-            boardDiv.childNodes[i].classList.add('win-found');
-        }
-    }
 }
 
-const clickSquare = function() {
-    console.log(row + " " + col);
-    console.log(currentPlayer);
-    board[row][col] = currentPlayer.symbol;
-    cell = currentPlayer;
-    displayBoard(board);
+const clickSquare = function (gameBoard, boardDiv, cellDiv, i, j) {
+    if (!gameOver) {
+        console.log(gameBoard[i][j]);
+        if (gameBoard[i][j] === null) {
+            gameBoard[i][j] = currentPlayer;
+            cellDiv.classList.remove("empty");
+            cellDiv.textContent = currentPlayer.getSymbol();
+            checkWinner(gameBoard, boardDiv, i, j);
+            switchPlayer();
+        }
+    }
 }
 
 
@@ -222,6 +213,7 @@ function checkWinner(gameBoard, boardDiv, row, col) {
     }
 
     if (winFound) {
+        gameOver = true;
         for (let i = 0; i < boardDiv.childNodes.length; i++) {
             const node = boardDiv.childNodes[i];
             node.classList.remove('empty');
@@ -238,11 +230,12 @@ function checkWinner(gameBoard, boardDiv, row, col) {
             }
         }
         if (!spaceLeft) {
+            gameOver = true;
             for (let i = 0; i < boardDiv.childNodes.length && !spaceLeft; i++) {
                 const node = boardDiv.childNodes[i];
                 node.classList.remove('empty');
                 node.classList.add('draw-found');
-                // node.removeEventListener('click',)
+                console.dir(node);
             }
         }
     }
