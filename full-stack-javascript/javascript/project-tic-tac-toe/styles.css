@@ -1,3 +1,12 @@
+.container {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    grid-template: 8fr/2fr;
+    grid-auto-rows: 1.5rem;
+    grid-auto-columns: 1fr;
+}
+
 #board {
     --cell-dim: 100px;
     --border-width: 2px;
@@ -31,4 +40,16 @@
 
 .board-cell.empty:hover {
     background-color: aqua;
+}
+
+.win-found {
+    background-color: green;
+}
+
+.draw-found {
+    background-color: crimson;
+}
+
+.winning-cell {
+    background-color: lightgreen;
 }
