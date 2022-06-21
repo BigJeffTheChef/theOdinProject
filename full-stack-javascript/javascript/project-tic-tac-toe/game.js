@@ -12,9 +12,61 @@ let board = createBoard(BOARD_SIZE);
     INTRODUCTION
 
 */
+let intro = createIntro();
+document.querySelector('body').appendChild(intro);
 
-const btnPlay = document.querySelector('.player-name-accept');
-btnPlay.addEventListener('click', processIntro);
+function createIntro() {
+
+    const introp1 = createP('Hello, welcome to Tic-Tac-Toe. Get 3 in a line to win (horizontally, vertically or diagonally).');
+    const introp2 = createP('Please enter the player names below');
+    console.log(introp1);
+    const form = (() => {
+        const form = document.createElement('form');
+        form.classList.add('name-select-form');
+        form.appendChild(createInput(1));
+        form.appendChild(createInput(2));
+        return form;
+
+        function createInput(playerNumber) {
+            const label = document.createElement('label');
+            label.setAttribute("for", `player${playerNumber}-name`);
+            label.textContent = `Enter Player ${playerNumber} Name:`;
+            const input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('id', `player${playerNumber}-name`);
+            input.setAttribute('required', '');
+            input.setAttribute('pattern', '^[A-Za-z]+$');
+            label.appendChild(input);
+            return label;
+        }
+    })();
+    const button = (() => {
+        const btn = document.createElement('button');
+        btn.classList.add('player-name-accept');
+        btn.textContent = 'Play!';
+        btn.addEventListener('click', processIntro);
+        return btn;
+    })();
+
+    const intro = document.createElement('div');
+    intro.classList.add('intro');
+    intro.appendChild(introp1);
+    intro.appendChild(introp2);
+    intro.appendChild(form);
+    intro.appendChild(button);
+
+    const containerIntro = document.createElement('div');
+    containerIntro.classList.add('container-intro')
+    containerIntro.appendChild(intro);
+
+    return containerIntro;
+
+    function createP(text) {
+        const p = document.createElement('p');
+        p.textContent = text;
+        return p;
+    }
+}
 
 function processIntro(event) {
     const p1Name = document.querySelector('#player1-name').value;
@@ -27,7 +79,7 @@ function processIntro(event) {
         setTimeout(() => {
             document.querySelector('body').removeChild(container);
             prepareGame(p1Name, p2Name);
-        }, 500);
+        }, 250);
 
     }
 }
@@ -60,59 +112,48 @@ function prepareGame(p1Name, p2Name) {
 
 /*
 
+    RESTART
+
+*/
+
+/*
+
     THE GAME
 
 */
 
-// /**
-//  * player factory
-//  * @param {Number} number 
-//  * @param {String} name 
-//  * @returns player object
-//  */
-// let player = (number, name, symbol) => {
-//     let obj = {};
-//     obj.number = number;
-//     obj.name = name;
-//     obj.symbol = symbol;
-
-//     const getName = () => obj.name;
-//     const setName = (newName) => obj.name = newName;
-
-//     const getNumber = () => obj.number;
-//     const setNumber = (newNumber) => obj.number = newNumber;
-
-//     const getSymbol = () => obj.symbol;
-//     const setSymbol = (newSymbol) => obj.symbol = newSymbol;
-
-//     return {
-//         // name
-//         getName, setName,
-//         // number
-//         getNumber, setNumber,
-//         // symbol
-//         getSymbol, setSymbol
-//     };
-// }
-
+/**
+ * Construct a Player object
+ * @param {Number} number 
+ * @param {String} name 
+ * @param {1-char String} symbol 
+ */
 function Player(number, name, symbol) {
-    this.number = number;
-    this.name = name;
-    this.symbol = symbol;
     Object.assign(this, playerMethods);
+    this.setNumber(number);
+    this.setName(name);
+    this.setSymbol(symbol);
 }
 
+/**
+ * Getters and Setters for Player objects
+ */
 const playerMethods = {
-    getName() { return this.name},
-    setName(newName) {this.name = newName},
+    getName() { return this.name },
+    setName(newName) { this.name = newName },
 
-    getNumber() {return this.number},
-    setNumber(newNumber) { this.number = batNumber},
+    getNumber() { return this.number },
+    setNumber(newNumber) { this.number = newNumber },
 
-    getSymbol() {return this.symbol},
-    setSymbol(newSymbol) {this.symbol = newSymbol},
+    getSymbol() { return this.symbol },
+    setSymbol(newSymbol) { this.symbol = newSymbol },
 }
 
+/**
+ * Create a 2-d array populated with null values.
+ * @param {Number} size the length of each inner array and outer array.
+ * @returns a 2d array with each outer array length size, and each inner array length size, populated with null values.
+ */
 function createBoard(size) {
     const boardObj = [];
     for (let i = 0; i < size; i++) {
@@ -125,15 +166,11 @@ function createBoard(size) {
     return boardObj;
 }
 
+/**
+ * Switch the active player of the game
+ */
 function switchPlayer() {
-    let currentNum = currentPlayer.getNumber();
-    let p1Num = players[0].getNumber();
-    //currentPlayer = (currentPlayer.getNumber() === players[0].getNumber()) ? players[1] : players[0];
-    if (currentNum === p1Num) {
-        currentPlayer = players[1];
-    } else {
-        currentPlayer = players[0];
-    }
+    currentPlayer = (currentPlayer.getNumber() === players[0].getNumber()) ? players[1] : players[0];
 }
 
 /**
@@ -158,7 +195,18 @@ function displayBoard(gameBoard) {
             cellDiv.dataset.indexCol = j;
             if (cellContents == null) {
                 cellDiv.classList.add("empty");
-                cellDiv.addEventListener('click', () => clickSquare(gameBoard, boardDiv, cellDiv, i, j));
+                cellDiv.addEventListener('click', () => {
+                    if (!gameOver) {
+                        if (gameBoard[i][j] === null) {
+                            gameBoard[i][j] = currentPlayer;
+                            console.log(gameBoard[i][j].getName());
+                            cellDiv.classList.remove("empty");
+                            cellDiv.textContent = currentPlayer.getSymbol();
+                            checkWinner(gameBoard, boardDiv, i, j);
+                            switchPlayer();
+                        }
+                    }
+                });
             } else {
                 cellDiv.classList.remove("empty");
                 cellDiv.textContent = cellContents.getSymbol();
@@ -168,36 +216,31 @@ function displayBoard(gameBoard) {
     }
 }
 
-const clickSquare = function (gameBoard, boardDiv, cellDiv, i, j) {
-    if (!gameOver) {
-        if (gameBoard[i][j] === null) {
-            gameBoard[i][j] = currentPlayer;
-            console.log(gameBoard[i][j].getName());
-            cellDiv.classList.remove("empty");
-            cellDiv.textContent = currentPlayer.getSymbol();
-            checkWinner(gameBoard, boardDiv, i, j);
-            switchPlayer();
-        }
-    }
-}
-
-
+/**
+ * Checks to see if a win or draw condition has been met
+ * @param {Array} gameBoard a 2d array of Players
+ * @param {HTML div element} boardDiv div html element representing board
+ * @param {Number} row row index of last played position
+ * @param {Number} col col index of last played position 
+ */
 function checkWinner(gameBoard, boardDiv, row, col) {
-    // check row
+
+    let winFound = false;
+    let winningCoords = [];
+
+    if (!winFound) winFound = checkLinear("row", winningCoords);      // current row
+    if (!winFound) winFound = checkLinear("column", winningCoords);   // current column
+    if (!winFound) winFound = checkDiagonal("TL-BR", winningCoords);  // top left to bottom right
+    if (!winFound) winFound = checkDiagonal("BL-TR", winningCoords);  // bottom left to top right
+
+    processResult(winFound);
 
     function discernWinningNode(row, col) {
         return (BOARD_SIZE * row) + (col + 1) - 1;
     }
 
-    let winFound = false;
-    let winningCoords = [];
-
-    if (!winFound) checkLinear("row");
-    if (!winFound) checkLinear("column");
-    // if (!winFound) checkDiagonal("TL-BR");
-    // if (!winFound) checkDiagonal("BL-TR");
-
-    function checkLinear(direction) {
+    function checkLinear(direction, coords) {
+        let isWin = false;
         if (direction !== 'row' && direction !== 'column') {
             return;
         }
@@ -206,130 +249,106 @@ function checkWinner(gameBoard, boardDiv, row, col) {
             let position = (direction === 'row') ? gameBoard[row][i] : gameBoard[i][col];
             if (position !== null && position.getNumber() === currentPlayer.getNumber()) {
                 check++;
-                winningCoords.push(discernWinningNode((direction === 'row') ? row : i, (direction === 'row') ? i : col));
+                coords.push(discernWinningNode((direction === 'row') ? row : i, (direction === 'row') ? i : col));
             }
         }
         if (check === BOARD_SIZE) {
-            winFound = true;
+            isWin = true;
         } else {
-            winningCoords = [];
+            clearArray(coords);
         }
+        return isWin;
     }
 
-    function checkDiagonal(direction) {
+    function checkDiagonal(direction, coords) {
         if (direction !== 'TL-BR' && direction !== 'BL-TR') {
             return;
         }
+        let isWin = false;
+        let rowModifier, colModifier, expFindStart, expLoopControl;
+        if (direction === 'TL-BR') {
+            rowModifier = -1;
+            colModifier = -1;
+            expFindStart = (dr, dc) => dr > 0 && dc > 0;
+            expLoopControl = (i, j) => i < BOARD_SIZE && j < BOARD_SIZE;
+        } else {
+            rowModifier = 1;
+            colModifier = -1;
+            expFindStart = (dr, dc) => dr < BOARD_SIZE - 1 && dc > 0;
+            expLoopControl = (i, j) => i >= 0 && j < BOARD_SIZE;
+        }
+
         let dr, dc;
         dr = row;
         dc = col;
-        while (dr > 0 && dc > 0) {
-            dr--;
-            dc--;
+        while (expFindStart(dr, dc)) {
+            dr += rowModifier;
+            dc += colModifier;
         }
         let diag1Check = 0;
-        for (let i = dr, j = dc; i < BOARD_SIZE && j < BOARD_SIZE; i++, j++) {
+        for (let i = dr, j = dc; expLoopControl(i, j); i -= rowModifier, j -= colModifier) {
             if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
                 diag1Check++;
-                winningCoords.push(discernWinningNode(i, j));
+                coords.push(discernWinningNode(i, j));
             }
         }
         if (diag1Check === BOARD_SIZE) {
-            winFound = true;
+            isWin = true;
         } else {
-            winningCoords = [];
+            clearArray(coords);
         }
+        return isWin;
     }
 
-    // check diag 1 (Top Left > Bottom Right)
-    if (!winFound) {
-        let dr, dc;
-        dr = row;
-        dc = col;
-        while (dr > 0 && dc > 0) {
-            dr--;
-            dc--;
-        }
-        let diag1Check = 0;
-        for (let i = dr, j = dc; i < BOARD_SIZE && j < BOARD_SIZE; i++, j++) {
-            if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
-                diag1Check++;
-                winningCoords.push(discernWinningNode(i, j));
-            }
-        }
-        if (diag1Check === BOARD_SIZE) {
-            winFound = true;
-        } else {
-            winningCoords = [];
-        }
-    }
-
-
-    // check diag 2 (Bottom left > Top Right)
-    if (!winFound) {
-        dr = row;
-        dc = col;
-        while (dr < BOARD_SIZE - 1 && dc > 0) {
-            dr++;
-            dc--;
-        }
-        let diag2Check = 0;
-        for (let i = dr, j = dc; i >= 0 && j < BOARD_SIZE; i--, j++) {
-            if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
-                diag2Check++;
-                winningCoords.push(discernWinningNode(i, j));
-            }
-        }
-        if (diag2Check === BOARD_SIZE) {
-            winFound = true;
-        } else {
-            winningCoords = [];
-        }
-    }
-
-    if (winFound) {
-        console.log(winningCoords);
-        gameOver = true;
-        for (let i = 0; i < boardDiv.childNodes.length; i++) {
-            const node = boardDiv.childNodes[i];
-            node.classList.remove('empty');
-            node.classList.add('game-over');
-            // if (node.textContent !== currentPlayer.getSymbol()) {
-            //     node.textContent = "";
-            // }
-            if (winningCoords.includes(i)) {
-                node.classList.add('winning-cell');
-            } else {
-                node.classList.add('win-found');
-                node.textContent = "";
-            }
-        }
-    } else {
-        let spaceLeft = false;
-        for (let i = 0; i < boardDiv.childNodes.length && !spaceLeft; i++) {
-            if (boardDiv.childNodes[i].textContent === "") {
-                spaceLeft = true;
-            }
-        }
-        if (!spaceLeft) {
+    function processResult(winFound) {
+        if (winFound) {
+            console.log(winningCoords);
             gameOver = true;
-            for (let i = 0; i < boardDiv.childNodes.length && !spaceLeft; i++) {
+            for (let i = 0; i < boardDiv.childNodes.length; i++) {
                 const node = boardDiv.childNodes[i];
                 node.classList.remove('empty');
-                node.classList.add('draw-found');
-                console.dir(node);
+                node.classList.add('game-over');
+                if (winningCoords.includes(i)) {
+                    node.classList.add('winning-cell');
+                } else {
+                    node.classList.add('win-found');
+                    node.textContent = "";
+                }
+            }
+        } else {
+            let spaceLeft = false;
+            for (let i = 0; i < boardDiv.childNodes.length && !spaceLeft; i++) {
+                if (boardDiv.childNodes[i].textContent === "") {
+                    spaceLeft = true;
+                }
+            }
+            if (!spaceLeft) {
+                gameOver = true;
+                for (let i = 0; i < boardDiv.childNodes.length && !spaceLeft; i++) {
+                    const node = boardDiv.childNodes[i];
+                    node.classList.remove('empty');
+                    node.classList.add('draw-found');
+                    console.dir(node);
+                }
             }
         }
-    }
-    if (gameOver) {
-        const declareGameOver = document.createElement('div');
-        declareGameOver.classList.add('game-declared-over');
-        if (winFound) {
-            declareGameOver.textContent = currentPlayer.getName() + " wins!";
-        } else {
-            declareGameOver.textContent = "Draw!";
+        if (gameOver) {
+            const declareGameOver = document.createElement('div');
+            declareGameOver.classList.add('game-declared-over');
+            if (winFound) {
+                declareGameOver.textContent = currentPlayer.getName() + " wins!";
+            } else {
+                declareGameOver.textContent = "Draw!";
+            }
+            document.querySelector('#board').appendChild(declareGameOver);
         }
-        document.querySelector('#board').appendChild(declareGameOver);
     }
+
+    function clearArray(arr) {
+        while (arr.length > 0) {
+            arr.pop();
+        }
+    }
+
 }
 

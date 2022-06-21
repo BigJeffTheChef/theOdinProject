@@ -22,6 +22,7 @@ body {
     padding: 0px;
     margin: 0px;
     background-color: var(--color-light);
+    display: grid;
 }
 
 /*
@@ -30,15 +31,7 @@ CONTAINERS
 
 */
 
-.container-board {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    grid-template: 1fr/ 1fr;
-    height: var(--body-height);
-}
+/* header */
 
 .header {
     display: grid;
@@ -50,9 +43,15 @@ CONTAINERS
     font-family: 'Courier New', Courier, monospace;
     background-color: var(--color-whitish);
     box-shadow: 0px 0px 15px 5px var(--color-whitish);
-    height: var(--header-height);
     margin-bottom: var(--header-margin);
 }
+
+@media only screen and (max-width: 330px) {
+    .header {
+        font-size: 1rem;
+    }
+}
+
 
 /* intro */
 
@@ -60,7 +59,7 @@ CONTAINERS
     display: flex;
     justify-content: center;
     align-items: center;
-    height: var(--body-height);
+    max-height: var(--body-height);
     transition: 1s;
     position: relative;
 }
@@ -73,7 +72,7 @@ CONTAINERS
     border: 1px solid var(--color-dark);
     box-shadow: 0px 0px 10px 3px inset var(--color-whitish);
     border-radius: 10px;
-    width: 650px;
+    max-width: 650px;
 }
 
 .intro>p {
@@ -95,11 +94,22 @@ CONTAINERS
     padding: 10px 25px;
 }
 
+.name-select-form>label {
+    display: grid;
+    grid-template: 1fr / 1fr 1fr;
+}
+
+@media only screen and (max-width: 570px) {
+    .name-select-form>label {
+        grid-template: 1fr 1fr/ 1fr;
+    }
+}
+
 .name-select-form >label> input {
     background-color: var(--color-mediumLight);
     border: 1px solid var(--color-medium);
     border-radius: 100px;
-    width: 150px;
+    min-width: 50px;
     padding: 10px 25px;
 }
 
@@ -137,6 +147,16 @@ CONTAINERS
 
 /* board */
 
+.container-board {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    grid-template: 1fr/ 1fr;
+    height: var(--body-height);
+}
+
 #board {
     --cell-dim: 100px;
     --gap: 5px;
@@ -154,8 +174,8 @@ CONTAINERS
 
 .board-cell {
     background-color: var(--color-mediumLight);
-    width: 100px;
-    height: 100px;
+    width: var(--cell-dim);
+    height: var(--cell-dim);
     border-radius: 10px;
     color: black;
     display: grid;
@@ -164,6 +184,19 @@ CONTAINERS
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: bold;
 
+}
+
+@media (max-width: 370px) {
+    #board {
+        --cell-dim: 80px;
+        --board-dim: calc(calc(3*var(--cell-dim)) + calc(var(--gap) * 2)) * 0.75;
+        width: var(--board-dim);
+        height: var(--board-dim);
+    }
+    .board-cell {
+        width: var(--cell-dim);
+        height: var(--cell-dim);
+    }
 }
 
 .board-cell:hover {
@@ -194,9 +227,6 @@ CONTAINERS
 }
 
 .game-declared-over {
-    /* position: absolute;
-    top:calc(var(--header-height) + var(--header-margin));
-    left:50%; */
     position: absolute;
     top: calc(var(--header-height) + var(--header-margin));
     font-size: 3rem;
