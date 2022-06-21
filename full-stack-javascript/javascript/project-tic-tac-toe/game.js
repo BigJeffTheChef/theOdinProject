@@ -1,25 +1,40 @@
-// Declarations
+// global declarations
 const BOARD_SIZE = 3;
 const PLAYERS = 2;
 
-let gameOver = false;
 let players = [];
 
-let board = createBoard(BOARD_SIZE);
+let gameOver, boardArr, introElement, boardElement;
+
+// start game for first time
+start();
 
 /*
 
     INTRODUCTION
 
 */
-let intro = createIntro();
-document.querySelector('body').appendChild(intro);
+
+function start() {
+    gameOver = false;
+    const body = document.querySelector('body');
+
+    const boardOld  = document.querySelector('div.container-board');
+    if (boardOld !== null) body.removeChild(boardOld); 
+
+    const introOld = document.querySelector('div.container-intro');
+    if (introOld !== null) body.removeChild(introOld);
+
+    boardArr = createBoard(BOARD_SIZE);
+
+    introElement = createIntro();
+    document.querySelector('body').appendChild(introElement);
+}
 
 function createIntro() {
 
     const introp1 = createP('Hello, welcome to Tic-Tac-Toe. Get 3 in a line to win (horizontally, vertically or diagonally).');
     const introp2 = createP('Please enter the player names below');
-    console.log(introp1);
     const form = (() => {
         const form = document.createElement('form');
         form.classList.add('name-select-form');
@@ -40,20 +55,33 @@ function createIntro() {
             return label;
         }
     })();
-    const button = (() => {
+    const buttonPlayerNames = (() => {
         const btn = document.createElement('button');
         btn.classList.add('player-name-accept');
         btn.textContent = 'Play!';
         btn.addEventListener('click', processIntro);
         return btn;
     })();
+    // const buttonRestart = document.createElement('button');
+    // buttonRestart.classList.add('player-name-accept');
+    // buttonRestart.addEventListener('click', () => {
+    //     clearArray(winningCoords);
+    //     clearArray(players);
+    //     clearArray(board);
+    //     board = createBoard();
+    //     const body = document.querySelector('body');
+    //     body.removeChild(intro);
+        
+    // });
+    // containerIntro.appendChild(buttonRestart);
+
 
     const intro = document.createElement('div');
     intro.classList.add('intro');
     intro.appendChild(introp1);
     intro.appendChild(introp2);
     intro.appendChild(form);
-    intro.appendChild(button);
+    intro.appendChild(buttonPlayerNames);
 
     const containerIntro = document.createElement('div');
     containerIntro.classList.add('container-intro')
@@ -96,9 +124,7 @@ function validateName(nameToValidate) {
 }
 
 function prepareGame(p1Name, p2Name) {
-    console.log(`p1: ${p1Name} p2: ${p2Name}`);
     players = [new Player(1, p1Name, "X"), new Player(2, p2Name, "O")];
-    console.log(players);
     currentPlayer = players[0];
     const containerBoard = document.createElement('div');
     const insideContainer = document.createElement('div');
@@ -106,8 +132,16 @@ function prepareGame(p1Name, p2Name) {
     containerBoard.classList.add("container-board");
     insideContainer.id = "board";
     containerBoard.appendChild(insideContainer);
+
+    const buttonRestart = document.createElement('button');
+    buttonRestart.textContent = "Restart Game";
+    buttonRestart.classList.add('player-name-accept');
+    buttonRestart.id = 'restart-button';
+    buttonRestart.addEventListener('click', start);
+
+    containerBoard.appendChild(buttonRestart);
     body.appendChild(containerBoard);
-    displayBoard(board);
+    displayBoard(boardArr);
 }
 
 /*
@@ -115,6 +149,8 @@ function prepareGame(p1Name, p2Name) {
     RESTART
 
 */
+
+
 
 /*
 
@@ -199,7 +235,6 @@ function displayBoard(gameBoard) {
                     if (!gameOver) {
                         if (gameBoard[i][j] === null) {
                             gameBoard[i][j] = currentPlayer;
-                            console.log(gameBoard[i][j].getName());
                             cellDiv.classList.remove("empty");
                             cellDiv.textContent = currentPlayer.getSymbol();
                             checkWinner(gameBoard, boardDiv, i, j);
@@ -302,7 +337,6 @@ function checkWinner(gameBoard, boardDiv, row, col) {
 
     function processResult(winFound) {
         if (winFound) {
-            console.log(winningCoords);
             gameOver = true;
             for (let i = 0; i < boardDiv.childNodes.length; i++) {
                 const node = boardDiv.childNodes[i];
