@@ -45,7 +45,7 @@ function validateName(nameToValidate) {
 
 function prepareGame(p1Name, p2Name) {
     console.log(`p1: ${p1Name} p2: ${p2Name}`);
-    players = [player(1, p1Name, "X"), player(2, p2Name, "O")];
+    players = [new Player(1, p1Name, "X"), new Player(2, p2Name, "O")];
     console.log(players);
     currentPlayer = players[0];
     const containerBoard = document.createElement('div');
@@ -64,35 +64,53 @@ function prepareGame(p1Name, p2Name) {
 
 */
 
-/**
- * player factory
- * @param {Number} number 
- * @param {String} name 
- * @returns player object
- */
-let player = (number, name, symbol) => {
-    let obj = {};
-    obj.number = number;
-    obj.name = name;
-    obj.symbol = symbol;
+// /**
+//  * player factory
+//  * @param {Number} number 
+//  * @param {String} name 
+//  * @returns player object
+//  */
+// let player = (number, name, symbol) => {
+//     let obj = {};
+//     obj.number = number;
+//     obj.name = name;
+//     obj.symbol = symbol;
 
-    const getName = () => obj.name;
-    const setName = (newName) => obj.name = newName;
+//     const getName = () => obj.name;
+//     const setName = (newName) => obj.name = newName;
 
-    const getNumber = () => obj.number;
-    const setNumber = (newNumber) => obj.number = newNumber
+//     const getNumber = () => obj.number;
+//     const setNumber = (newNumber) => obj.number = newNumber;
 
-    const getSymbol = () => obj.symbol;
-    const setSymbol = (newSymbol) => obj.symbol = newSymbol;
+//     const getSymbol = () => obj.symbol;
+//     const setSymbol = (newSymbol) => obj.symbol = newSymbol;
 
-    return {
-        // name
-        getName, setName,
-        // number
-        getNumber, setNumber,
-        // symbol
-        getSymbol, setSymbol
-    };
+//     return {
+//         // name
+//         getName, setName,
+//         // number
+//         getNumber, setNumber,
+//         // symbol
+//         getSymbol, setSymbol
+//     };
+// }
+
+function Player(number, name, symbol) {
+    this.number = number;
+    this.name = name;
+    this.symbol = symbol;
+    Object.assign(this, playerMethods);
+}
+
+const playerMethods = {
+    getName() { return this.name},
+    setName(newName) {this.name = newName},
+
+    getNumber() {return this.number},
+    setNumber(newNumber) { this.number = batNumber},
+
+    getSymbol() {return this.symbol},
+    setSymbol(newSymbol) {this.symbol = newSymbol},
 }
 
 function createBoard(size) {
@@ -166,50 +184,62 @@ const clickSquare = function (gameBoard, boardDiv, cellDiv, i, j) {
 
 function checkWinner(gameBoard, boardDiv, row, col) {
     // check row
-    
-    function discernWinningNodes(row, col) {
-        // let value = ((row + 1)*3) + (col + 1);;
-        let rValue = BOARD_SIZE * row;
-        let cValue = col + 1;
-        let value = (rValue + cValue) - 1;
-        console.log(value);
-        return value;
+
+    function discernWinningNode(row, col) {
+        return (BOARD_SIZE * row) + (col + 1) - 1;
     }
-    
+
     let winFound = false;
     let winningCoords = [];
 
-    let rowCheck = 0;
-    if (!winFound) {
+    if (!winFound) checkLinear("row");
+    if (!winFound) checkLinear("column");
+    // if (!winFound) checkDiagonal("TL-BR");
+    // if (!winFound) checkDiagonal("BL-TR");
+
+    function checkLinear(direction) {
+        if (direction !== 'row' && direction !== 'column') {
+            return;
+        }
+        let check = 0;
         for (let i = 0; i < BOARD_SIZE; i++) {
-            if (gameBoard[row][i] !== null && gameBoard[row][i].getNumber() === currentPlayer.getNumber()) {
-                rowCheck++;
-                winningCoords.push(discernWinningNodes(row, i));
+            let position = (direction === 'row') ? gameBoard[row][i] : gameBoard[i][col];
+            if (position !== null && position.getNumber() === currentPlayer.getNumber()) {
+                check++;
+                winningCoords.push(discernWinningNode((direction === 'row') ? row : i, (direction === 'row') ? i : col));
             }
         }
-        if (rowCheck === BOARD_SIZE) {
+        if (check === BOARD_SIZE) {
             winFound = true;
         } else {
             winningCoords = [];
         }
     }
 
-    // check col
-    if (!winFound) {
-        let colCheck = 0;
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            if (gameBoard[i][col] !== null && gameBoard[i][col].getNumber() === currentPlayer.getNumber()) {
-                colCheck++;
-                winningCoords.push(discernWinningNodes(i, col));
+    function checkDiagonal(direction) {
+        if (direction !== 'TL-BR' && direction !== 'BL-TR') {
+            return;
+        }
+        let dr, dc;
+        dr = row;
+        dc = col;
+        while (dr > 0 && dc > 0) {
+            dr--;
+            dc--;
+        }
+        let diag1Check = 0;
+        for (let i = dr, j = dc; i < BOARD_SIZE && j < BOARD_SIZE; i++, j++) {
+            if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
+                diag1Check++;
+                winningCoords.push(discernWinningNode(i, j));
             }
         }
-        if (colCheck === BOARD_SIZE) {
+        if (diag1Check === BOARD_SIZE) {
             winFound = true;
         } else {
             winningCoords = [];
         }
     }
-
 
     // check diag 1 (Top Left > Bottom Right)
     if (!winFound) {
@@ -224,7 +254,7 @@ function checkWinner(gameBoard, boardDiv, row, col) {
         for (let i = dr, j = dc; i < BOARD_SIZE && j < BOARD_SIZE; i++, j++) {
             if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
                 diag1Check++;
-                winningCoords.push(discernWinningNodes(i, j));
+                winningCoords.push(discernWinningNode(i, j));
             }
         }
         if (diag1Check === BOARD_SIZE) {
@@ -247,7 +277,7 @@ function checkWinner(gameBoard, boardDiv, row, col) {
         for (let i = dr, j = dc; i >= 0 && j < BOARD_SIZE; i--, j++) {
             if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
                 diag2Check++;
-                winningCoords.push(discernWinningNodes(i, j));
+                winningCoords.push(discernWinningNode(i, j));
             }
         }
         if (diag2Check === BOARD_SIZE) {
