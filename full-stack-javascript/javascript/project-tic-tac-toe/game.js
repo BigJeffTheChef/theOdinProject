@@ -27,7 +27,7 @@ function processIntro(event) {
         setTimeout(() => {
             document.querySelector('body').removeChild(container);
             prepareGame(p1Name, p2Name);
-        }, 1000);
+        }, 500);
 
     }
 }
@@ -49,11 +49,11 @@ function prepareGame(p1Name, p2Name) {
     console.log(players);
     currentPlayer = players[0];
     const containerBoard = document.createElement('div');
-    const boardx = document.createElement('div');
+    const insideContainer = document.createElement('div');
     const body = document.querySelector('body');
     containerBoard.classList.add("container-board");
-    boardx.id = "board";
-    containerBoard.appendChild(boardx);
+    insideContainer.id = "board";
+    containerBoard.appendChild(insideContainer);
     body.appendChild(containerBoard);
     displayBoard(board);
 }
@@ -166,6 +166,16 @@ const clickSquare = function (gameBoard, boardDiv, cellDiv, i, j) {
 
 function checkWinner(gameBoard, boardDiv, row, col) {
     // check row
+    
+    function discernWinningNodes(row, col) {
+        // let value = ((row + 1)*3) + (col + 1);;
+        let rValue = BOARD_SIZE * row;
+        let cValue = col + 1;
+        let value = (rValue + cValue) - 1;
+        console.log(value);
+        return value;
+    }
+    
     let winFound = false;
     let winningCoords = [];
 
@@ -174,13 +184,13 @@ function checkWinner(gameBoard, boardDiv, row, col) {
         for (let i = 0; i < BOARD_SIZE; i++) {
             if (gameBoard[row][i] !== null && gameBoard[row][i].getNumber() === currentPlayer.getNumber()) {
                 rowCheck++;
+                winningCoords.push(discernWinningNodes(row, i));
             }
         }
         if (rowCheck === BOARD_SIZE) {
             winFound = true;
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                winningCoords.push([row, i]);
-            }
+        } else {
+            winningCoords = [];
         }
     }
 
@@ -190,13 +200,13 @@ function checkWinner(gameBoard, boardDiv, row, col) {
         for (let i = 0; i < BOARD_SIZE; i++) {
             if (gameBoard[i][col] !== null && gameBoard[i][col].getNumber() === currentPlayer.getNumber()) {
                 colCheck++;
+                winningCoords.push(discernWinningNodes(i, col));
             }
         }
         if (colCheck === BOARD_SIZE) {
             winFound = true;
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                winningCoords.push([i, col]);
-            }
+        } else {
+            winningCoords = [];
         }
     }
 
@@ -214,13 +224,13 @@ function checkWinner(gameBoard, boardDiv, row, col) {
         for (let i = dr, j = dc; i < BOARD_SIZE && j < BOARD_SIZE; i++, j++) {
             if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
                 diag1Check++;
+                winningCoords.push(discernWinningNodes(i, j));
             }
         }
         if (diag1Check === BOARD_SIZE) {
             winFound = true;
-            for (let i = dr, j = dc; i < BOARD_SIZE && j < BOARD_SIZE; i++, j++) {
-                winningCoords.push([i, j]);
-            }
+        } else {
+            winningCoords = [];
         }
     }
 
@@ -237,23 +247,30 @@ function checkWinner(gameBoard, boardDiv, row, col) {
         for (let i = dr, j = dc; i >= 0 && j < BOARD_SIZE; i--, j++) {
             if (gameBoard[i][j] !== null && gameBoard[i][j].getNumber() === currentPlayer.getNumber()) {
                 diag2Check++;
+                winningCoords.push(discernWinningNodes(i, j));
             }
         }
         if (diag2Check === BOARD_SIZE) {
             winFound = true;
-            for (let i = dr, j = dc; i >= 0 && j < BOARD_SIZE; i--, j++) {
-                winningCoords.push([i, j]);
-            }
+        } else {
+            winningCoords = [];
         }
     }
 
     if (winFound) {
+        console.log(winningCoords);
         gameOver = true;
         for (let i = 0; i < boardDiv.childNodes.length; i++) {
             const node = boardDiv.childNodes[i];
             node.classList.remove('empty');
-            node.classList.add('win-found');
-            if (node.textContent !== currentPlayer.getSymbol()) {
+            node.classList.add('game-over');
+            // if (node.textContent !== currentPlayer.getSymbol()) {
+            //     node.textContent = "";
+            // }
+            if (winningCoords.includes(i)) {
+                node.classList.add('winning-cell');
+            } else {
+                node.classList.add('win-found');
                 node.textContent = "";
             }
         }
@@ -273,6 +290,16 @@ function checkWinner(gameBoard, boardDiv, row, col) {
                 console.dir(node);
             }
         }
+    }
+    if (gameOver) {
+        const declareGameOver = document.createElement('div');
+        declareGameOver.classList.add('game-declared-over');
+        if (winFound) {
+            declareGameOver.textContent = currentPlayer.getName() + " wins!";
+        } else {
+            declareGameOver.textContent = "Draw!";
+        }
+        document.querySelector('#board').appendChild(declareGameOver);
     }
 }
 

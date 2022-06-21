@@ -62,8 +62,7 @@ CONTAINERS
     align-items: center;
     height: var(--body-height);
     transition: 1s;
-    top:30%;
-    left: 30%;
+    position: relative;
 }
 
 .intro {
@@ -187,6 +186,20 @@ CONTAINERS
 
 .winning-cell {
     background-color: var(--color-cell-winning-cell);
+}
+
+.winning-cell:hover,
+.win-found:hover {
+    background-color: var(--color-medium);
+}
+
+.game-declared-over {
+    /* position: absolute;
+    top:calc(var(--header-height) + var(--header-margin));
+    left:50%; */
+    position: absolute;
+    top: calc(var(--header-height) + var(--header-margin));
+    font-size: 3rem;
 }
 
 /* HIDDEN NODES */
