@@ -1,0 +1,11 @@
+@font-face {
+    font-family: fonto;
+    src: url('./font.ttf');
+}
+
+.hello {
+    color: red;
+    background: url('./icon.png');
+    font-family: fonto;
+    height: 250px;
+}
