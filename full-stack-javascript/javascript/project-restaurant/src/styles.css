@@ -1,0 +1,41 @@
+* {
+    outline: 1px solid black;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0px;
+    margin: 10px 25px;
+} 
+
+.body-nav {
+    background-color: aqua;
+    display: grid;
+    grid-auto-rows: 1fr;
+}
+
+.body-main {
+    background-color: blueviolet;
+    color: white;
+}
+
+.header {
+    background-color: goldenrod;
+}
+
+.body {
+    display: grid;
+    grid-template: 1fr/ 1fr 6fr;
+}
+
+.nav-button {
+    background-color: white;
+    border-radius: 10px;
+    margin: 5px 10px;
+    border: 0px;
+}
+
+.nav-button:hover {
+    background-color: grey;
+    color: white;
+}
