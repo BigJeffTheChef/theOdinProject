@@ -1,0 +1,25 @@
+.dark {
+    --c1: #261c2c;
+    --c2: #3e2c41;
+    --c3: #5c527f;
+    --c4: #6e85b2;
+
+    --text-1:white;
+    --text-2: black;
+}
+
+.light {
+    --c1: #f4f9f9;
+    --c2: #ccf2f4;
+    --c3: #a4ebf3;
+    --c4: #AAAAAA;
+
+    --text-1: black;
+    --text-2: white;
+}
+
+* {
+    padding: 0px;
+    margin: 0px;
+    /* outline: red solid 1px; */
+}
