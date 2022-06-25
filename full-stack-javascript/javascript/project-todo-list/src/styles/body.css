@@ -1,4 +1,43 @@
 .body {
+    /* set in dom.js */
+    --nav-width: 0px;
+    --nav-width-offset: 0px;
+
+    /* --menu-transition: 0.2s cubic-bezier(.6,.04,.98,.34); */
+    --menu-transition: 1s ease-in-out;
+    --content-transition: 0.8s ease-in-out;
     display: grid;
     grid-template: 1fr/ 1fr 6fr;
+    position: relative;
+}
+
+.nav {
+    background-color: var(--bg-color-2);
+    border-radius: var(--border-rad);
+    padding: 5px 10px;
+    position: relative;
+    transition: transform var(--menu-transition),
+        color var(--color-transition-time),
+        background-color var(--color-transition-time);
+}
+
+.nav-off {
+    position: relative;
+    transform: translateX(var(--nav-width-offset));
+}
+
+.content {
+    margin: 0px 5px;
+    transition: transform var(--content-transition);
+}
+
+.content.nav-gone {
+    transform: translateX(var(--nav-width));
+}
+
+@media only screen and (max-width: 320px) {
+    .content {
+        grid-template:
+            1fr / 1fr;
+    }
 }

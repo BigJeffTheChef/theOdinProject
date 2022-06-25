@@ -1,7 +1,8 @@
-import './styles/global.css';   // global vars, fonts, resets
-import './styles/main.css';     // main container
-import './styles/header.css';   // header container
-import './styles/body.css';     // body container
-import './styles/nav.css';      // nav container
-import './styles/content.css';  // content container
+import './styles/global.css';
+import './styles/header.css';
+import './styles/body.css';
+import {setThemeToggle} from './dom.js';
+
+// setThemeToggle();
+
 

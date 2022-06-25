@@ -41,3 +41,51 @@
 .header-body>span {
     margin: 5px;
 }
+
+button.hamburger {
+    background-image: var(--burger-icon);
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: var(--accent);
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--bg-color-1);
+    margin: 0px 10px;
+    border-radius: 5px;
+    padding: 5px;
+    transition: 0.3s cubic-bezier(.61,-0.37,.54,1.78);
+}
+
+button.hamburger:hover {
+    background-color: var(--bg-color-3);
+    transform: scale(1.5);
+}
+
+img.hamburger {
+    width: 20px;
+    height: 20px;
+}
+
+.change-theme {
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.change-theme>div {
+    background-image: var(--theme-icon);
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 10px;
+    height: 10px;
+    border: 0px;
+
+    border-radius: 5px;
+    padding: 5px;
+    transition: 0.3s cubic-bezier(.61,-0.37,.54,1.78);
+
+
+}

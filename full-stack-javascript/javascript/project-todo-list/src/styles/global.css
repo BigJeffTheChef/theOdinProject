@@ -2,6 +2,14 @@
     --margin-left: 10px;
     --margin-right: 10px;
     --border-rad: 10px;
+    --color-transition-time: 1s;
+}
+
+* {
+    padding: 0px;
+    margin: 0px;
+    transition: color var(--color-transition-time),
+        background-color var(--color-transition-time);
 }
 
 .dark {
@@ -12,6 +20,8 @@
 
     --text-1: white;
     --text-2: black;
+    --burger-icon: url('../img/menu-light.png');
+    --theme-icon: url('../img/sun.png');
 }
 
 .light {
@@ -22,6 +32,8 @@
 
     --text-1: black;
     --text-2: white;
+    --burger-icon: url('../img/menu-dark.png');
+    --theme-icon: url('../img/moon.png');
 }
 
 @font-face {
@@ -34,14 +46,23 @@
     src: url('../fonts/BungeeShade-Regular.ttf');
 }
 
-* {
-    padding: 0px;
-    margin: 0px;
-}
+
 
 body {
     background-color: var(--bg-color-1);
     color: var(--text-1);
     padding: 0px;
     margin: 0px;
+
+}
+
+.main {
+    display: flex;
+    flex-flow: column nowrap;
+    margin-left: var(--margin-left);
+    margin-right: var(--margin-right);
+}
+
+.hidden {
+    display: none;
 }

@@ -9,40 +9,30 @@
 </head>
 
 <body id="theme" class="light">
-    <button class="change-theme">Theme</button>
-    <script>
-        let btn = document.querySelector('.change-theme');
-        btn.addEventListener('click', () => {
-            let theme = document.querySelector('#theme');
-            if (theme.classList.contains('light')) {
-                theme.classList.remove('light');
-                theme.classList.add('dark');
-            } else {
-                theme.classList.remove('dark');
-                theme.classList.add('light');
-            }
-        });
-    </script>
-    
+
     <!-- MAIN -->
     <div class="main">
 
         <!-- HEADER  -->
         <div class="header">
+            <div class="header-body">
+                <button class="hamburger"></button>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+            </div>
+            <div class="change-theme">
+                <div></div>
+            </div>
             <div class="header-title">
                 <span>
                     TooDoo
                 </span>
-            </div>
-            <div class="header-body">
-                <span>header</span>
-                <span>header</span>
-                <span>header</span>
-                <span>header</span>
-                <span>header</span>
-                <span>header</span>
-                <span>header</span>
-                <span>header</span>
             </div>
         </div>
 
@@ -51,7 +41,9 @@
 
             <!-- NAV -->
             <div class="nav">
+                <!-- <div class="nav-buttons"> -->
                 nav nav nav nav nav nav nav nav nav nav nav nav
+                <!-- </div> -->
             </div>
 
             <!-- CONTENT -->
