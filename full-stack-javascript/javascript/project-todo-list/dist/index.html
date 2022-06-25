@@ -8,29 +8,59 @@
     <title>TooDoo</title>
 </head>
 
-<body class="light">
+<body id="theme" class="light">
+    <button class="change-theme">Theme</button>
+    <script>
+        let btn = document.querySelector('.change-theme');
+        btn.addEventListener('click', () => {
+            let theme = document.querySelector('#theme');
+            if (theme.classList.contains('light')) {
+                theme.classList.remove('light');
+                theme.classList.add('dark');
+            } else {
+                theme.classList.remove('dark');
+                theme.classList.add('light');
+            }
+        });
+    </script>
     
-
-    <div class="main">   
+    <!-- MAIN -->
+    <div class="main">
 
         <!-- HEADER  -->
         <div class="header">
-            <div class="title">TooDoo</div>
-            <div>
-                headerheaderheaderheaderheaderheaderheaderheaderheaderheader
+            <div class="header-title">
+                <span>
+                    TooDoo
+                </span>
+            </div>
+            <div class="header-body">
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
+                <span>header</span>
             </div>
         </div>
 
-        <!-- NAV -->
-        <div class="nav">
-            nav nav nav nav nav nav nav nav nav nav nav nav
+        <!-- BODY -->
+        <div class="body">
+
+            <!-- NAV -->
+            <div class="nav">
+                nav nav nav nav nav nav nav nav nav nav nav nav
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+                bodybodybodybodybodybodybodybodybodybodybodybodybody
+            </div>
+
         </div>
 
-        <!-- CONTENT -->
-        <div class="content">
-            bodybodybodybodybodybodybodybodybodybodybodybodybody
-        </div>
-        
     </div>
     <script src="main.js"></script>
 </body>

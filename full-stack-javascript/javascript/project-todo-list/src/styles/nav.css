@@ -1,0 +1,5 @@
+.nav {
+    background-color: var(--bg-color-2);
+    border-radius: var(--border-rad);
+    padding: 5px 10px;
+}

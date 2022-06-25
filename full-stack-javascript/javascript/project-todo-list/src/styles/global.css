@@ -1,25 +1,47 @@
-.dark {
-    --c1: #261c2c;
-    --c2: #3e2c41;
-    --c3: #5c527f;
-    --c4: #6e85b2;
+:root {
+    --margin-left: 10px;
+    --margin-right: 10px;
+    --border-rad: 10px;
+}
 
-    --text-1:white;
+.dark {
+    --bg-color-1: #261c2c;
+    --bg-color-2: #3e2c41;
+    --bg-color-3: #5c527f;
+    --accent: #6e85b2;
+
+    --text-1: white;
     --text-2: black;
 }
 
 .light {
-    --c1: #f4f9f9;
-    --c2: #ccf2f4;
-    --c3: #a4ebf3;
-    --c4: #AAAAAA;
+    --bg-color-1: #f4f9f9;
+    --bg-color-2: #ccf2f4;
+    --bg-color-3: #AAAAAA;
+    --accent: #a4ebf3;
 
     --text-1: black;
     --text-2: white;
 }
 
+@font-face {
+    font-family: alfa;
+    src: url('../fonts/AlfaSlabOne-Regular.ttf');
+}
+
+@font-face {
+    font-family: bungee;
+    src: url('../fonts/BungeeShade-Regular.ttf');
+}
+
 * {
     padding: 0px;
     margin: 0px;
-    /* outline: red solid 1px; */
+}
+
+body {
+    background-color: var(--bg-color-1);
+    color: var(--text-1);
+    padding: 0px;
+    margin: 0px;
 }
