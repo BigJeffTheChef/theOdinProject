@@ -1,13 +1,17 @@
 .body {
-    /* set in dom.js */
-    --nav-width: 0px;
-    --nav-width-offset: 0px;
+    /* 
+    two custom properties that are set dynamically based 
+    on the computed width of the nav element.
 
-    /* --menu-transition: 0.2s cubic-bezier(.6,.04,.98,.34); */
+    --nav-width: ?;
+    --nav-width-offset: ?; 
+    */
+
     --menu-transition: 1s ease-in-out;
     --content-transition: 0.8s ease-in-out;
     display: grid;
-    grid-template: 1fr/ 1fr 6fr;
+    /* grid-template: 1fr/ 130px 6fr; */
+    grid-template: 1fr/ 130px minmax(100px, 6fr);
     position: relative;
 }
 
@@ -19,6 +23,11 @@
     transition: transform var(--menu-transition),
         color var(--color-transition-time),
         background-color var(--color-transition-time);
+    width: 111px;
+}
+
+.nav>ul {
+    list-style: none;
 }
 
 .nav-off {
@@ -29,6 +38,7 @@
 .content {
     margin: 0px 5px;
     transition: transform var(--content-transition);
+    overflow-wrap: break-word;
 }
 
 .content.nav-gone {

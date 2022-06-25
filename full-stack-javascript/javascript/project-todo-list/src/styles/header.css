@@ -8,9 +8,12 @@
     height: 4rem;
 
     margin-bottom: 5px;
+    margin-top: 5px;
 
     border-radius: var(--border-rad);
     background-color: var(--bg-color-2);
+
+    font-size: 1.2rem;
 }
 
 .header-title {

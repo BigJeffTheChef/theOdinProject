@@ -1,12 +1,43 @@
-let menuBtn = document.querySelector('button.hamburger');
 
-(function setup() {
+// elements obj via IIFE
+let elements = (function () {
+    let menuBtn = document.querySelector('button.hamburger');
+    let nav = document.querySelector('.nav');
+    let content = document.querySelector('.content')
+    let themeBtn = document.querySelector('.change-theme');
+    return {
+        menuBtn, nav, content, themeBtn
+    }
+})();
+
+// page initialisation
+(function initialize() {
+
     setNavWidthVar();
     setThemeChangeEvent();
+    setMenuButtonEvent();
+
+    function setMenuButtonEvent() {
+        elements.menuBtn.addEventListener('click', () => {
+            const hideSelector = 'nav-off';
+            if (elements.nav.classList.contains(hideSelector)) {
+                elements.nav.classList.remove(hideSelector);
+                setTimeout(() => {
+                    elements.nav.classList.remove('nav-gone');
+                    elements.content.classList.remove('nav-gone');
+                }, 100);
+            } else {
+                elements.nav.classList.add(hideSelector);
+                setTimeout(() => {
+                    elements.nav.classList.add('nav-gone');
+                    elements.content.classList.add('nav-gone');
+                }, 100);
+            }
+        });
+    }
 
     function setThemeChangeEvent() {
-        let btn = document.querySelector('.change-theme');
-        btn.addEventListener('click', () => {
+        elements.themeBtn.addEventListener('click', () => {
             let theme = document.querySelector('#theme');
             if (theme.classList.contains('light')) {
                 theme.classList.remove('light');
@@ -25,31 +56,8 @@ let menuBtn = document.querySelector('button.hamburger');
     }
 })();
 
-let elements = (function () {
-    let menuBtn = document.querySelector('button.hamburger');
-    let nav = document.querySelector('.nav');
-    let content = document.querySelector('.content')
-    return {
-        menuBtn, nav, content
-    }
-})();
 
 
 
 
-menuBtn.addEventListener('click', () => {
-    const hideSelector = 'nav-off';
-    if (elements.nav.classList.contains(hideSelector)) {
-        elements.nav.classList.remove(hideSelector);
-        setTimeout(() => {
-            elements.nav.classList.remove('nav-gone');
-            elements.content.classList.remove('nav-gone');
-        }, 100);
-    } else {
-        elements.nav.classList.add(hideSelector);
-        setTimeout(() => {
-            elements.nav.classList.add('nav-gone');
-            elements.content.classList.add('nav-gone');
-        }, 100);
-    }
-});
+
