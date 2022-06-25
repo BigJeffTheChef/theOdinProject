@@ -1,6 +1,6 @@
 :root {
-    --margin-left: 10px;
-    --margin-right: 10px;
+    --margin-left: 100px;
+    --margin-right: 100px;
     --border-rad: 10px;
     --color-transition-time: 1s;
     font-size: 10pt;
@@ -54,14 +54,23 @@ body {
     color: var(--text-1);
     padding: 0px;
     margin: 0px;
-
+    display: flex;
+    justify-content: center;
 }
 
 .main {
     display: flex;
     flex-flow: column nowrap;
-    margin-left: var(--margin-left);
-    margin-right: var(--margin-right);
+    /* margin-left: var(--margin-left);
+    margin-right: var(--margin-right); */
+    margin: 0px auto;
+    max-width: 600px;
+}
+
+@media only screen and (max-width: 500px) {
+    .main {
+        margin: 0px var(--margin-left);
+    }
 }
 
 .hidden {

@@ -39,10 +39,15 @@
     margin: 0px 5px;
     transition: transform var(--content-transition);
     overflow-wrap: break-word;
+    /* grid-column: 2 / 3;
+    grid-row: 1 / -1;
+    transition: grid-column var(--menu-transition); */
 }
 
 .content.nav-gone {
     transform: translateX(var(--nav-width));
+    /* grid-column: 1 / 3; */
+    width: 95vw; /* bit of a hack, dinnae like it */
 }
 
 @media only screen and (max-width: 320px) {
