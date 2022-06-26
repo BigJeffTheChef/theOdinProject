@@ -29,7 +29,10 @@ let elements = (function () {
 
     function setMenuPosition() {
         elements.nav.style['top'] = (elements.header.offsetHeight) + 'px';
-        elements.nav.style['left'] = '5px';
+        elements.nav.style['left'] = '10px';
+        setTimeout(() => {
+            elements.nav.classList.remove('hidden');
+        },200)
     }
 
     function setMenuButtonEvent() {

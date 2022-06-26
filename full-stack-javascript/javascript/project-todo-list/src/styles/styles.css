@@ -142,7 +142,7 @@ button.hamburger {
     margin: 0px 10px;
     padding: 5px;
 
-    transition: 0.3s cubic-bezier(.61, -0.37, .54, 1.78);
+    transition: transform 0.3s cubic-bezier(.61, -0.37, .54, 1.78);
     transform-origin: center;
 }
 
@@ -205,6 +205,7 @@ button.hamburger:hover {
 }
 
 .nav {
+    
     position: absolute;
     overflow: hidden;
     /* top: set in dom.js */
@@ -215,15 +216,27 @@ button.hamburger:hover {
 
     padding: 5px 10px;
 
+    /*
+    Nav is hidden upon loading and dom.js removes .hidden class
+    after 200ms (corresponding to the transition time). this stops
+    the nav transforming to scale(0) after loading, which shows
+    the nav briefly
+    */
     transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
-    transform: scale(0);
+    transform: scaleY(0);
     transform-origin: top center;
 }
 
 .nav-open {
-    transform: scale(1);
+    display: inline;
+    transform: scaleY(1);
 }
 
 .nav>ul {
     list-style: none;
+}
+
+/* HIDDEN */
+.hidden {
+    display: none;
 }
