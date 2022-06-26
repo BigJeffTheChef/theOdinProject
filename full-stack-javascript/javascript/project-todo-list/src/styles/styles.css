@@ -14,13 +14,14 @@
     --burger-icon: url('../img/menu-dark.png');
     --theme-icon: url('../img/moon.png');
 
+    --theme-transition-speed: 1s;
 }
 
 * {
     padding: 0px;
     margin: 0px;
-    transition: color 1s,
-        background-color 1s;
+    transition: color var(--theme-transition-speed),
+        background-color var(--theme-transition-speed);
 
 }
 
@@ -53,6 +54,7 @@
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
 
     background-color: var(--bg-color-1);
@@ -61,11 +63,14 @@ body {
     padding: 0px;
     margin: 0px;
     width: 100vw;
+    height: 100%;
 }
 
 .main {
-    margin: 0 var(--margin-main);
-    max-width: 600px;
+    display: flex;
+    justify-content: center;
+
+    /* margin: 0 var(--margin-main); */
 }
 
 
@@ -74,15 +79,15 @@ body {
 .header {
     display: flex;
     position: sticky;
-    top: 5px;
+    top: 0px;
 
-    border-radius: var(--border-rad);
+    /* border-radius: var(--border-rad); */
     background-color: var(--bg-color-2);
     height: 3rem;
     font-size: 1.2rem;
 
     margin-bottom: 5px;
-    margin-top: 5px;
+    /* margin-top: 5px; */
 }
 
 .header-title {
@@ -96,6 +101,10 @@ body {
     text-shadow: 2px 2px 4px black;
 
     padding: 10px;
+}
+
+.header-title>span>.big {
+    font-size: 1.5rem;
 }
 
 .header-title>span {
@@ -125,7 +134,9 @@ button.hamburger {
     background-repeat: no-repeat;
     background-position: center;
     background-color: var(--accent);
-    border: 0px/* solid var(--bg-color-1)*/;
+    border: 0px
+        /* solid var(--bg-color-1)*/
+    ;
     border-radius: 5px;
 
     margin: 0px 10px;
@@ -179,10 +190,18 @@ button.hamburger:hover {
     overflow: hidden;
     background-color: var(--bg-color-3);
     border-radius: 5px;
-
+    max-width: 600px;
     padding: 5px 10px;
 
-    transition: transform var(--content-transition);
+    transition: color var(--theme-transition-speed),
+        background-color var(--theme-transition-speed),
+        transform var(--theme-transition-speed);
+}
+
+@media only screen and (max-width: 800px) {
+    .content {
+        margin: 0 10px;
+    }
 }
 
 .nav {
@@ -192,13 +211,13 @@ button.hamburger:hover {
 
     min-width: 100px;
     background-color: var(--bg-color-2);
-    border-radius: var(--border-rad);
+    border-radius: 0px 0px 5px 5px;
 
     padding: 5px 10px;
 
     transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
     transform: scale(0);
-    transform-origin: top left;
+    transform-origin: top center;
 }
 
 .nav-open {
