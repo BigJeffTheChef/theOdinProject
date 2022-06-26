@@ -40,24 +40,24 @@ class ToDo {
     };
 }
 
-console.group('object testing');
-let testObj = new ToDo('test title');
-console.log(testObj.toString());
-let testObj2 = new ToDo('test title 2');
-console.log(testObj2.toString());
-let testObj3 = new ToDo();
-console.log(testObj3.toString());
-testObj3.title = "dogs n stuff";
-console.log(testObj3.toString());
-console.log(ToDo.MAX_PRIORITY);
-console.log(testObj3);
-console.log(testObj3.constructor.PRIORITIES);   // can access static properties
-// from instance constructor
-console.log(testObj3.title);
-try {
-    testObj3.title = "     ";
-} catch (err) {
-    console.log(err);
-}
-console.log(testObj3.title);
-console.groupEnd('object testing');
+// console.group('object testing');
+// let testObj = new ToDo('test title');
+// console.log(testObj.toString());
+// let testObj2 = new ToDo('test title 2');
+// console.log(testObj2.toString());
+// let testObj3 = new ToDo();
+// console.log(testObj3.toString());
+// testObj3.title = "dogs n stuff";
+// console.log(testObj3.toString());
+// console.log(ToDo.MAX_PRIORITY);
+// console.log(testObj3);
+// console.log(testObj3.constructor.PRIORITIES);   // can access static properties
+// // from instance constructor
+// console.log(testObj3.title);
+// try {
+//     testObj3.title = "     ";
+// } catch (err) {
+//     console.log(err);
+// }
+// console.log(testObj3.title);
+// console.groupEnd('object testing');

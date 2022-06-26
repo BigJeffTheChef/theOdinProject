@@ -1,14 +1,19 @@
 
-// elements obj via IIFE
+// elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
     let menuBtn = document.querySelector('button.hamburger');
+    let themeBtn = document.querySelector('.change-theme');
+    let body = document.querySelector('body');
+    let header = document.querySelector('.header');
     let nav = document.querySelector('.nav');
     let content = document.querySelector('.content')
-    let themeBtn = document.querySelector('.change-theme');
-    let theme = document.querySelector('#theme');
-    let header = document.querySelector('.header');
     return {
-        menuBtn, nav, content, themeBtn, theme, header
+        menuBtn,
+        themeBtn,
+        body,
+        header,
+        nav,
+        content,
     }
 })();
 
@@ -16,8 +21,9 @@ let elements = (function () {
 (function initialize() {
 
     // setNavWidthVar();
-    setThemeChangeEvent();
     // setMenuButtonEvent();
+
+    setThemeChangeEvent();
     setMenuButtonEvent();
     setMenuPosition();
 
@@ -38,18 +44,9 @@ let elements = (function () {
 
     function setThemeChangeEvent() {
         elements.themeBtn.addEventListener('click', () => {
-            elements.theme.classList.toggle('dark');
-            // if (theme.classList.contains('light')) {
-            //     theme.classList.remove('light');
-            //     theme.classList.toggle('dark');
-            // } else {
-            //     theme.classList.remove('dark');
-            //     theme.classList.add('light');
-            // }
+            elements.body.classList.toggle('dark');
         });
     }
-
-
 })();
 
 
