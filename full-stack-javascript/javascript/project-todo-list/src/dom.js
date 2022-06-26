@@ -5,59 +5,80 @@ let elements = (function () {
     let nav = document.querySelector('.nav');
     let content = document.querySelector('.content')
     let themeBtn = document.querySelector('.change-theme');
+    let theme = document.querySelector('#theme');
+    let header = document.querySelector('.header');
     return {
-        menuBtn, nav, content, themeBtn
+        menuBtn, nav, content, themeBtn, theme, header
     }
 })();
 
 // page initialisation
 (function initialize() {
 
-    setNavWidthVar();
+    // setNavWidthVar();
     setThemeChangeEvent();
+    // setMenuButtonEvent();
     setMenuButtonEvent();
+    setMenuPosition();
+
+    function setMenuPosition() {
+        elements.nav.style['top'] = (elements.header.offsetHeight + 5) + 'px';
+    }
 
     function setMenuButtonEvent() {
         elements.menuBtn.addEventListener('click', () => {
-            const hideSelector = 'nav-off';
-            if (elements.nav.classList.contains(hideSelector)) {
-                elements.nav.classList.remove(hideSelector);
-                setTimeout(() => {
-                    elements.nav.classList.remove('nav-gone');
-                    elements.content.classList.remove('nav-gone');
-                }, 100);
+            const showSelector = 'nav-open';
+            if (elements.nav.classList.contains(showSelector)) {
+                elements.nav.classList.remove(showSelector);
             } else {
-                elements.nav.classList.add(hideSelector);
-                setTimeout(() => {
-                    elements.nav.classList.add('nav-gone');
-                    elements.content.classList.add('nav-gone');
-                }, 100);
+                elements.nav.classList.add(showSelector);
             }
         });
     }
 
     function setThemeChangeEvent() {
         elements.themeBtn.addEventListener('click', () => {
-            let theme = document.querySelector('#theme');
-            if (theme.classList.contains('light')) {
-                theme.classList.remove('light');
-                theme.classList.add('dark');
-            } else {
-                theme.classList.remove('dark');
-                theme.classList.add('light');
-            }
+            elements.theme.classList.toggle('dark');
+            // if (theme.classList.contains('light')) {
+            //     theme.classList.remove('light');
+            //     theme.classList.toggle('dark');
+            // } else {
+            //     theme.classList.remove('dark');
+            //     theme.classList.add('light');
+            // }
         });
     }
 
-    function setNavWidthVar() {
-        let x = document.querySelector('.body');
-        x.style.setProperty('--nav-width', '-125px');
-        x.style.setProperty('--nav-width-offset', '-150px');
-    }
+
 })();
 
 
 
 
+// function setMenuButtonEvent() {
+//     elements.menuBtn.addEventListener('click', () => {
+//         const hideSelector = 'nav-off';
+//         const hiddenSelector = 'nav-gone';
+//         if (elements.nav.classList.contains(hideSelector)) {
+//             elements.nav.classList.remove(hideSelector);
+//             elements.nav.classList.remove(hiddenSelector);
 
+//             setTimeout(() => {
+//                 // elements.content.classList.remove('nav-gone');
+//             }, 1000);
+//         } else {
+//             elements.nav.classList.add(hideSelector);
+//             elements.nav.classList.add(hiddenSelector);
+//             // setTimeout(() => {
+//             //     elements.nav.classList.add(hiddenSelector);
+//             //     // elements.content.classList.add('nav-gone');
+//             // }, 1000);
+//         }
+//     });
+// }
 
+// function setNavWidthVar() {
+//     let x = document.querySelector('.body');
+//     x.style.setProperty('--nav-width', '-125px');
+//     x.style.setProperty('--nav-width-offset', '-150px');
+// }

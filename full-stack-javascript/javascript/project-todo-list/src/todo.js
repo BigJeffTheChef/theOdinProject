@@ -18,12 +18,9 @@ class ToDo {
 
     get title() { return this._title };
     set title(newTitle) {
-        // try {
-            if (newTitle.length === 0) throw 'ERROR: title may not be empty';
-            this._title = newTitle
-        // } catch (err) {
-        //     console.log(err);
-        // }
+        if (newTitle.length === 0) throw 'ERROR: ToDo title may not be empty';
+        if (newTitle.match(/^\s+$/)) throw 'ERROR: ToDo title may not be blank (whitespace only)';
+        this._title = newTitle
     };
 
     get description() { return this._description };
@@ -58,7 +55,7 @@ console.log(testObj3.constructor.PRIORITIES);   // can access static properties
 // from instance constructor
 console.log(testObj3.title);
 try {
-    testObj3.title = "";
+    testObj3.title = "     ";
 } catch (err) {
     console.log(err);
 }
