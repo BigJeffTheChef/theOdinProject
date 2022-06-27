@@ -31,16 +31,16 @@ class ToDo {
         this._title = newTitle
     };
 
-    get description() { return this._description };
-    set description(newDesc) { this._description = newDesc };
+    get description() { return this.#description };
+    set description(newDesc) { this.#description = newDesc };
 
-    get dueDate() { return this._dueDate };
-    set dueDate(newDueDate) { this._dueDate = newDueDate };
+    get dueDate() { return this.#dueDate };
+    set dueDate(newDueDate) { this.#dueDate = newDueDate };
 
-    get priority() { return this._priority };
+    get priority() { return this.#priority };
     set priority(newPriority) {
         if (newPriority >= MIN_PRIORITY && newPriority <= MAX_PRIORITY) {
-            this._priority = newPriority
+            this.#priority = newPriority
         }
     };
 
@@ -61,10 +61,10 @@ class ToDoCheckList extends ToDo {
 
     /**
      * 
-     * @param {String} title 
-     * @param {String} description 
-     * @param {Date} dueDate 
-     * @param {Number} priority 
+     * @param {string} title 
+     * @param {string} description 
+     * @param {date} dueDate 
+     * @param {number} priority 
      */
     constructor(title, description, dueDate, priority) {
         super(title, description, dueDate, priority);
@@ -72,6 +72,20 @@ class ToDoCheckList extends ToDo {
     }
 
     get checklist() { return this._checklist }
+
+    /**
+     * Remove a checklist item
+     * @param {string} item 
+     * @returns true if found (and removed), false if not found (and not removed).
+     */
+    removeItem(item) {
+        const index = this.#checklist.indexOf(item);
+        if (index !== -1) {
+            this.#checklist.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 
@@ -105,86 +119,96 @@ class ToDoCheckList extends ToDo {
      * @returns A String representation of this ToDoChecklist object
      */
     toString() {
-        let superStr = super.toString();
+        let str = super.toString();
         if (this.#checklist.length > 0) {
-            superStr += '\nChecklist:\n'
+            str += '\nChecklist:\n'
         }
         for (let listItem of this.#checklist) {
-            superStr += listItem[0] + ' (Complete? ' + listItem[1] + ')\n';
+            str += listItem[0] + ' (Complete? ' + listItem[1] + ')\n';
         }
-        return superStr;
+        return str;
     }
 
 }
 
-// console.group('ToDo testing');
-// let testObj = new ToDo('test title');
-// console.log(testObj.toString());
-// let testObj2 = new ToDo('test title 2');
-// console.log(testObj2.toString());
-// let testObj3 = new ToDo();
-// console.log(testObj3.toString());
-// testObj3.title = "dogs n stuff";
-// console.log(testObj3.toString());
-// console.log(ToDo.MAX_PRIORITY);
-// console.log(testObj3);
-// console.log(testObj3.constructor.PRIORITIES);   // can access static properties
-// // from instance constructor
-// console.log(testObj3.title);
-// try {
-//     testObj3.title = "     ";
-// } catch (err) {
-//     console.log(err);
-// }
-// console.log(testObj3.title);
-// console.groupEnd('ToDo testing');
+testing_ToDo();
+testing_ToDoChecklist();
 
-// console.group('ToDoChecklist testing');
+function testing_ToDo() {
+    console.group('ToDo testing');
 
-// let c1 = new ToDoCheckList('test checklist', 'test description', 'some day', 1);
+    let testObj = new ToDo('test title');
+    console.log(testObj.toString());
+    let testObj2 = new ToDo('test title 2');
+    console.log(testObj2.toString());
+    let testObj3 = new ToDo();
+    console.log(testObj3.toString());
+    testObj3.title = "dogs n stuff";
+    console.log(testObj3.toString());
+    console.log(ToDo.MAX_PRIORITY);
+    console.log(testObj3);
+    console.log(testObj3.constructor.PRIORITIES);   // can access static properties
+    // from instance constructor
+    console.log(testObj3.title);
+    try {
+        testObj3.title = "     ";
+    } catch (err) {
+        console.log(err);
+    }
+    console.log(testObj3.title);
+    console.groupEnd('ToDo testing');
+}
 
-// console.log(c1.toString());
+function testing_ToDoChecklist() {
+    console.group('ToDoChecklist testing');
+    let c1 = new ToDoCheckList('test checklist', 'test description', 'some day', 1);
 
-// c1.addItem('a new list item', false);
+    console.log(c1.toString());
+    const item1 = 'a new list item';
+    c1.addItem(item1, false);
 
-// console.log(c1.toString());
+    console.log(c1.toString());
 
-// c1.addItem('another new list item', true);
-// console.log(c1.toString());
+    c1.addItem('another new list item', true);
+    console.log(c1.toString());
 
-// try {
-//     c1.addItem('', true);
-// } catch (err) {
-//     console.log(err);
-// }
+    try {
+        c1.addItem('', true);
+    } catch (err) {
+        console.log("empty item str: " + err);
+    }
 
-// try {
-//     c1.addItem('    \n', true);
-// } catch (err) {
-//     console.log(err);
-// }
+    try {
+        c1.addItem('    \n', true);
+    } catch (err) {
+        console.log("whitespace only item str 1: " + err);
+    }
 
-// try {
-//     c1.addItem('                      ', true);
-// } catch (err) {
-//     console.log(err);
-// }
+    try {
+        c1.addItem('                      ', true);
+    } catch (err) {
+        console.log("whitespace only item str 2: " + err);
+    }
 
-// try {
-//     c1.addItem('x', 'yo');
-// } catch (err) {
-//     console.log(err);
-// }
+    try {
+        c1.addItem('x', 'yo');
+    } catch (err) {
+        console.log("non-boolean complete 1: " + err);
+    }
 
-// try {
-//     c1.addItem('x', null);
-// } catch (err) {
-//     console.log(err);
-// }
+    try {
+        c1.addItem('x', null);
+    } catch (err) {
+        console.log("non-boolean complete 2: " + err);
+    }
 
-// try {
-//     c1.addItem('x', undefined);
-// } catch (err) {
-//     console.log(err);
-// }
-// console.groupEnd('ToDoChecklist testing');
+    try {
+        c1.addItem('x', undefined);
+    } catch (err) {
+        console.log("non-boolean complete 3: " + err);
+    }
+
+    console.log(c1.removeItem(item1));
+    console.log(c1.removeItem('an item not in list'));
+    console.groupEnd('ToDoChecklist testing');
+}

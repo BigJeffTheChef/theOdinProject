@@ -28,7 +28,7 @@ let elements = (function () {
     setMenuPosition();
 
     function setMenuPosition() {
-        elements.nav.style['top'] = (elements.header.offsetHeight) + 'px';
+        elements.nav.style['top'] = (elements.header.offsetHeight -2) + 'px';
         elements.nav.style['left'] = '10px';
         setTimeout(() => {
             elements.nav.classList.remove('hidden');

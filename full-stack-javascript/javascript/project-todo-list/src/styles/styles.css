@@ -62,7 +62,7 @@ body {
 
     padding: 0px;
     margin: 0px;
-    width: 100vw;
+    width: 100%;
     height: 100%;
 }
 
@@ -83,7 +83,7 @@ body {
 
     /* border-radius: var(--border-rad); */
     background-color: var(--bg-color-2);
-    height: 3rem;
+    height: 3.5rem;
     font-size: 1.2rem;
 
     margin-bottom: 5px;
@@ -95,16 +95,15 @@ body {
     justify-content: center;
     align-items: center;
 
+    background-color: var(--accent);
+    border-radius: var(--border-rad);
     font-family: bungee;
     font-weight: 100;
     letter-spacing: 0.2rem;
     text-shadow: 2px 2px 4px black;
-
     padding: 10px;
-}
+    margin: 10px;
 
-.header-title>span>.big {
-    font-size: 1.5rem;
 }
 
 .header-title>span {
@@ -220,7 +219,7 @@ button.hamburger:hover {
     Nav is hidden upon loading and dom.js removes .hidden class
     after 200ms (corresponding to the transition time). this stops
     the nav transforming to scale(0) after loading, which shows
-    the nav briefly
+    the nav briefly - bit of a hack?!
     */
     transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
     transform: scaleY(0);
