@@ -52,6 +52,3 @@ let elements = (function () {
         });
     }
 })();
-
-
-
