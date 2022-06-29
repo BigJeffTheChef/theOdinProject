@@ -23,6 +23,26 @@ function localStorageAvailable() {
     }
 }
 
-console.log(`local storage availabe: ${localStorageAvailable()}`)
+// console.log(`local storage availabe: ${localStorageAvailable()}`)
+
+function saveToDo(toDoObj) {
+    if(localStorageAvailable()) {
+        window['localStorage'].setItem()
+    }
+}
+
+(function loadToDos() {
+    if(localStorageAvailable()) {
+        let storedToDos = window['localStorage'];
+        console.log(storedToDos);
+        // console.log(storedToDos[0]);
+        // console.log(storedToDos[1]);
+        // console.log(storedToDos[2]);
+        Storage;
+        for (let i = 0; i < storedToDos.length; i++) {
+            console.log(storedToDos.getItem(storedToDos.key(i)));
+        }
+    }
+})();
 
 export {localStorageAvailable};

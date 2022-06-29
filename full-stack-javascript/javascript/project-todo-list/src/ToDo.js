@@ -26,8 +26,8 @@ class ToDo {
         this.#checklist = [];
     }
 
-    get notes() {return this.#notes};
-    set notes(newNotes) {this.#notes = newNotes};
+    get notes() { return this.#notes };
+    set notes(newNotes) { this.#notes = newNotes };
 
     get title() { return this._title };
     set title(newTitle) {
@@ -51,93 +51,19 @@ class ToDo {
     };
 
     toString() {
-        return 'Title:       ' + '\n' + this._title + '\n\n' +
-            'Description: ' + '\n' + this._description + '\n\n' +
-            'Due Date:    ' + '\n' + this._dueDate + '\n\n' +
-            'Priority:    ' + '\n' + this._priority
+        return `Title:${this.#title},Description:${this.#description},Due-Date:${this.#dueDate},Priority:${this.#priority}`;
+    };
+
+    // toJSON() {
+    //     return `{"title":"${this.#title}","description":"${this.#description}","dueDate":"${this.#dueDate}"}`; 
+    // };
+
+    toJSON() {
+        return { title: this.#title, description: this.#description, dueDate: this.#dueDate };
     };
 }
 
-// /**
-//  * Extension of ToDo class, to include a checklist of items to do.
-//  */
-// class ToDoCheckList extends ToDo {
-
-//     #checklist;
-
-//     /**
-//      * 
-//      * @param {string} title 
-//      * @param {string} description 
-//      * @param {date} dueDate 
-//      * @param {number} priority 
-//      */
-//     constructor(title, description, dueDate, priority) {
-//         super(title, description, dueDate, priority);
-//         this.#checklist = [];
-//     }
-
-//     get checklist() { return this._checklist }
-
-//     /**
-//      * Remove a checklist item
-//      * @param {string} item 
-//      * @returns true if found (and removed), false if not found (and not removed).
-//      */
-//     removeItem(item) {
-//         const index = this.#checklist.indexOf(item);
-//         if (index !== -1) {
-//             this.#checklist.splice(index, 1);
-//             return true;
-//         }
-//         return false;
-//     }
-
-//     /**
-//      * 
-//      * @param {string} item 
-//      * @param {boolean} complete 
-//      * @throws if item is not a string or complete is not a boolean
-//      */
-//     addItem(item, complete) {
-//         validateItem(item);
-//         validateComplete(complete);
-//         this.#checklist.push([item, complete]);
-
-//         function validateItem(item) {
-//             if (typeof item !== 'string') {
-//                 throw 'item parameter must be a String';
-//             }
-//             if (item.length === 0 || item.match(WHITESPACE_ONLY_REGEX)) {
-//                 throw 'item may not be empty/ blank or only whitespace';
-//             }
-//         }
-
-//         function validateComplete(complete) {
-//             let completeIsBoolean = typeof complete === 'boolean';
-//             if (!completeIsBoolean) {
-//                 throw 'complete parameter must be a Boolean';
-//             }
-//         }
-//     }
-
-//     /**
-//      * @returns A String representation of this ToDoChecklist object
-//      */
-//     toString() {
-//         let str = super.toString();
-//         if (this.#checklist.length > 0) {
-//             str += '\nChecklist:\n'
-//         }
-//         for (let listItem of this.#checklist) {
-//             str += listItem[0] + ' (Complete? ' + listItem[1] + ')\n';
-//         }
-//         return str;
-//     }
-
-// }
-
-testing_ToDo();
+//testing_ToDo();
 // testing_ToDoChecklist();
 
 function testing_ToDo() {
@@ -219,4 +145,83 @@ function testing_ToDoChecklist() {
     console.groupEnd('ToDoChecklist testing');
 }
 
-export {ToDo};
+export { ToDo };
+
+// /**
+//  * Extension of ToDo class, to include a checklist of items to do.
+//  */
+// class ToDoCheckList extends ToDo {
+
+//     #checklist;
+
+//     /**
+//      * 
+//      * @param {string} title 
+//      * @param {string} description 
+//      * @param {date} dueDate 
+//      * @param {number} priority 
+//      */
+//     constructor(title, description, dueDate, priority) {
+//         super(title, description, dueDate, priority);
+//         this.#checklist = [];
+//     }
+
+//     get checklist() { return this._checklist }
+
+//     /**
+//      * Remove a checklist item
+//      * @param {string} item 
+//      * @returns true if found (and removed), false if not found (and not removed).
+//      */
+//     removeItem(item) {
+//         const index = this.#checklist.indexOf(item);
+//         if (index !== -1) {
+//             this.#checklist.splice(index, 1);
+//             return true;
+//         }
+//         return false;
+//     }
+
+//     /**
+//      * 
+//      * @param {string} item 
+//      * @param {boolean} complete 
+//      * @throws if item is not a string or complete is not a boolean
+//      */
+//     addItem(item, complete) {
+//         validateItem(item);
+//         validateComplete(complete);
+//         this.#checklist.push([item, complete]);
+
+//         function validateItem(item) {
+//             if (typeof item !== 'string') {
+//                 throw 'item parameter must be a String';
+//             }
+//             if (item.length === 0 || item.match(WHITESPACE_ONLY_REGEX)) {
+//                 throw 'item may not be empty/ blank or only whitespace';
+//             }
+//         }
+
+//         function validateComplete(complete) {
+//             let completeIsBoolean = typeof complete === 'boolean';
+//             if (!completeIsBoolean) {
+//                 throw 'complete parameter must be a Boolean';
+//             }
+//         }
+//     }
+
+//     /**
+//      * @returns A String representation of this ToDoChecklist object
+//      */
+//     toString() {
+//         let str = super.toString();
+//         if (this.#checklist.length > 0) {
+//             str += '\nChecklist:\n'
+//         }
+//         for (let listItem of this.#checklist) {
+//             str += listItem[0] + ' (Complete? ' + listItem[1] + ')\n';
+//         }
+//         return str;
+//     }
+
+// }
