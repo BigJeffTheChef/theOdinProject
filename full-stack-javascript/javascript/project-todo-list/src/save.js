@@ -1,20 +1,13 @@
-import './styles/styles.css';
-import './dom.js';
-import {ToDo} from './ToDo.js';
-import {localStorageAvailable} from './save.js';
-
-let storageAccessible;
-
-function storageAvailable(type) {
+function localStorageAvailable() {
     var storage;
     try {
-        storage = window[type];
+        storage = window['localStorage'];
         var x = '__storage_test__';
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;
     }
-    catch (e) {
+    catch(e) {
         return e instanceof DOMException && (
             // everything except Firefox
             e.code === 22 ||
@@ -30,12 +23,6 @@ function storageAvailable(type) {
     }
 }
 
-if (storageAvailable('localStorage')) {
-    storageAccessible = true;
-}
-else {
-    storageAccessible = false;
-}
+console.log(`local storage availabe: ${localStorageAvailable()}`)
 
-window['localStorage'].setItem('a dog', 'called dax');
-console.log(window['localStorage'].getItem('a dog'));
+export {localStorageAvailable};

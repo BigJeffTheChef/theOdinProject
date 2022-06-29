@@ -55,31 +55,3 @@ let elements = (function () {
 
 
 
-
-// function setMenuButtonEvent() {
-//     elements.menuBtn.addEventListener('click', () => {
-//         const hideSelector = 'nav-off';
-//         const hiddenSelector = 'nav-gone';
-//         if (elements.nav.classList.contains(hideSelector)) {
-//             elements.nav.classList.remove(hideSelector);
-//             elements.nav.classList.remove(hiddenSelector);
-
-//             setTimeout(() => {
-//                 // elements.content.classList.remove('nav-gone');
-//             }, 1000);
-//         } else {
-//             elements.nav.classList.add(hideSelector);
-//             elements.nav.classList.add(hiddenSelector);
-//             // setTimeout(() => {
-//             //     elements.nav.classList.add(hiddenSelector);
-//             //     // elements.content.classList.add('nav-gone');
-//             // }, 1000);
-//         }
-//     });
-// }
-
-// function setNavWidthVar() {
-//     let x = document.querySelector('.body');
-//     x.style.setProperty('--nav-width', '-125px');
-//     x.style.setProperty('--nav-width-offset', '-150px');
-// }

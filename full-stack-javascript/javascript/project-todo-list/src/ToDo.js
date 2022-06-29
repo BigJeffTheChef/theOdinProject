@@ -9,8 +9,8 @@ class ToDo {
     #description;
     #dueDate;
     #priority;
-
-    // protected properties
+    #notes;
+    #checklist;
 
     static MIN_PRIORITY = 1;
     static MAX_PRIORITY = 5;
@@ -22,7 +22,12 @@ class ToDo {
         this.#description = description || 'No description added';
         this.#dueDate = dueDate || null;
         this.#priority = priority || null;
+        this.#notes = "";
+        this.#checklist = [];
     }
+
+    get notes() {return this.#notes};
+    set notes(newNotes) {this.#notes = newNotes};
 
     get title() { return this._title };
     set title(newTitle) {
@@ -39,9 +44,10 @@ class ToDo {
 
     get priority() { return this.#priority };
     set priority(newPriority) {
-        if (newPriority >= MIN_PRIORITY && newPriority <= MAX_PRIORITY) {
-            this.#priority = newPriority
+        if (newPriority < MIN_PRIORITY || newPriority > MAX_PRIORITY) {
+            throw `Priority must be ${MIN_PRIORITY} to ${MAX_PRIORITY} (inclusive), but ${newPriority} was specified`;
         }
+        this.#priority = newPriority;
     };
 
     toString() {
@@ -52,87 +58,87 @@ class ToDo {
     };
 }
 
-/**
- * Extension of ToDo class, to include a checklist of items to do.
- */
-class ToDoCheckList extends ToDo {
+// /**
+//  * Extension of ToDo class, to include a checklist of items to do.
+//  */
+// class ToDoCheckList extends ToDo {
 
-    #checklist;
+//     #checklist;
 
-    /**
-     * 
-     * @param {string} title 
-     * @param {string} description 
-     * @param {date} dueDate 
-     * @param {number} priority 
-     */
-    constructor(title, description, dueDate, priority) {
-        super(title, description, dueDate, priority);
-        this.#checklist = [];
-    }
+//     /**
+//      * 
+//      * @param {string} title 
+//      * @param {string} description 
+//      * @param {date} dueDate 
+//      * @param {number} priority 
+//      */
+//     constructor(title, description, dueDate, priority) {
+//         super(title, description, dueDate, priority);
+//         this.#checklist = [];
+//     }
 
-    get checklist() { return this._checklist }
+//     get checklist() { return this._checklist }
 
-    /**
-     * Remove a checklist item
-     * @param {string} item 
-     * @returns true if found (and removed), false if not found (and not removed).
-     */
-    removeItem(item) {
-        const index = this.#checklist.indexOf(item);
-        if (index !== -1) {
-            this.#checklist.splice(index, 1);
-            return true;
-        }
-        return false;
-    }
+//     /**
+//      * Remove a checklist item
+//      * @param {string} item 
+//      * @returns true if found (and removed), false if not found (and not removed).
+//      */
+//     removeItem(item) {
+//         const index = this.#checklist.indexOf(item);
+//         if (index !== -1) {
+//             this.#checklist.splice(index, 1);
+//             return true;
+//         }
+//         return false;
+//     }
 
-    /**
-     * 
-     * @param {string} item 
-     * @param {boolean} complete 
-     * @throws if item is not a string or complete is not a boolean
-     */
-    addItem(item, complete) {
-        validateItem(item);
-        validateComplete(complete);
-        this.#checklist.push([item, complete]);
+//     /**
+//      * 
+//      * @param {string} item 
+//      * @param {boolean} complete 
+//      * @throws if item is not a string or complete is not a boolean
+//      */
+//     addItem(item, complete) {
+//         validateItem(item);
+//         validateComplete(complete);
+//         this.#checklist.push([item, complete]);
 
-        function validateItem(item) {
-            if (typeof item !== 'string') {
-                throw 'item parameter must be a String';
-            }
-            if (item.length === 0 || item.match(WHITESPACE_ONLY_REGEX)) {
-                throw 'item may not be empty/ blank or only whitespace';
-            }
-        }
+//         function validateItem(item) {
+//             if (typeof item !== 'string') {
+//                 throw 'item parameter must be a String';
+//             }
+//             if (item.length === 0 || item.match(WHITESPACE_ONLY_REGEX)) {
+//                 throw 'item may not be empty/ blank or only whitespace';
+//             }
+//         }
 
-        function validateComplete(complete) {
-            let completeIsBoolean = typeof complete === 'boolean';
-            if (!completeIsBoolean) {
-                throw 'complete parameter must be a Boolean';
-            }
-        }
-    }
+//         function validateComplete(complete) {
+//             let completeIsBoolean = typeof complete === 'boolean';
+//             if (!completeIsBoolean) {
+//                 throw 'complete parameter must be a Boolean';
+//             }
+//         }
+//     }
 
-    /**
-     * @returns A String representation of this ToDoChecklist object
-     */
-    toString() {
-        let str = super.toString();
-        if (this.#checklist.length > 0) {
-            str += '\nChecklist:\n'
-        }
-        for (let listItem of this.#checklist) {
-            str += listItem[0] + ' (Complete? ' + listItem[1] + ')\n';
-        }
-        return str;
-    }
+//     /**
+//      * @returns A String representation of this ToDoChecklist object
+//      */
+//     toString() {
+//         let str = super.toString();
+//         if (this.#checklist.length > 0) {
+//             str += '\nChecklist:\n'
+//         }
+//         for (let listItem of this.#checklist) {
+//             str += listItem[0] + ' (Complete? ' + listItem[1] + ')\n';
+//         }
+//         return str;
+//     }
 
-}
+// }
 
 testing_ToDo();
-testing_ToDoChecklist();
+// testing_ToDoChecklist();
 
 function testing_ToDo() {
     console.group('ToDo testing');
@@ -212,3 +218,5 @@ function testing_ToDoChecklist() {
     console.log(c1.removeItem('an item not in list'));
     console.groupEnd('ToDoChecklist testing');
 }
+
+export {ToDo};
