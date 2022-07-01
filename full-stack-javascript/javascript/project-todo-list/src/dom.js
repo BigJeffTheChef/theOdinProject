@@ -1,3 +1,4 @@
+import {loadToDos} from './ToDo.js';
 
 // elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
@@ -52,3 +53,19 @@ let elements = (function () {
         });
     }
 })();
+
+function initShowToDos() {
+
+}
+
+function clearContent() {
+    //console.log(elements.content.childNodes);
+    for (let i = elements.content.childNodes.length - 1; i >= 0; i--) {
+        //console.log(elements.content.childNodes[i]);
+        elements.content.removeChild(elements.content.childNodes[i]);
+    }
+    //console.log(elements.content.childNodes);
+}
+
+//clearContent();
+

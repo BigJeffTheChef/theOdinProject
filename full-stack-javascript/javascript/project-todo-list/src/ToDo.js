@@ -1,5 +1,5 @@
 const WHITESPACE_ONLY_REGEX = /^\s+$/;
-
+let uidSeed = 0;
 /**
  * Base class for all ToDo classes.
  */
@@ -11,20 +11,24 @@ class ToDo {
     #priority;
     #notes;
     #checklist;
+    #uid;
 
     static MIN_PRIORITY = 1;
     static MAX_PRIORITY = 5;
 
     static PRIORITIES = ['Critical', 'High', 'Medium', 'Low', 'Unimportant'];
 
-    constructor(title, description, dueDate, priority) {
+    constructor(title, description, dueDate, priority, uid) {
         this.#title = title || 'New task';
         this.#description = description || 'No description added';
         this.#dueDate = dueDate || null;
         this.#priority = priority || null;
         this.#notes = "";
         this.#checklist = [];
+        this.#uid = uid || ++uidSeed;
     }
+
+    get uid() { return this.#uid };
 
     get notes() { return this.#notes };
     set notes(newNotes) { this.#notes = newNotes };
@@ -51,7 +55,7 @@ class ToDo {
     };
 
     toString() {
-        return `Title:${this.#title},Description:${this.#description},Due-Date:${this.#dueDate},Priority:${this.#priority}`;
+        return `Title:${this.#title}\nDescription:${this.#description}\nDue-Date:${this.#dueDate}\nPriority:${this.#priority}\nuid:${this.#uid}`;
     };
 
     // toJSON() {
@@ -59,12 +63,115 @@ class ToDo {
     // };
 
     toJSON() {
-        return { title: this.#title, description: this.#description, dueDate: this.#dueDate };
+        return { title: this.#title, description: this.#description, dueDate: this.#dueDate,priority: this.#priority, uid: this.#uid };
     };
 }
 
-//testing_ToDo();
+function localStorageAvailable() {
+    var storage;
+    try {
+        storage = window['localStorage'];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        // return e instanceof DOMException && (
+        //     // everything except Firefox
+        //     e.code === 22 ||
+        //     // Firefox
+        //     e.code === 1014 ||
+        //     // test name field too, because code might not be present
+        //     // everything except Firefox
+        //     e.name === 'QuotaExceededError' ||
+        //     // Firefox
+        //     e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+        //     // acknowledge QuotaExceededError only if there's something already stored
+        //     (storage && storage.length !== 0);
+        return false;
+    }
+}
+
+// console.log(`local storage availabe: ${localStorageAvailable()}`)
+
+/**
+ *  search local storage to todo uid
+ *      if found, overwrite that element
+ *      else create a new element
+ * @param {*} toDoObj 
+ */
+function saveToDo(toDoObj) {
+    let s = getStorage();
+    if (localStorageAvailable()) {
+        let strang = JSON.stringify(toDoObj);
+        s.setItem(toDoObj.uid, strang);
+        console.log(`obg with uid = ${toDoObj.uid} added:`);
+        console.log(strang);
+    }
+}
+
+function loadToDos() {
+    if (localStorageAvailable()) {
+        let s = getStorage();
+        let loaded = [];
+        Storage;
+        for (let i = 0; i < s.length; i++) {
+            let retrieved = JSON.parse(s.getItem(s.key(i)));
+            let todo = new ToDo(retrieved.title, retrieved.description, retrieved.dueDate, retrieved.priority, retrieved.uid);
+            loaded.push(todo);
+        }
+        return loaded;
+    }
+};
+
+function getStorage() {
+    return window['localStorage'];
+}
+
+function clearStorage() {
+    console.log('cleared local storage');
+    getStorage().clear();
+}
+
+function displayStorage() {
+    let s = loadToDos();
+    for (let i =0 ; i< s.length; i++) {
+        console.log(s[i]);
+    }
+}
+
+
+// testing_ToDo();
 // testing_ToDoChecklist();
+//testing_save_load();
+//clearStorage();
+displayStorage();
+
+function testing_save_load() {
+    console.group('testing load and save');
+
+    getStorage().clear();
+    console.group('creating ToDos');
+    let x = new ToDo("test this saved 1", "test desc 1", "01/01/01", 1);
+    let y = new ToDo("test this saved 2", "test desc 2", "02/02/02", 2);
+    console.log(x);
+    console.log(y);
+    console.groupEnd('creating ToDos');
+
+    console.group('saving ToDos');
+    saveToDo(x);
+    saveToDo(y);
+    console.groupEnd('saving ToDos');
+
+    console.group('loading ToDos');
+    console.log("retrieved: " + getStorage().getItem(x.uid));
+    console.log("retrieved: " + getStorage().getItem(y.uid));
+    console.log(loadToDos());
+    console.groupEnd('loading ToDos');
+
+    console.groupEnd('testing load and save');
+}
 
 function testing_ToDo() {
     console.group('ToDo testing');
@@ -145,7 +252,7 @@ function testing_ToDoChecklist() {
     console.groupEnd('ToDoChecklist testing');
 }
 
-export { ToDo };
+export { ToDo, saveToDo, loadToDos };
 
 // /**
 //  * Extension of ToDo class, to include a checklist of items to do.
