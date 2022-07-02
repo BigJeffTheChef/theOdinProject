@@ -188,9 +188,9 @@ button.hamburger:hover {
     overflow-wrap: break-word;
     overflow: hidden;
     background-color: var(--bg-color-3);
-    border-radius: 5px;
+    border-radius: 10px;
     max-width: 600px;
-    padding: 5px 10px;
+    padding: 10px;
 
     transition: color var(--theme-transition-speed),
         background-color var(--theme-transition-speed),
@@ -288,6 +288,87 @@ div.add-todo {
 
     margin: 10px;
 }
+
+/* TODO CARD */
+
+.todo-cards {
+    display: grid;
+    grid-template: 1fr / repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 10px;
+
+    width: 100%;
+}
+
+.todo-card {
+    display: grid;
+    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr / repeat(2,1fr);
+    
+    background-color: var(--bg-color-1);
+    border-radius: 10px;
+
+    padding: 10px;
+}
+
+.todo-card>*{
+    /*position of all cells bar the bottom cell is to span 2 grid tracks*/
+    grid-column: 2 span;
+}
+
+.todo-card>.title {
+    display: flex;
+    align-items: center;
+
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.todo-card>.description {
+    background-color: var(--bg-color-3);
+    border-radius: 10px;
+
+    padding: 10px;
+
+    font-size: 0.8rem;
+}
+
+.todo-card>.checklist {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    position: relative;
+}
+
+.todo-card>.checklist>.checklist-item {
+    display: grid;
+    grid-template: 1fr/ 1fr 4fr;
+}
+
+.todo-card>.checklist>.checklist-summary {
+    background-color: var(--accent);
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin: 5px 5px 5px 0px;
+}
+
+
+.todo-card>.bottom-cell {
+    display: flex;
+    align-items: center;
+    grid-column: 1 / -1;
+
+    font-size: 0.8rem;
+}
+
+.todo-card>.bottom-cell>div:first-child {
+    margin-right: auto;
+}
+
+.todo-card>.bottom-cell>div>span:nth-child(1) {
+    font-weight: bold;
+}
+
+
 
 /* HIDDEN */
 .hidden {

@@ -1,5 +1,27 @@
+import { testing_save_load, testing_ToDo, testing_ToDoChecklist } from "./ToDo_Testing";
+
 const WHITESPACE_ONLY_REGEX = /^\s+$/;
 let uidSeed = 0;
+
+// function toDo(title, description, dueDate, priority, uid) {
+//         this._title = title || 'New task';
+//         this._description = description || 'No description added';
+//         this._dueDate = dueDate || null;
+//         this._priority = priority || null;
+//         this._notes = "";
+//         this._checklist = [];
+//         this._uid = uid || ++uidSeed;
+// }
+
+// function toDoMixin() {
+//     function getTitle() {return this._title};
+//     function setTitle(newTitle) {
+//         if (newTitle.length === 0) throw 'ERROR: ToDo title may not be empty';
+//         if (newTitle.match(WHITESPACE_ONLY_REGEX)) throw 'ERROR: ToDo title may not be blank (whitespace only)';
+//         this._title = newTitle
+//     };
+// }
+
 /**
  * Base class for all ToDo classes.
  */
@@ -28,12 +50,14 @@ class ToDo {
         this.#uid = uid || ++uidSeed;
     }
 
+    get checklist() { return this.#checklist };
+
     get uid() { return this.#uid };
 
     get notes() { return this.#notes };
     set notes(newNotes) { this.#notes = newNotes };
 
-    get title() { return this._title };
+    get title() { return this.#title };
     set title(newTitle) {
         if (newTitle.length === 0) throw 'ERROR: ToDo title may not be empty';
         if (newTitle.match(WHITESPACE_ONLY_REGEX)) throw 'ERROR: ToDo title may not be blank (whitespace only)';
@@ -54,16 +78,46 @@ class ToDo {
         this.#priority = newPriority;
     };
 
+    /**
+     * Adds a new checklist item. each item is a 2 length array containing a boolean at
+     * index 0 and a string at index 1.
+     * @param {boolean} complete 
+     * @param {string} text 
+     */
+    addToCheckList(complete, text) {
+        if (typeof complete === 'boolean' && typeof text === 'string') {
+            this.#checklist.push([complete, text]);
+        }
+    }
+
+    /**
+     * Removes a Checklist item if its text is equal to parameter text
+     * @param {string} text 
+     * @returns a boolean, representing if the item was found and removed
+     */
+    removeFromCheckList(text) {
+        for (let i = 0; i < this.#checklist.length && !removed; i++) {
+            if (this.#checklist[i][1] === text) {
+                this.#checklist.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
     toString() {
         return `Title:${this.#title}\nDescription:${this.#description}\nDue-Date:${this.#dueDate}\nPriority:${this.#priority}\nuid:${this.#uid}`;
     };
 
-    // toJSON() {
-    //     return `{"title":"${this.#title}","description":"${this.#description}","dueDate":"${this.#dueDate}"}`; 
-    // };
-
     toJSON() {
-        return { title: this.#title, description: this.#description, dueDate: this.#dueDate,priority: this.#priority, uid: this.#uid };
+        return { 
+            title: this.#title, 
+            description: this.#description, 
+            dueDate: this.#dueDate, 
+            priority: this.#priority, 
+            checklist: this.#checklist,
+            uid: this.#uid 
+        };
     };
 }
 
@@ -77,180 +131,104 @@ function localStorageAvailable() {
         return true;
     }
     catch (e) {
-        // return e instanceof DOMException && (
-        //     // everything except Firefox
-        //     e.code === 22 ||
-        //     // Firefox
-        //     e.code === 1014 ||
-        //     // test name field too, because code might not be present
-        //     // everything except Firefox
-        //     e.name === 'QuotaExceededError' ||
-        //     // Firefox
-        //     e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-        //     // acknowledge QuotaExceededError only if there's something already stored
-        //     (storage && storage.length !== 0);
         return false;
     }
 }
-
-// console.log(`local storage availabe: ${localStorageAvailable()}`)
 
 /**
  *  search local storage to todo uid
  *      if found, overwrite that element
  *      else create a new element
- * @param {*} toDoObj 
+ * @param {ToDo} toDoObj ToDo object instance 
  */
 function saveToDo(toDoObj) {
-    let s = getStorage();
+
     if (localStorageAvailable()) {
-        let strang = JSON.stringify(toDoObj);
-        s.setItem(toDoObj.uid, strang);
+        let stringified = JSON.stringify(toDoObj);
+        window['localStorage'].setItem(toDoObj.uid, stringified);
         console.log(`obg with uid = ${toDoObj.uid} added:`);
-        console.log(strang);
+        console.log(stringified);
     }
 }
 
+/**
+ * Load JSON from localStorage and parse into an array of ToDo objects
+ * @returns {array} Array of toDo objects
+ */
 function loadToDos() {
     if (localStorageAvailable()) {
         let s = getStorage();
         let loaded = [];
-        Storage;
-        for (let i = 0; i < s.length; i++) {
+        for (let i = s.length - 1; i >= 0; i--) {
             let retrieved = JSON.parse(s.getItem(s.key(i)));
             let todo = new ToDo(retrieved.title, retrieved.description, retrieved.dueDate, retrieved.priority, retrieved.uid);
+            for (let i = 0; i <retrieved.checklist.length; i++) {
+                todo.addToCheckList(retrieved.checklist[i][0], retrieved.checklist[i][1]);
+            }
             loaded.push(todo);
         }
         return loaded;
     }
 };
 
+//
+//
+//  localStorage Utility functions
+//
+//
+
+/**
+ * Alias function for retrieving localStorage
+ * @returns 
+ */
 function getStorage() {
     return window['localStorage'];
 }
 
+/**
+ * Clear localStorage
+ */
 function clearStorage() {
     console.log('cleared local storage');
     getStorage().clear();
 }
 
+/**
+ * Print to console all ToDo objects in localStorage
+ */
 function displayStorage() {
     let s = loadToDos();
-    for (let i =0 ; i< s.length; i++) {
+    for (let i = 0; i < s.length; i++) {
         console.log(s[i]);
+    }
+}
+
+/**
+ * Add a specified number of test ToDo objects to localStorage
+ * 
+ * @param {number} numToAdd 
+ */
+function addTestToDosToStorage(numToAdd = 2) {
+    let checklistCounter = 3;
+    for (let i = 0; i < numToAdd; i++) {
+        let num = i + 1;
+        let desc = (i%2===0) ? ('test description ' + num).repeat(20) : 'test description ' + num;
+        let t = new ToDo('test title ' + num, desc, num + '/' + num + '/' + num, num);
+        for (let j = 0; j < checklistCounter; j++) {
+            t.addToCheckList(true, "test checklist item" + (j + 1));
+        }
+        saveToDo(t);
     }
 }
 
 
 // testing_ToDo();
 // testing_ToDoChecklist();
-//testing_save_load();
-//clearStorage();
-displayStorage();
+// testing_save_load();
+clearStorage();
+addTestToDosToStorage(5);
+// displayStorage();
 
-function testing_save_load() {
-    console.group('testing load and save');
-
-    getStorage().clear();
-    console.group('creating ToDos');
-    let x = new ToDo("test this saved 1", "test desc 1", "01/01/01", 1);
-    let y = new ToDo("test this saved 2", "test desc 2", "02/02/02", 2);
-    console.log(x);
-    console.log(y);
-    console.groupEnd('creating ToDos');
-
-    console.group('saving ToDos');
-    saveToDo(x);
-    saveToDo(y);
-    console.groupEnd('saving ToDos');
-
-    console.group('loading ToDos');
-    console.log("retrieved: " + getStorage().getItem(x.uid));
-    console.log("retrieved: " + getStorage().getItem(y.uid));
-    console.log(loadToDos());
-    console.groupEnd('loading ToDos');
-
-    console.groupEnd('testing load and save');
-}
-
-function testing_ToDo() {
-    console.group('ToDo testing');
-
-    let testObj = new ToDo('test title');
-    console.log(testObj.toString());
-    let testObj2 = new ToDo('test title 2');
-    console.log(testObj2.toString());
-    let testObj3 = new ToDo();
-    console.log(testObj3.toString());
-    testObj3.title = "dogs n stuff";
-    console.log(testObj3.toString());
-    console.log(ToDo.MAX_PRIORITY);
-    console.log(testObj3);
-    console.log(testObj3.constructor.PRIORITIES);   // can access static properties
-    // from instance constructor
-    console.log(testObj3.title);
-    try {
-        testObj3.title = "     ";
-    } catch (err) {
-        console.log(err);
-    }
-    console.log(testObj3.title);
-    console.groupEnd('ToDo testing');
-}
-
-function testing_ToDoChecklist() {
-    console.group('ToDoChecklist testing');
-    let c1 = new ToDoCheckList('test checklist', 'test description', 'some day', 1);
-
-    console.log(c1.toString());
-    const item1 = 'a new list item';
-    c1.addItem(item1, false);
-
-    console.log(c1.toString());
-
-    c1.addItem('another new list item', true);
-    console.log(c1.toString());
-
-    try {
-        c1.addItem('', true);
-    } catch (err) {
-        console.log("empty item str: " + err);
-    }
-
-    try {
-        c1.addItem('    \n', true);
-    } catch (err) {
-        console.log("whitespace only item str 1: " + err);
-    }
-
-    try {
-        c1.addItem('                      ', true);
-    } catch (err) {
-        console.log("whitespace only item str 2: " + err);
-    }
-
-    try {
-        c1.addItem('x', 'yo');
-    } catch (err) {
-        console.log("non-boolean complete 1: " + err);
-    }
-
-    try {
-        c1.addItem('x', null);
-    } catch (err) {
-        console.log("non-boolean complete 2: " + err);
-    }
-
-    try {
-        c1.addItem('x', undefined);
-    } catch (err) {
-        console.log("non-boolean complete 3: " + err);
-    }
-
-    console.log(c1.removeItem(item1));
-    console.log(c1.removeItem('an item not in list'));
-    console.groupEnd('ToDoChecklist testing');
-}
 
 export { ToDo, saveToDo, loadToDos };
 
