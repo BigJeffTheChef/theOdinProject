@@ -1,0 +1,100 @@
+select.section-input,
+.section-label,
+.section-input,
+.checklist-section>button,
+.checklist-section,
+.checklist-text {
+    background-color: var(--text-2);
+    border-radius: var(--border-rad);
+    border: 1px solid var(--text-1);
+}
+
+.todo-editor-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 1;
+
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: calc(100vw - calc(20px * 2));
+
+    padding: 20px;
+}
+
+#todo-editor-form {
+    display: flex;
+    flex-flow: column nowrap;
+
+    width: 80%;
+    background-color: var(--bg-color-3);
+    border-radius: 10px;
+
+    padding: 10px;
+}
+
+.section {
+    display: flex;
+    position: relative;
+
+    width: 100%;
+
+    margin: 10px 0px;
+}
+
+.section.two-cell {
+    display: grid;
+    grid-template: 1fr/ repeat(2, 1fr);
+    column-gap: 10px;
+}
+
+.section>textarea {
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.8rem;
+}
+
+.section-label {
+    position: absolute;
+    top: -0.4rem;
+    left: 0.5rem;
+
+    background-color: var(--text-2);
+    font-size: 0.65rem;
+
+    padding: 0.05rem 0.5rem;
+}
+
+.section-input {
+    flex-grow: 1;
+
+    padding: 0.8rem 0.5rem 0.5rem 0.5rem;
+}
+
+.checklist-section {
+    position: relative;
+
+    background-color: var(--accent);
+
+    padding: 1.2rem 1rem 1rem 1rem;
+}
+
+.checklist-item {
+    display: grid;
+    grid-template: 1fr/ 1fr 6fr 1fr;
+    column-gap: 10px;
+
+    margin: 12px 0px;
+}
+
+.checklist-section>.checklist-item>.section {
+    width: 100%;
+    margin: 0px;
+}
+
+.checklist-text {
+    width: 100%;
+    padding: 0px 10px;
+}

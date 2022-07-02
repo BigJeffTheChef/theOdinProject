@@ -1,4 +1,64 @@
 import { loadToDos, ToDo } from './ToDo.js';
+import { format } from 'date-fns';
+
+const TODO_EDITOR_HTML_TEMPLATE = `
+<div class="todo-editor-modal">
+    <form id="todo-editor-form">
+
+        <div class="section">
+            <div class="section-label">Title</div>
+            <input class="section-input" type="text" placeholder="Enter title" id="title-field">
+        </div>
+
+        <div class="section">
+            <div class="section-label">Description</div>
+            <textarea class="section-input" cols="40" rows="5" placeholder="Enter description"
+                id="desc-field"></textarea>
+        </div>
+
+        <div class="section two-cell">
+            <div class="section">
+                <div class="section-label">Due Date</div>
+                <input class="section-input" type="date" id="due-date-field">
+            </div>
+            <div class="section">
+                <div class="section-label">Priority</div>
+                <select class="section-input" id="priority-field">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="checklist-section">
+            <div class="section-label">Checklist</div>
+            
+
+
+        </div>
+
+    </form>
+</div>`;
+
+const TODO_EDITOR_CHECKLIST_TEMPLATE = `
+<div class="checklist-item">
+    <div class="section">
+        <select class="section-input complete-field" name="completed">
+            <option value="true">Complete</option>
+            <option value="false">Not Complete</option>
+        </select>
+        <div class="section-label">Complete?</div>
+    </div>
+    <div class="section">
+        <input class="checklist-text" type="text">
+        <div class="section-label">Checklist item text</div>
+    </div>
+    <button type="button">Add</button>
+</div>
+`;
 
 // elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
@@ -100,6 +160,8 @@ let elements = (function () {
         // bottom cell -> due date and priority
         dateAndPriorityCell(toDoObj.dueDate, toDoObj.priority);
 
+        card.addEventListener('click', () => renderToDoEditor(toDoObj));
+
         return card;
 
         /**
@@ -122,11 +184,11 @@ let elements = (function () {
          * @param {string} cellContent content to place in cell
          * @returns created cellDiv
          */
-         function descCell(cellClass, cellContent) {
+        function descCell(cellClass, cellContent) {
             let cellDiv = document.createElement('div');
             cellDiv.classList.add(cellClass);
             const MAX_CHARS = 180;
-            cellDiv.textContent = (cellContent.length < MAX_CHARS ) ? cellContent : cellContent.substring(0,MAX_CHARS) + "...";
+            cellDiv.textContent = (cellContent.length < MAX_CHARS) ? cellContent : cellContent.substring(0, MAX_CHARS) + "...";
             card.appendChild(cellDiv);
         }
 
@@ -158,7 +220,7 @@ let elements = (function () {
             // dueDate
             let bottomCell = document.createElement('div');
             bottomCell.classList.add('bottom-cell');
-            bottomCell.appendChild(footerCells('Due', date));
+            bottomCell.appendChild(footerCells('Due', format(date, 'dd/MM/yyyy')));
 
             // priority
             bottomCell.appendChild(footerCells('Priority', priority));
@@ -176,9 +238,45 @@ let elements = (function () {
             }
         };
     }
-
-
 })();
+
+function renderToDoEditor(toDoObj) {
+    console.log('renderrrr');
+    let template = document.createElement('template');
+    template.innerHTML = TODO_EDITOR_HTML_TEMPLATE;
+    let content = template.content.firstElementChild;
+    // console.log(content.innerHTML);
+    content.querySelector('#title-field').value = toDoObj.title;
+    content.querySelector('#desc-field').value = toDoObj.description;
+    content.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
+    content.querySelector('#priority-field').value = toDoObj.priority;
+    renderCheckList(toDoObj.checklist);
+
+
+    function renderCheckList(checklist) {
+        //TODO_EDITOR_CHECKLIST_TEMPLATE
+        let checklistSection = content.querySelector('.checklist-section');
+        for (let i = 0; i < checklist.length; i++) {
+            let clistTemplate = document.createElement('template');
+            clistTemplate.innerHTML = TODO_EDITOR_CHECKLIST_TEMPLATE;
+            let clistContent = clistTemplate.content.firstElementChild;
+            // console.log(clistContent.innerHTML);
+            // console.log(checklist[i][0]);
+            // console.log(clistContent);
+            // console.log(clistContent.innerHTML);
+            // console.log(clistContent.outerHTML);
+            clistContent.querySelector('.complete-field').value = checklist[i][0];
+            clistContent.querySelector('.checklist-text').value = checklist[i][1];
+
+            checklistSection.appendChild(clistContent);
+        }
+    }
+
+    template.content.querySelector('.todo-editor-modal').addEventListener('click', (event) => {
+        if (event.target.matches('.todo-editor-modal')) { document.body.removeChild(content) };
+    });
+    document.body.appendChild(content);
+};
 
 /**
  * clear all child nodes from the 'content' div.

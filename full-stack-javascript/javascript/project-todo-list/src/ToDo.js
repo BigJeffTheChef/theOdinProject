@@ -1,4 +1,5 @@
 import { testing_save_load, testing_ToDo, testing_ToDoChecklist } from "./ToDo_Testing";
+import { format } from 'date-fns';
 
 const WHITESPACE_ONLY_REGEX = /^\s+$/;
 let uidSeed = 0;
@@ -24,6 +25,11 @@ let uidSeed = 0;
 
 /**
  * Base class for all ToDo classes.
+ * @param {string} title 
+ * @param {string} description 
+ * @param {date} dueDate 
+ * @param {number} priority 
+ * @param {number} uid  
  */
 class ToDo {
     // private fields/ properties
@@ -41,18 +47,19 @@ class ToDo {
     static PRIORITIES = ['Critical', 'High', 'Medium', 'Low', 'Unimportant'];
 
     constructor(title, description, dueDate, priority, uid) {
-        this.#title = title || 'New task';
-        this.#description = description || 'No description added';
-        this.#dueDate = dueDate || null;
-        this.#priority = priority || null;
-        this.#notes = "";
+        this.title = title || 'New task';
+        this.description = description || 'No description added';
+        this.dueDate = dueDate;
+        this.priority = priority || null;
+        this.notes = "";
         this.#checklist = [];
-        this.#uid = uid || ++uidSeed;
+        this.uid = uid || ++uidSeed;
     }
 
     get checklist() { return this.#checklist };
 
     get uid() { return this.#uid };
+    set uid(newUid) {this.#uid = newUid};
 
     get notes() { return this.#notes };
     set notes(newNotes) { this.#notes = newNotes };
@@ -61,19 +68,24 @@ class ToDo {
     set title(newTitle) {
         if (newTitle.length === 0) throw 'ERROR: ToDo title may not be empty';
         if (newTitle.match(WHITESPACE_ONLY_REGEX)) throw 'ERROR: ToDo title may not be blank (whitespace only)';
-        this._title = newTitle
+        this.#title = newTitle
     };
 
     get description() { return this.#description };
     set description(newDesc) { this.#description = newDesc };
 
     get dueDate() { return this.#dueDate };
-    set dueDate(newDueDate) { this.#dueDate = newDueDate };
+    set dueDate(newDueDate) {
+        if (!(newDueDate instanceof Date)) {
+            throw Error('due date must be a Date');
+        }
+        this.#dueDate = newDueDate
+    };
 
     get priority() { return this.#priority };
     set priority(newPriority) {
-        if (newPriority < MIN_PRIORITY || newPriority > MAX_PRIORITY) {
-            throw `Priority must be ${MIN_PRIORITY} to ${MAX_PRIORITY} (inclusive), but ${newPriority} was specified`;
+        if (newPriority < ToDo.MIN_PRIORITY || newPriority > ToDo.MAX_PRIORITY) {
+            throw `Priority must be ${ToDo.MIN_PRIORITY} to ${ToDo.MAX_PRIORITY} (inclusive), but ${newPriority} was specified`;
         }
         this.#priority = newPriority;
     };
@@ -110,13 +122,13 @@ class ToDo {
     };
 
     toJSON() {
-        return { 
-            title: this.#title, 
-            description: this.#description, 
-            dueDate: this.#dueDate, 
-            priority: this.#priority, 
+        return {
+            title: this.#title,
+            description: this.#description,
+            dueDate: this.#dueDate,
+            priority: this.#priority,
             checklist: this.#checklist,
-            uid: this.#uid 
+            uid: this.#uid
         };
     };
 }
@@ -146,8 +158,8 @@ function saveToDo(toDoObj) {
     if (localStorageAvailable()) {
         let stringified = JSON.stringify(toDoObj);
         window['localStorage'].setItem(toDoObj.uid, stringified);
-        console.log(`obg with uid = ${toDoObj.uid} added:`);
-        console.log(stringified);
+        // console.log(`obg with uid = ${toDoObj.uid} added:`);
+        // console.log(stringified);
     }
 }
 
@@ -158,11 +170,14 @@ function saveToDo(toDoObj) {
 function loadToDos() {
     if (localStorageAvailable()) {
         let s = getStorage();
+        // console.log(s);
         let loaded = [];
-        for (let i = s.length - 1; i >= 0; i--) {
-            let retrieved = JSON.parse(s.getItem(s.key(i)));
-            let todo = new ToDo(retrieved.title, retrieved.description, retrieved.dueDate, retrieved.priority, retrieved.uid);
-            for (let i = 0; i <retrieved.checklist.length; i++) {
+        for (let i = 1; i <= s.length; i++) {
+            // console.log(`i: ${i} - s.key(i): ${s.key(i)}`);
+            let retrieved = JSON.parse(s.getItem(i));
+            // console.log(retrieved);
+            let todo = new ToDo(retrieved.title, retrieved.description, new Date(retrieved.dueDate), retrieved.priority, retrieved.uid);
+            for (let i = 0; i < retrieved.checklist.length; i++) {
                 todo.addToCheckList(retrieved.checklist[i][0], retrieved.checklist[i][1]);
             }
             loaded.push(todo);
@@ -212,10 +227,14 @@ function addTestToDosToStorage(numToAdd = 2) {
     let checklistCounter = 3;
     for (let i = 0; i < numToAdd; i++) {
         let num = i + 1;
-        let desc = (i%2===0) ? ('test description ' + num).repeat(20) : 'test description ' + num;
-        let t = new ToDo('test title ' + num, desc, num + '/' + num + '/' + num, num);
+        let title = 'test title ' + num;
+        let desc = (i % 2 === 0) ? ('test description ' + num).repeat(20) : 'test description ' + num;
+        let date = new Date(num, i, num);
+        let priority = (num >= 1 && num <= 5) ? num : 1;
+        let t = new ToDo(title, desc, date, priority);
         for (let j = 0; j < checklistCounter; j++) {
-            t.addToCheckList(true, "test checklist item" + (j + 1));
+            let rand = Math.floor((Math.random() * 100));
+            t.addToCheckList(true, rand + " test checklist item" + (j + 1));
         }
         saveToDo(t);
     }
@@ -226,7 +245,7 @@ function addTestToDosToStorage(numToAdd = 2) {
 // testing_ToDoChecklist();
 // testing_save_load();
 clearStorage();
-addTestToDosToStorage(5);
+addTestToDosToStorage(7);
 // displayStorage();
 
 
