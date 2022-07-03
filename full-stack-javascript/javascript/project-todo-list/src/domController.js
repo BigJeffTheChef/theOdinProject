@@ -1,65 +1,10 @@
 import { ToDo } from './ToDo.js';
 import { format } from 'date-fns';
 import { saveToDo, loadToDos } from './storage.js';
+import modalTemplate_container from './html-templates/toDoModal.html';
+import modalTemplate_new from './html-templates/toDoModal_new.html';
+import modalTemplate_list from './html-templates/toDoModal_list.html';
 
-const TODO_MODAL_TEMPLATE = `
-<div class="todo-editor-modal">
-    <form id="todo-editor-form">
-
-        <div class="section">
-            <div class="section-label">Title</div>
-            <input class="section-input" type="text" placeholder="Enter title" id="title-field">
-        </div>
-
-        <div class="section">
-            <div class="section-label">Description</div>
-            <textarea class="section-input" cols="40" rows="5" placeholder="Enter description"
-                id="desc-field"></textarea>
-        </div>
-
-        <div class="section two-cell">
-            <div class="section">
-                <div class="section-label">Due Date</div>
-                <input class="section-input" type="date" id="due-date-field">
-            </div>
-            <div class="section">
-                <div class="section-label">Priority</div>
-                <select class="section-input" id="priority-field">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="checklist-section">
-            <div class="section-label">Checklist</div>
-            
-
-
-        </div>
-
-    </form>
-</div>`;
-
-const TODO_MODAL_CHECKLIST_TEMPLATE = `
-<div class="checklist-item">
-    <div class="section">
-        <select class="section-input complete-field" name="completed">
-            <option value="true">Complete</option>
-            <option value="false">Not Complete</option>
-        </select>
-        <div class="section-label">Complete?</div>
-    </div>
-    <div class="section">
-        <input class="checklist-text" type="text">
-        <div class="section-label">Checklist item text</div>
-    </div>
-    <button type="button">Add</button>
-</div>
-`;
 
 // elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
@@ -89,7 +34,9 @@ let elements = (function () {
     setMenuButtonEvent();
     setMenuPosition();
 
-    document.querySelector('#burger-show-all').addEventListener('click', () => initShowToDos());
+    document.querySelector('#burger-show-all').addEventListener('click', () => renderToDoList());
+
+    renderWelcome();
 
     function setMenuPosition() {
         elements.nav.style['top'] = (elements.header.offsetHeight - 2) + 'px';
@@ -117,7 +64,14 @@ let elements = (function () {
     }
 })();
 
-function initShowToDos() {
+function renderWelcome() {
+    clearContent();
+    let tempWelcome = document.createElement('div');
+    tempWelcome.textContent = "Welcome!";
+    elements.content.appendChild(tempWelcome);
+}
+
+function renderToDoList() {
     clearContent();
     /*
     <div class="todo-cards">
@@ -249,7 +203,7 @@ function initShowToDos() {
  */
 function renderToDoModal(toDoObj) {
     let modalTemplate = document.createElement('template');
-    modalTemplate.innerHTML = TODO_MODAL_TEMPLATE;
+    modalTemplate.innerHTML = modalTemplate_container;
 
     let modalContent = modalTemplate.content.firstElementChild;
     // console.log(content.innerHTML);
@@ -257,15 +211,19 @@ function renderToDoModal(toDoObj) {
     modalContent.querySelector('#desc-field').value = toDoObj.description;
     modalContent.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
     modalContent.querySelector('#priority-field').value = toDoObj.priority;
+
+
     renderCheckList(toDoObj.checklist);
+    renderChecklistAdd();
 
 
     function renderCheckList(checklist) {
         //TODO_EDITOR_CHECKLIST_TEMPLATE
         let checklistSection = modalContent.querySelector('.checklist-section');
+
         for (let i = 0; i < checklist.length; i++) {
             let clistTemplate = document.createElement('template');
-            clistTemplate.innerHTML = TODO_MODAL_CHECKLIST_TEMPLATE;
+            clistTemplate.innerHTML = modalTemplate_list;
             let clistContent = clistTemplate.content.firstElementChild;
 
             clistContent.querySelector('.complete-field').value = checklist[i][0];
@@ -273,6 +231,16 @@ function renderToDoModal(toDoObj) {
 
             checklistSection.appendChild(clistContent);
         }
+    }
+
+    function renderChecklistAdd() {
+        let checklistSection = modalContent.querySelector('.checklist-section.new-item');
+
+        let newListItemTemplate = document.createElement('template');
+        newListItemTemplate.innerHTML = modalTemplate_new;
+
+        let newListItemContent = newListItemTemplate.content.firstElementChild;
+        checklistSection.appendChild(newListItemContent);
     }
 
     modalTemplate.content.querySelector('.todo-editor-modal').addEventListener('click', (event) => {

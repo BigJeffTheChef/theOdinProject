@@ -84,12 +84,24 @@ select.section-input,
     padding: 1.2rem 1rem 1rem 1rem;
 }
 
-.checklist-item {
+.checklist-list-item {
+    display: grid;
+    grid-template: 1fr/ 1fr 7fr;
+    column-gap: 10px;
+
+    margin: 12px 0px;
+}
+
+.checklist-new-item {
     display: grid;
     grid-template: 1fr/ 1fr 6fr 1fr;
     column-gap: 10px;
 
     margin: 12px 0px;
+}
+
+.new-item {
+    margin-top: 15px;
 }
 
 .checklist-section>.checklist-item>.section {

@@ -66,11 +66,7 @@ body {
     height: auto;
 }
 
-@media only screen and (max-width: 655px) {
-    .body {
-        height: 100vh;
-    }
-}
+
 
 
 .main {
@@ -227,12 +223,7 @@ button.hamburger:hover {
         transform var(--theme-transition-speed);
 }
 
-@media only screen and (max-width: 655px) {
-    .content {
-        margin: 0 10px;
-        flex-wrap: nowrap;
-    }
-}
+
 
 .nav {
 
@@ -278,7 +269,7 @@ form.add-todo {
     gap: 5px;
 }
 
-form.add-todo + button {
+form.add-todo+button {
     grid-column: 1 / -1;
 
     min-width: 100px;
@@ -295,17 +286,17 @@ form.add-todo + button {
 }
 
 
-form.add-todo + button:hover {
+form.add-todo+button:hover {
     background-color: var(--accent);
 
     transition: all 0.1s;
 }
 
-form.add-todo > input:invalid {
+form.add-todo>input:invalid {
     border: 1px solid red;
 }
 
-form.add-todo > input:valid {
+form.add-todo>input:valid {
     border: 1px solid green;
 }
 
@@ -335,24 +326,17 @@ div.add-todo {
 
 .todo-card {
     display: grid;
-    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr / repeat(2,1fr);
-    
+    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr / repeat(2, 1fr);
+
     background-color: var(--bg-color-1);
     border-radius: 10px;
-    border: 1px solid rgba(0,0,0,0);
+    border: 1px solid rgba(0, 0, 0, 0);
     width: 90%;
 
     padding: 10px;
 }
 
-@media only screen and (max-width: 655px) {
-    .todo-cards {
-        grid-template-columns: 1fr;
-    }
-    .todo-card {
-        width: 250px;
-    }
-}
+
 
 
 .todo-card:hover {
@@ -360,7 +344,7 @@ div.add-todo {
     box-shadow: 5px 5px 15px var(--accent);
 }
 
-.todo-card>*{
+.todo-card>* {
     /*position of all cells bar the bottom cell is to span 2 grid tracks*/
     grid-column: 2 span;
 }
@@ -426,5 +410,21 @@ div.add-todo {
     display: none;
 }
 
-/* TODO EDITOR */
+@media only screen and (max-width: 655px) {
+    .body {
+        height: 100vh;
+    }
 
+    .content {
+        margin: 0 10px;
+        flex-wrap: nowrap;
+    }
+
+    .todo-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .todo-card {
+        width: 250px;
+    }
+}

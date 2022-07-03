@@ -21,7 +21,11 @@ module.exports = {
             {
                 test: /\.(ttf)$/i,
                 type: 'asset/resource',
-            }
+            },
+            {
+                test: /\.html$/i,
+                use: 'html-loader',
+            },
         ],
     },
 };
