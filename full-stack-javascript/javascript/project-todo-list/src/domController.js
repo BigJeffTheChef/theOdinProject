@@ -89,6 +89,8 @@ let elements = (function () {
     setMenuButtonEvent();
     setMenuPosition();
 
+    document.querySelector('#burger-show-all').addEventListener('click', () => initShowToDos());
+
     function setMenuPosition() {
         elements.nav.style['top'] = (elements.header.offsetHeight - 2) + 'px';
         elements.nav.style['left'] = '10px';
@@ -115,7 +117,7 @@ let elements = (function () {
     }
 })();
 
-(function initShowToDos() {
+function initShowToDos() {
     clearContent();
     /*
     <div class="todo-cards">
@@ -188,7 +190,7 @@ let elements = (function () {
         function descCell(cellClass, cellContent) {
             let cellDiv = document.createElement('div');
             cellDiv.classList.add(cellClass);
-            const MAX_CHARS = 180;
+            const MAX_CHARS = 170;
             cellDiv.textContent = (cellContent.length < MAX_CHARS) ? cellContent : cellContent.substring(0, MAX_CHARS) + "...";
             card.appendChild(cellDiv);
         }
@@ -239,7 +241,7 @@ let elements = (function () {
             }
         };
     }
-})();
+};
 
 /**
  * Renders the ToDo modal to allow editing of a ToDo object.

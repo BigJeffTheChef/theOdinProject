@@ -1,6 +1,6 @@
 import './styles/styles.css';
 import './styles/todo-modal.css';
-import './dom.js';
+import './domController.js';
 import { clearStorage, addTestToDosToStorage, displayStorage } from './storage.js';
 
 (function debugPrints() {
