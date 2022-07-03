@@ -1,3 +1,7 @@
+.modal-active {
+    overflow: hidden;
+}
+
 select.section-input,
 .section-label,
 .section-input,
@@ -13,13 +17,15 @@ select.section-input,
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
+    position: fixed;
     z-index: 1;
+    top: 30px;
+    left: 0px;
+    bottom: 0px;
 
-    width: 80%;
-    height: 100vh;
+    font-size: 1rem;
     background-color: rgba(0, 0, 0, 0.5);
-    width: calc(100vw - calc(20px * 2));
+    width: 100%;
 
     padding: 20px;
 }
@@ -27,8 +33,9 @@ select.section-input,
 #todo-editor-form {
     display: flex;
     flex-flow: column nowrap;
+    align-items: center;
 
-    width: 80%;
+    width: 50%;
     background-color: var(--bg-color-3);
     border-radius: 10px;
     color: var(--text-1);
@@ -51,21 +58,29 @@ select.section-input,
     column-gap: 10px;
 }
 
+#title-field {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#desc-field {
+    font-size: 1em;
+}
+
 .section>textarea {
     resize: vertical;
     font-family: inherit;
-    font-size: 0.8rem;
 }
 
 .section-label {
     position: absolute;
-    top: -0.4rem;
-    left: 0.5rem;
+    top: -0.4em;
+    left: 0.5em;
 
     background-color: var(--text-2);
-    font-size: 0.65rem;
+    font-size: 0.65em;
 
-    padding: 0.05rem 0.5rem;
+    padding: 0.05em 0.5em;
 }
 
 .section-input {
@@ -73,7 +88,7 @@ select.section-input,
 
     color: var(--text-1);
 
-    padding: 0.8rem 0.5rem 0.5rem 0.5rem;
+    padding: 0.8em 0.5em 0.5em 0.5em;
 }
 
 .checklist-section {
@@ -81,7 +96,7 @@ select.section-input,
 
     background-color: var(--accent);
 
-    padding: 1.2rem 1rem 1rem 1rem;
+    padding: 1.2em 1em 1em 1em;
 }
 
 .checklist-list-item {
@@ -107,11 +122,47 @@ select.section-input,
 .checklist-section>.checklist-item>.section {
     width: 100%;
     margin: 0px;
+    
 }
 
 .checklist-text {
     width: 100%;
     padding: 0px 10px;
 
+    font-size: 0.8em;
+
     color: var(--text-1);
+}
+
+#todo-editor-form button {
+    border: 0px;
+    border-radius: var(--border-rad);
+    height: 2.5rem;
+}
+
+#todo-editor-form button:hover {
+    background-color: var(--bg-color-2);
+    transition: background-color 0.1s;
+}
+
+#todo-editor-form button:active {
+    background-color: var(--bg-color-1);
+    transition: none;
+}
+
+#save-todo-button {
+    width: 50px;
+
+    padding: 5px 10px;
+    margin-top: 5px;
+}
+
+#add-todo-button {
+    align-self: center;
+}
+
+@media only screen and (max-width: 750px) {
+    #todo-editor-form {
+        width: 95%;
+    }
 }

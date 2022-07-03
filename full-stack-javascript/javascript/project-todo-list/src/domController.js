@@ -202,8 +202,11 @@ function renderToDoList() {
  * @param {ToDo} toDoObj 
  */
 function renderToDoModal(toDoObj) {
+    elements.body.classList.add('modal-active');
+    
     let modalTemplate = document.createElement('template');
     modalTemplate.innerHTML = modalTemplate_container;
+
 
     let modalContent = modalTemplate.content.firstElementChild;
     // console.log(content.innerHTML);
@@ -240,11 +243,22 @@ function renderToDoModal(toDoObj) {
         newListItemTemplate.innerHTML = modalTemplate_new;
 
         let newListItemContent = newListItemTemplate.content.firstElementChild;
+
+        newListItemContent.querySelector('#add-todo-button').addEventListener('click', () => {
+            let completed = newListItemContent.querySelector('.checklist-new-item .complete-field').value == "true";
+            let text =  newListItemContent.querySelector('.checklist-new-item .checklist-text').value;
+            let success = toDoObj.addToCheckList(completed, text);
+            console.log(success);
+        });
+
         checklistSection.appendChild(newListItemContent);
     }
 
     modalTemplate.content.querySelector('.todo-editor-modal').addEventListener('click', (event) => {
-        if (event.target.matches('.todo-editor-modal')) { document.body.removeChild(modalContent) };
+        if (event.target.matches('.todo-editor-modal')) { 
+            elements.body.removeChild(modalContent)
+            elements.body.classList.remove('modal-active');
+        };
     });
     document.body.appendChild(modalContent);
 };

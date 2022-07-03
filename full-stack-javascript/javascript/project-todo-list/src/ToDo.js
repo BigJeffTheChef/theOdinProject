@@ -21,6 +21,7 @@ class ToDo {
     static MIN_PRIORITY = 1;
     static MAX_PRIORITY = 5;
     static PRIORITIES = ['Critical', 'High', 'Medium', 'Low', 'Unimportant'];
+    static MAX_CHECKLIST_TEXT_LENGTH = 255;
 
     /**
      * Base class for all ToDo classes.
@@ -94,7 +95,7 @@ class ToDo {
      * @return true if added successfully, false if not. 
      */
     addToCheckList(complete, text) {
-        if (typeof complete === 'boolean' && typeof text === 'string') {
+        if (typeof complete === 'boolean' && typeof text === 'string' && text.length <= ToDo.MAX_CHECKLIST_TEXT_LENGTH) {
             this.#checklist.push([complete, text]);
             return true;
         }

@@ -99,6 +99,8 @@ function addTestToDosToStorage(numToAdd = 7) {
         }
         saveToDo(t);
     }
+    // let t  =new ToDo('x','x', new Date(1,1,1), 1);
+    // t.addToCheckList(false, 'x'.repeat(256));
     console.log(`${numToAdd} test ToDo objects added to storage!`);
 }
 
