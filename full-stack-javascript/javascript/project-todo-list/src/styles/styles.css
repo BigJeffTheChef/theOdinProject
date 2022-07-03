@@ -80,6 +80,7 @@ body {
     display: flex;
     position: sticky;
     top: 0px;
+    z-index: 2;
 
     /* border-radius: var(--border-rad); */
     background-color: var(--bg-color-2);

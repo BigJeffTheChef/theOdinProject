@@ -1,7 +1,8 @@
-import { loadToDos, ToDo } from './ToDo.js';
+import { ToDo } from './ToDo.js';
 import { format } from 'date-fns';
+import { saveToDo, loadToDos } from './storage.js';
 
-const TODO_EDITOR_HTML_TEMPLATE = `
+const TODO_MODAL_TEMPLATE = `
 <div class="todo-editor-modal">
     <form id="todo-editor-form">
 
@@ -43,7 +44,7 @@ const TODO_EDITOR_HTML_TEMPLATE = `
     </form>
 </div>`;
 
-const TODO_EDITOR_CHECKLIST_TEMPLATE = `
+const TODO_MODAL_CHECKLIST_TEMPLATE = `
 <div class="checklist-item">
     <div class="section">
         <select class="section-input complete-field" name="completed">
@@ -160,7 +161,7 @@ let elements = (function () {
         // bottom cell -> due date and priority
         dateAndPriorityCell(toDoObj.dueDate, toDoObj.priority);
 
-        card.addEventListener('click', () => renderToDoEditor(toDoObj));
+        card.addEventListener('click', () => renderToDoModal(toDoObj));
 
         return card;
 
@@ -240,31 +241,31 @@ let elements = (function () {
     }
 })();
 
-function renderToDoEditor(toDoObj) {
-    console.log('renderrrr');
-    let template = document.createElement('template');
-    template.innerHTML = TODO_EDITOR_HTML_TEMPLATE;
-    let content = template.content.firstElementChild;
+/**
+ * Renders the ToDo modal to allow editing of a ToDo object.
+ * @param {ToDo} toDoObj 
+ */
+function renderToDoModal(toDoObj) {
+    let modalTemplate = document.createElement('template');
+    modalTemplate.innerHTML = TODO_MODAL_TEMPLATE;
+
+    let modalContent = modalTemplate.content.firstElementChild;
     // console.log(content.innerHTML);
-    content.querySelector('#title-field').value = toDoObj.title;
-    content.querySelector('#desc-field').value = toDoObj.description;
-    content.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
-    content.querySelector('#priority-field').value = toDoObj.priority;
+    modalContent.querySelector('#title-field').value = toDoObj.title;
+    modalContent.querySelector('#desc-field').value = toDoObj.description;
+    modalContent.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
+    modalContent.querySelector('#priority-field').value = toDoObj.priority;
     renderCheckList(toDoObj.checklist);
 
 
     function renderCheckList(checklist) {
         //TODO_EDITOR_CHECKLIST_TEMPLATE
-        let checklistSection = content.querySelector('.checklist-section');
+        let checklistSection = modalContent.querySelector('.checklist-section');
         for (let i = 0; i < checklist.length; i++) {
             let clistTemplate = document.createElement('template');
-            clistTemplate.innerHTML = TODO_EDITOR_CHECKLIST_TEMPLATE;
+            clistTemplate.innerHTML = TODO_MODAL_CHECKLIST_TEMPLATE;
             let clistContent = clistTemplate.content.firstElementChild;
-            // console.log(clistContent.innerHTML);
-            // console.log(checklist[i][0]);
-            // console.log(clistContent);
-            // console.log(clistContent.innerHTML);
-            // console.log(clistContent.outerHTML);
+
             clistContent.querySelector('.complete-field').value = checklist[i][0];
             clistContent.querySelector('.checklist-text').value = checklist[i][1];
 
@@ -272,10 +273,10 @@ function renderToDoEditor(toDoObj) {
         }
     }
 
-    template.content.querySelector('.todo-editor-modal').addEventListener('click', (event) => {
-        if (event.target.matches('.todo-editor-modal')) { document.body.removeChild(content) };
+    modalTemplate.content.querySelector('.todo-editor-modal').addEventListener('click', (event) => {
+        if (event.target.matches('.todo-editor-modal')) { document.body.removeChild(modalContent) };
     });
-    document.body.appendChild(content);
+    document.body.appendChild(modalContent);
 };
 
 /**
