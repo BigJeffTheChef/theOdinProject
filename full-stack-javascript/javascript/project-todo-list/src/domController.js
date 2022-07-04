@@ -4,8 +4,6 @@ import { saveToDo, loadToDos } from './storage.js';
 import modalTemplate_container from './html-templates/toDoModal.html';
 import modalTemplate_new from './html-templates/toDoModal_new.html';
 import modalTemplate_list from './html-templates/toDoModal_list.html';
-import { node } from 'webpack';
-
 
 // elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
@@ -201,6 +199,10 @@ function renderToDoList() {
  * @param {ToDo} toDoObj 
  */
 function renderToDoModal(toDoObj) {
+    if (document.body.classList.contains('modal-active')) {
+        document.body.removeChild(document.querySelector('.todo-modal'));
+    }
+
     document.body.classList.add('modal-active');
 
     let modalTemplate = document.createElement('template');
@@ -261,31 +263,38 @@ function renderToDoModal(toDoObj) {
         checklistSection.appendChild(newListItemContent);
     }
 
-    modalTemplate.content.querySelector('.todo-modal').addEventListener('click', event => closeModal(event));
+    // modalTemplate.content.querySelector('.todo-modal').addEventListener('click', event => closeModal(event));
     document.body.appendChild(modalContent);
 
-    ensureCorrectPropagation(document.querySelectorAll('todo-modal'));
+    // ensureCorrectPropagation(document.querySelectorAll('.todo-modal'));
+    // console.log('prop ensured');
 
-    function ensureCorrectPropagation(nodes) {
-        for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i] instanceof HTMLElement) {
-                console.log(Array.from(nodes[i].classList));
-            };
-            // if (nodes[i] instanceof HTMLElement && !nodes[i].classList.contains('todo-modal')) {
-            //     nodes[i].addEventListener('click', (event) => event.stopPropagation());
-            // }
-        }
-        console.log(nodes.hasChildNodes());
-    };
+    // function ensureCorrectPropagation(nodes) {
+    //     console.log('ensuring propagation');
+    //     for (let i = 0; i < nodes.length; i++) {
+    //         // console.log(nodes[i]);
+    //         if (nodes[i] instanceof HTMLElement) {
+    //             //console.log(nodes[i]);
+    //             nodes[i].addEventListener('click', (event) => event.stopPropagation());
 
+    //             if (nodes[i].hasChildNodes()) {
+    //                 ensureCorrectPropagation(nodes[i].children);
+    //             };
+    //         };
+    //         // if (nodes[i] instanceof HTMLElement && !nodes[i].classList.contains('todo-modal')) {
+    //         //     nodes[i].addEventListener('click', (event) => event.stopPropagation());
+    //         // }
+    //     }
+    // };
+
+    document.querySelector('.todo-modal').addEventListener('click', event => closeModal(event));
 
     function closeModal(event) {
-        // let modalSelector = '.todo-modal';
-        // let modal = document.querySelector(modalSelector);
-        // if (event.target.matches(modalSelector)) {
-        //     document.body.removeChild(modal);
-        //     document.body.classList.remove('modal-active');
-        // };
+        console.log(event.target);
+        let modalSelector = '.todo-modal';
+        let modal = document.querySelector(modalSelector);
+            document.body.removeChild(modal);
+            document.body.classList.remove('modal-active');
     }
 
 };
