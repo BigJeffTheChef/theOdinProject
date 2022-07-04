@@ -85,23 +85,28 @@ function displayStorage() {
  * @param {number} numToAdd 
  */
 function addTestToDosToStorage(numToAdd = 7) {
-    let checklistCounter = 3;
-    for (let i = 0; i < numToAdd; i++) {
-        let num = i + 1;
-        let title = 'test title ' + num;
-        let desc = (i % 2 === 0) ? ('test description ' + num).repeat(20) : 'test description ' + num;
-        let date = new Date(num, i, num);
-        let priority = (num >= 1 && num <= 5) ? num : 1;
-        let t = new ToDo(title, desc, date, priority);
-        for (let j = 0; j < checklistCounter; j++) {
-            let rand = Math.floor((Math.random() * 100));
-            t.addToCheckList(true, rand + " test checklist item" + (j + 1));
+    let todos = [
+        new ToDo("Test ToDo 1", "Test Description 1", new Date(1980,0,1), 1),
+        new ToDo("Test ToDo 2", "Test Description 2", new Date(1985,0,12), 2),
+        new ToDo("Test ToDo 3", "Test Description 3", new Date(1990,0,18), 3),
+        new ToDo("Test ToDo 4", "Test Description 4", new Date(1995,0,19), 4),
+        new ToDo("Test ToDo 5", "Test Description 5", new Date(2000,0,21), 5),
+        new ToDo("Test ToDo 6", "Test Description 6", new Date(2005,0,29), 1),
+        new ToDo("Test ToDo 7", "Test Description 7", new Date(2022,0,10), 2),
+        new ToDo("Test ToDo 8", "Test Description 8", new Date(2022,2,12), 3),
+        new ToDo("Test ToDo 9", "Test Description 9", new Date(2022,11,21), 4),
+    ];
+    let checklistsToAdd = 1;
+    let checklistComplete = true;
+    for (let t of todos) {
+        for (let i = 0;  i < checklistsToAdd; i++) {
+            checklistComplete = (checklistComplete) ? false : true;
+            t.addToCheckList(checklistComplete, "abcde ".repeat(checklistsToAdd));
         }
         saveToDo(t);
+        checklistsToAdd++;
     }
-    // let t  =new ToDo('x','x', new Date(1,1,1), 1);
-    // t.addToCheckList(false, 'x'.repeat(256));
-    console.log(`${numToAdd} test ToDo objects added to storage!`);
+    console.log(`${todos.length} test ToDo objects added to storage!`);
 }
 
 export {saveToDo, loadToDos, clearStorage, addTestToDosToStorage, displayStorage};

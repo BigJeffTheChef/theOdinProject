@@ -95,11 +95,19 @@ class ToDo {
      * @return true if added successfully, false if not. 
      */
     addToCheckList(complete, text) {
-        if (typeof complete === 'boolean' && typeof text === 'string' && text.length <= ToDo.MAX_CHECKLIST_TEXT_LENGTH) {
-            this.#checklist.push([complete, text]);
-            return true;
+        if (typeof complete !== 'boolean') {
+            throw new Error('complete parameter invalid type: ' + typeof complete);
         }
-        return false;
+        if (typeof text !== 'string') {
+            throw new Error('text parameter invalid type: ' + typeof complete);
+        }
+        if (text.length === 0 || text.match(WHITESPACE_ONLY_REGEX)) {
+            throw new Error('Checklist text cannot be empty!');
+        }
+        if (text.length > ToDo.MAX_CHECKLIST_TEXT_LENGTH) {
+            throw new Error(`Checklist text cannot be longer than ${ToDo.MAX_CHECKLIST_TEXT_LENGTH} characters`);
+        }
+        this.#checklist.push([complete, text]);
     }
 
     /**

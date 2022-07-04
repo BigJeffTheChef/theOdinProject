@@ -4,20 +4,19 @@ import { saveToDo, loadToDos } from './storage.js';
 import modalTemplate_container from './html-templates/toDoModal.html';
 import modalTemplate_new from './html-templates/toDoModal_new.html';
 import modalTemplate_list from './html-templates/toDoModal_list.html';
+import { node } from 'webpack';
 
 
 // elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
     let menuBtn = document.querySelector('button.hamburger');
     let themeBtn = document.querySelector('.change-theme');
-    let body = document.querySelector('body');
     let header = document.querySelector('.header');
     let nav = document.querySelector('.nav');
     let content = document.querySelector('.content')
     return {
         menuBtn,
         themeBtn,
-        body,
         header,
         nav,
         content,
@@ -27,16 +26,16 @@ let elements = (function () {
 // page initialisation
 (function initialize() {
 
-    // setNavWidthVar();
-    // setMenuButtonEvent();
-
     setThemeChangeEvent();
     setMenuButtonEvent();
     setMenuPosition();
-
-    document.querySelector('#burger-show-all').addEventListener('click', () => renderToDoList());
-
     renderWelcome();
+
+    // document.querySelector('#burger-show-all').addEventListener('click', () => renderToDoList());
+    for (let showAllBtn of document.querySelectorAll('.burger-show-all')) {
+        showAllBtn.addEventListener('click', () => renderToDoList());
+    }
+
 
     function setMenuPosition() {
         elements.nav.style['top'] = (elements.header.offsetHeight - 2) + 'px';
@@ -59,7 +58,7 @@ let elements = (function () {
 
     function setThemeChangeEvent() {
         elements.themeBtn.addEventListener('click', () => {
-            elements.body.classList.toggle('dark');
+            document.body.classList.toggle('dark');
         });
     }
 })();
@@ -202,8 +201,8 @@ function renderToDoList() {
  * @param {ToDo} toDoObj 
  */
 function renderToDoModal(toDoObj) {
-    elements.body.classList.add('modal-active');
-    
+    document.body.classList.add('modal-active');
+
     let modalTemplate = document.createElement('template');
     modalTemplate.innerHTML = modalTemplate_container;
 
@@ -244,23 +243,51 @@ function renderToDoModal(toDoObj) {
 
         let newListItemContent = newListItemTemplate.content.firstElementChild;
 
-        newListItemContent.querySelector('#add-todo-button').addEventListener('click', () => {
-            let completed = newListItemContent.querySelector('.checklist-new-item .complete-field').value == "true";
-            let text =  newListItemContent.querySelector('.checklist-new-item .checklist-text').value;
-            let success = toDoObj.addToCheckList(completed, text);
-            console.log(success);
+        newListItemContent.querySelector('#add-todo-button').addEventListener('click', (event) => {
+            let completeValue = newListItemContent.querySelector('.checklist-new-item .complete-field').value == "true";
+            let textField = newListItemContent.querySelector('.checklist-new-item .checklist-text');
+            try {
+                toDoObj.addToCheckList(completeValue, textField.value);
+                closeModal(event);
+                saveToDo(toDoObj);
+                renderToDoList();
+                renderToDoModal(toDoObj);
+            } catch (error) {
+                textField.setCustomValidity(error.message);
+                textField.reportValidity();
+            }
         });
 
         checklistSection.appendChild(newListItemContent);
     }
 
-    modalTemplate.content.querySelector('.todo-editor-modal').addEventListener('click', (event) => {
-        if (event.target.matches('.todo-editor-modal')) { 
-            elements.body.removeChild(modalContent)
-            elements.body.classList.remove('modal-active');
-        };
-    });
+    modalTemplate.content.querySelector('.todo-modal').addEventListener('click', event => closeModal(event));
     document.body.appendChild(modalContent);
+
+    ensureCorrectPropagation(document.querySelectorAll('todo-modal'));
+
+    function ensureCorrectPropagation(nodes) {
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i] instanceof HTMLElement) {
+                console.log(Array.from(nodes[i].classList));
+            };
+            // if (nodes[i] instanceof HTMLElement && !nodes[i].classList.contains('todo-modal')) {
+            //     nodes[i].addEventListener('click', (event) => event.stopPropagation());
+            // }
+        }
+        console.log(nodes.hasChildNodes());
+    };
+
+
+    function closeModal(event) {
+        // let modalSelector = '.todo-modal';
+        // let modal = document.querySelector(modalSelector);
+        // if (event.target.matches(modalSelector)) {
+        //     document.body.removeChild(modal);
+        //     document.body.classList.remove('modal-active');
+        // };
+    }
+
 };
 
 /**

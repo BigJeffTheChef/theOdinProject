@@ -3,43 +3,55 @@
 }
 
 select.section-input,
-.section-label,
 .section-input,
 .checklist-section>button,
 .checklist-section,
-.checklist-text {
-    background-color: var(--text-2);
+.checklist-text,
+#todo-modal-form {
+    background-color: var(--bg-color-1);
     border-radius: var(--border-rad);
-    border: 1px solid var(--text-1);
+    border: 2px solid var(--bg-color-3);
 }
 
-.todo-editor-modal {
+.section-label {
+    background-color: var(--bg-color-1);
+    border-radius: calc(var(--border-rad)/3);
+    border: 1px solid var(--bg-color-3);
+}
+
+.todo-modal {
+    --top-offset: 3.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
     z-index: 1;
-    top: 30px;
+    top: 0px;
     left: 0px;
     bottom: 0px;
 
     font-size: 1rem;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
+    height: 100%;
 
-    padding: 20px;
 }
 
-#todo-editor-form {
+#todo-modal-form {
+    --margin-top:calc(var(--top-offset) + 10px);
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+    justify-content: flex-start;
 
     width: 50%;
-    background-color: var(--bg-color-3);
+    min-width: 265px;
+    max-height: calc(100vh - var(--top-offset) - var(--margin-top));
+    overflow: scroll;
     border-radius: 10px;
     color: var(--text-1);
 
+    margin-top: var(--margin-top);
     padding: 10px;
 }
 
@@ -74,10 +86,10 @@ select.section-input,
 
 .section-label {
     position: absolute;
-    top: -0.4em;
-    left: 0.5em;
+    top: -0.7em;
+    left: 1.5em;
 
-    background-color: var(--text-2);
+    /* background-color: var(--text-2); */
     font-size: 0.65em;
 
     padding: 0.05em 0.5em;
@@ -94,7 +106,7 @@ select.section-input,
 .checklist-section {
     position: relative;
 
-    background-color: var(--accent);
+    /* background-color: var(--accent); */
 
     padding: 1.2em 1em 1em 1em;
 }
@@ -104,7 +116,7 @@ select.section-input,
     grid-template: 1fr/ 1fr 7fr;
     column-gap: 10px;
 
-    margin: 12px 0px;
+    /* margin: 12px 0px; */
 }
 
 .checklist-new-item {
@@ -134,18 +146,18 @@ select.section-input,
     color: var(--text-1);
 }
 
-#todo-editor-form button {
+#todo-modal-form button {
     border: 0px;
     border-radius: var(--border-rad);
     height: 2.5rem;
 }
 
-#todo-editor-form button:hover {
+#todo-modal-form button:hover {
     background-color: var(--bg-color-2);
     transition: background-color 0.1s;
 }
 
-#todo-editor-form button:active {
+#todo-modal-form button:active {
     background-color: var(--bg-color-1);
     transition: none;
 }
@@ -162,7 +174,20 @@ select.section-input,
 }
 
 @media only screen and (max-width: 750px) {
-    #todo-editor-form {
+    #todo-modal-form {
         width: 95%;
+    }
+    .checklist-section {
+        width: 95%;
+    }
+    .complete-field {
+        width: 75px;
+        font-size: 0.75em;
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    .header-body .menu-button {
+        display: none;
     }
 }
