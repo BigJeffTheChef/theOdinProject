@@ -1,20 +1,32 @@
 import {Todo} from './ToDo.js';
 
+let uidSeed = 0;
+
 class Project {
-    #todos
-    #description
+    
+    #uid;
+
+    #title;
+    #description;
     #notes;
+    #todos;
+    
 
     /**
      * 
      * @param {string} description 
      * @param {string} notes 
      */
-    constructor(description, notes) {
+    constructor(title, description, notes, uid) {
+        this.title = title;
         this.description = description;
         this.notes = notes;
         this.#todos = [];
+        this.#uid = uid || ++uidSeed;
     }
+
+    set title(newTitle) {this.#title = newTitle};
+    get title() {return this.#title};
 
     set todos(toDoArray) { this.#todos = toDoArray };
     get todos() {return this.#todos};
@@ -25,12 +37,14 @@ class Project {
     set notes(newNotes) {this.#notes = newNotes};
     get notes() {return this.#notes};
 
+    get uid() {return this.#uid};
+
     addTodo(toDoObj) {
         this.#todos.push(toDoObj);
     }
 
     removeTodo(toDoObj) {
-        this.#todos.splice(this.#todos.findIndex((o) => o.uid = toDoObj.uid), 1);
+        this.#todos.splice(this.#todos.findIndex((o) => o.uid == toDoObj.uid), 1);
     }
 
     toString() {
@@ -39,6 +53,18 @@ class Project {
             str += "\n" + todo.toString();
         }
         return str;
+    }
+
+    toJSON() {
+        let toDoUids = this.#todos.map((element) => element.uid);
+        console.log('todo uids in project');
+        console.log(toDoUids);
+        return {
+            title: this.#title,
+            description: this.#description,
+            notes: this.#notes,
+            toDoUids : toDoUids,
+        }
     }
 }
 
