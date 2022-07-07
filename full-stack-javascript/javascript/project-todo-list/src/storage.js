@@ -1,4 +1,5 @@
 import {ToDo} from './ToDo.js';
+import {Project} from './Project.js';
 
 /**
  *  search local storage to todo uid
@@ -85,6 +86,36 @@ function displayStorage() {
  * @param {number} numToAdd 
  */
 function addTestToDosToStorage(numToAdd = 7) {
+    // let todos = [
+    //     new ToDo("Test ToDo 1", "Test Description 1", new Date(1980,0,1), 1),
+    //     new ToDo("Test ToDo 2", "Test Description 2", new Date(1985,0,12), 2),
+    //     new ToDo("Test ToDo 3", "Test Description 3", new Date(1990,0,18), 3),
+    //     new ToDo("Test ToDo 4", "Test Description 4", new Date(1995,0,19), 4),
+    //     new ToDo("Test ToDo 5", "Test Description 5", new Date(2000,0,21), 5),
+    //     new ToDo("Test ToDo 6", "Test Description 6", new Date(2005,0,29), 1),
+    //     new ToDo("Test ToDo 7", "Test Description 7", new Date(2022,0,10), 2),
+    //     new ToDo("Test ToDo 8", "Test Description 8", new Date(2022,2,12), 3),
+    //     new ToDo("Test ToDo 9", "Test Description 9", new Date(2022,11,21), 4),
+    // ];
+    // let checklistsToAdd = 1;
+    // let checklistComplete = true;
+    // for (let t of todos) {
+    //     for (let i = 0;  i < checklistsToAdd; i++) {
+    //         checklistComplete = (checklistComplete) ? false : true;
+    //         t.addToCheckList(checklistComplete, "abcde ".repeat(checklistsToAdd));
+    //     }
+    //     saveToDo(t);
+    //     checklistsToAdd++;
+    // }
+    let todos = generateToDos();
+    for (let todo of todos) {
+        saveToDo(todo);
+    }
+    console.log(`${todos.length} test ToDo objects added to storage!`);
+}
+
+
+function generateToDos(numToGenerate = 7) {
     let todos = [
         new ToDo("Test ToDo 1", "Test Description 1", new Date(1980,0,1), 1),
         new ToDo("Test ToDo 2", "Test Description 2", new Date(1985,0,12), 2),
@@ -103,10 +134,18 @@ function addTestToDosToStorage(numToAdd = 7) {
             checklistComplete = (checklistComplete) ? false : true;
             t.addToCheckList(checklistComplete, "abcde ".repeat(checklistsToAdd));
         }
-        saveToDo(t);
         checklistsToAdd++;
     }
-    console.log(`${todos.length} test ToDo objects added to storage!`);
+    return todos;
 }
 
-export {saveToDo, loadToDos, clearStorage, addTestToDosToStorage, displayStorage};
+function addTestProjectToStorage(numOfProjects = 1) {
+    for (let i = 0; i < numOfProjects; i++) {
+        let project = new Project("Test Project", "notes for test project");
+        let todos = generateToDos();
+        project.todos = todos;
+        console.log(project.toString());
+    }
+
+}
+export {saveToDo, loadToDos, clearStorage, addTestToDosToStorage, addTestProjectToStorage,displayStorage};

@@ -19,7 +19,7 @@ select.section-input,
     border: 1px solid var(--bg-color-3);
 }
 
-.todo-modal {
+.todo-modal-wrapper {
     --top-offset: 3.5rem;
     display: flex;
     justify-content: center;

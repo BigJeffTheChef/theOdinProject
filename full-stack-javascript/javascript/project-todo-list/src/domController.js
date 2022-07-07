@@ -199,29 +199,26 @@ function renderToDoList() {
  * @param {ToDo} toDoObj 
  */
 function renderToDoModal(toDoObj) {
-    if (document.body.classList.contains('modal-active')) {
-        document.body.removeChild(document.querySelector('.todo-modal'));
-    }
+    // ensure modal doesn't render twice
+    if (document.body.classList.contains('modal-active')) closeModalAction();
 
+    // setup modal
     document.body.classList.add('modal-active');
-
     let modalTemplate = document.createElement('template');
     modalTemplate.innerHTML = modalTemplate_container;
-
-
     let modalContent = modalTemplate.content.firstElementChild;
-    // console.log(content.innerHTML);
     modalContent.querySelector('#title-field').value = toDoObj.title;
     modalContent.querySelector('#desc-field').value = toDoObj.description;
     modalContent.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
     modalContent.querySelector('#priority-field').value = toDoObj.priority;
+    renderChecklist_view(toDoObj.checklist);
+    renderChecklist_add();
 
+    // append modal to body
+    document.body.appendChild(modalContent);
+    document.querySelector('.todo-modal-wrapper').addEventListener('click', event => closeModalEvent(event));
 
-    renderCheckList(toDoObj.checklist);
-    renderChecklistAdd();
-
-
-    function renderCheckList(checklist) {
+    function renderChecklist_view(checklist) {
         //TODO_EDITOR_CHECKLIST_TEMPLATE
         let checklistSection = modalContent.querySelector('.checklist-section');
 
@@ -237,7 +234,7 @@ function renderToDoModal(toDoObj) {
         }
     }
 
-    function renderChecklistAdd() {
+    function renderChecklist_add() {
         let checklistSection = modalContent.querySelector('.checklist-section.new-item');
 
         let newListItemTemplate = document.createElement('template');
@@ -250,7 +247,7 @@ function renderToDoModal(toDoObj) {
             let textField = newListItemContent.querySelector('.checklist-new-item .checklist-text');
             try {
                 toDoObj.addToCheckList(completeValue, textField.value);
-                closeModal(event);
+                closeModalEvent(event);
                 saveToDo(toDoObj);
                 renderToDoList();
                 renderToDoModal(toDoObj);
@@ -263,38 +260,15 @@ function renderToDoModal(toDoObj) {
         checklistSection.appendChild(newListItemContent);
     }
 
-    // modalTemplate.content.querySelector('.todo-modal').addEventListener('click', event => closeModal(event));
-    document.body.appendChild(modalContent);
+    function closeModalEvent(event) {
+        if (event.target.closest('#todo-modal-form') === null) closeModalAction();
+    }
 
-    // ensureCorrectPropagation(document.querySelectorAll('.todo-modal'));
-    // console.log('prop ensured');
-
-    // function ensureCorrectPropagation(nodes) {
-    //     console.log('ensuring propagation');
-    //     for (let i = 0; i < nodes.length; i++) {
-    //         // console.log(nodes[i]);
-    //         if (nodes[i] instanceof HTMLElement) {
-    //             //console.log(nodes[i]);
-    //             nodes[i].addEventListener('click', (event) => event.stopPropagation());
-
-    //             if (nodes[i].hasChildNodes()) {
-    //                 ensureCorrectPropagation(nodes[i].children);
-    //             };
-    //         };
-    //         // if (nodes[i] instanceof HTMLElement && !nodes[i].classList.contains('todo-modal')) {
-    //         //     nodes[i].addEventListener('click', (event) => event.stopPropagation());
-    //         // }
-    //     }
-    // };
-
-    document.querySelector('.todo-modal').addEventListener('click', event => closeModal(event));
-
-    function closeModal(event) {
-        console.log(event.target);
-        let modalSelector = '.todo-modal';
+    function closeModalAction() {
+        let modalSelector = '.todo-modal-wrapper';
         let modal = document.querySelector(modalSelector);
-            document.body.removeChild(modal);
-            document.body.classList.remove('modal-active');
+        document.body.removeChild(modal);
+        document.body.classList.remove('modal-active');
     }
 
 };
