@@ -4,80 +4,13 @@ import { Project } from './Project.js';
 const jsonStructure = require('./localStorageStructure.json');
 const jsonExample = require('./localStorageExample.json');
 
-
-/* 
-
-    OLD SAVE /LOADS
-
-*/
-
-/**
- *  search local storage to todo uid
- *      if found, overwrite that element
- *      else create a new element
- * @param {ToDo} toDoObj ToDo object instance 
- */
-function saveToDo(toDoObj) {
-
-    if (localStorageAvailable()) {
-        let stringified = JSON.stringify(toDoObj);
-        window['localStorage'].setItem(toDoObj.uid, stringified);
-        // console.log(`obg with uid = ${toDoObj.uid} added:`);
-        // console.log(stringified);
-    }
-}
-
-/**
- * Load JSON from localStorage and parse into an array of ToDo objects
- * @returns {array} Array of toDo objects
- */
-function loadToDos() {
-    // if (localStorageAvailable()) {
-    //     let s = getStorage();
-    //     // console.log(s);
-    //     let loaded = [];
-    //     for (let i = 1; i <= s.length; i++) {
-    //         // console.log(`i: ${i} - s.key(i): ${s.key(i)}`);
-    //         let retrieved = JSON.parse(s.getItem(i));
-    //         // console.log(retrieved);
-    //         let todo = new ToDo(retrieved.title, retrieved.description, new Date(retrieved.dueDate), retrieved.priority, retrieved.uid);
-    //         for (let i = 0; i < retrieved.checklist.length; i++) {
-    //             todo.addToCheckList(retrieved.checklist[i][0], retrieved.checklist[i][1]);
-    //         }
-    //         loaded.push(todo);
-    //     }
-    //     return loaded;
-    // }
-};
-
-
-/* 
-
-    NEW SAVE /LOADS
-
-*/
-
 /**
  * 
  * @param {ToDo | Project} objToSave 
  * @throws Error if objToSave parameter is not a ToDo or Project object.
  */
 function save(objToSave) {
-    /*
-    LOCAL STORAGE SAVE STRUCTURE:
-    Projects :  [{uid, title, desc, notes, uids of todos}]
-    ToDos :     "ToDo uid" : "Stringified ToDo objects"
-    */
     if (localStorageAvailable()) {
-        let storage = getStorage();
-
-        // if storage does not contain required arrays, create them
-        //if (storage['todos'] === undefined || storage['projects'] === undefined) {
-        // storage.setItem('todos', "[]");
-        // storage.setItem('projects', "[]");
-        // storage.setItem('todos', "[]");
-        // storage.setItem('projects', "[]");
-        //}
 
         if (objToSave instanceof ToDo) {
             // save ToDo
@@ -92,46 +25,46 @@ function save(objToSave) {
         function sTodo(toDoObj) {
             // console.log(toDoObj);
 
-            let storage = getStorage();
             // console.log(storage);
 
-            let loaded;
+            let loadedTodo;
             try {
                 // attempt to load todos object from localStorage
-                loaded = JSON.parse(storage.todos);
+                loadedTodo = JSON.parse(getStorage().todos);
                 // console.log(loaded);
             } catch (err) {
                 // if parse fails then set to empty object
-                loaded = {};
+                loadedTodo = {};
             }
 
-            loaded[toDoObj.uid] = JSON.stringify(toDoObj);
+            loadedTodo[toDoObj.uid] = toDoObj;
             // console.log(loaded[toDoObj.uid]);
             // console.log(JSON.stringify(loaded));
-            getStorage().setItem('todos', JSON.stringify(loaded));
-            console.log(getStorage().getItem('todos'));
+            getStorage().setItem('todos', JSON.stringify(loadedTodo));
+            //console.log(getStorage().getItem('todos'));
             // console.log(jsonExample.todos["1"]);
-            // window['localStorage'].['todos'][objToSave.uid].setItem(JSON.stringify(toDoObj));
+            // getStorage().['todos'][objToSave.uid].setItem(JSON.stringify(toDoObj));
         }
 
         function sProject(projectObj) {
-            let loaded;
+            let loadedProject;
+            
             try {
                 // attempt to load todos object from localStorage
-                loaded = JSON.parse(storage.projects);
+                loadedProject = JSON.parse(getStorage().projects);
                 // console.log(loaded);
             } catch (err) {
                 // if parse fails then set to empty object
-                loaded = {};
+                loadedProject = {};
             }
             
             for (let todo of projectObj.todos) {
                 sTodo(todo);
             }
 
-            loaded[projectObj.uid] = JSON.stringify(projectObj);
+            loadedProject[projectObj.uid] = JSON.stringify(projectObj);
 
-            getStorage().setItem('projects', JSON.stringify(loaded));
+            getStorage().setItem('projects', JSON.stringify(loadedProject));
 
             //localStorage.projects[projectObj.uid] = JSON.stringify(projectObj);
         }
@@ -140,15 +73,81 @@ function save(objToSave) {
     }
 }
 
-function load() {
-    let data = jsonStructure;
-    console.log(data);
+function loadProjects() {
+    let loadedProjects = JSON.parse(getStorage().getItem('projects'));
+    console.log(loadedProjects);
+    let projectObjs = [];
+    for (let projectUID in loadedProjects) {
+        //console.log("projectUID: " + projectUID);
+
+        let obj = JSON.parse(loadedProjects[projectUID]);
+        //console.log(obj);
+
+        let project = new Project(obj.title, obj.description, obj.notes, projectUID);
+        //console.log(project);
+
+        let todoUIDs = obj.toDoUids;
+        //console.log("todo uids:" + todoUIDs);
+
+        let todos = [];
+        for (let tuid of todoUIDs) {
+            //console.log("a tuid: " + tuid);
+            let t = loadTodo(tuid);
+            project.addTodo(t);
+        }
+        projectObjs.push(project);
+    }
+    
+    // let data = jsonStructure;
+    // console.log(data);
+    return projectObjs;
 }
+
+function loadTodo(toDoUid) {
+    //console.log("attempting to load todo with uid: " + toDoUid);
+    
+    let loadedTodosAll = getStorage().getItem('todos');
+    //console.log(loadedTodosAll);
+
+    let loadedTodo = JSON.parse(loadedTodosAll)[toDoUid];
+    //console.log(loadedTodo);
+
+    // let obj = JSON.parse(JSON.parse(loadedTodosAll)[toDoUid]);
+    // //console.log(obj);
+
+    let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.uid);
+    //console.log(todo.toString());
+
+    return todo;
+
+
+}
+
+function loadToDos() {
+    let r = getStorage().getItem('todos');
+    console.log(r);
+
+    let x = JSON.parse(r);
+    console.log(x);
+
+    let todos = [];
+    for (let i in x) {
+        
+        let u = x[i];
+        //console.log(u);
+        let t  = new ToDo(u.title, u.description, new Date(u.dueDate), u.priority, u.uid);
+        console.log(t);
+        todos.push(t);
+    }
+
+    return todos;
+}
+
 
 function localStorageAvailable() {
     var storage;
     try {
-        storage = window['localStorage'];
+        storage = getStorage();
         var x = '__storage_test__';
         storage.setItem(x, x);
         storage.removeItem(x);
@@ -160,7 +159,7 @@ function localStorageAvailable() {
 }
 
 /**
- * Alias function for retrieving localStorage
+ * Retrieve json from storage source - currently localStorage
  * @returns a Storage object (array-like object of key:value pairs)
  */
 function getStorage() {
@@ -239,4 +238,4 @@ function addTestProjectToStorage(numOfProjects = 1) {
     }
 
 }
-export { saveToDo, loadToDos, clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save };
+export { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, loadProjects, loadTodo, loadToDos };

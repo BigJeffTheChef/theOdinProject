@@ -58,7 +58,7 @@ class Project {
     toJSON() {
         let toDoUids = this.#todos.map((element) => element.uid);
         console.log('todo uids in project');
-        console.log(toDoUids);
+        //console.log(toDoUids);
         return {
             title: this.#title,
             description: this.#description,
