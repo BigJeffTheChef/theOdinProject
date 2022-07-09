@@ -38,13 +38,12 @@ class ToDo {
         this.priority = priority || null;
         this.notes = "";
         this.#checklist = []; // directly set to empty array
-        this.uid = uid || ++uidSeed;
+        this.#uid = uid || ++uidSeed;
     }
 
     get checklist() { return this.#checklist };
 
     get uid() { return this.#uid };
-    set uid(newUid) { this.#uid = newUid };
 
     get notes() { return this.#notes };
     set notes(newNotes) { this.#notes = newNotes };

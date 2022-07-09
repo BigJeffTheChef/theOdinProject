@@ -1,6 +1,6 @@
 import { ToDo } from './ToDo.js';
 import { format } from 'date-fns';
-import { saveToDo, loadToDos } from './storage.js';
+import { save, load } from './storage.js';
 import modalTemplate_container from './html-templates/toDoModal.html';
 import modalTemplate_new from './html-templates/toDoModal_new.html';
 import modalTemplate_list from './html-templates/toDoModal_list.html';
@@ -91,7 +91,7 @@ function renderToDoList() {
     let todoCards = document.createElement('div');
     todoCards.classList.add('todo-cards');
 
-    let todoObjs = loadToDos();
+    let todoObjs = load("todo");
     for (let i = 0; i < todoObjs.length; i++) {
         todoCards.appendChild(createCard(todoObjs[i]));
     }
@@ -248,7 +248,7 @@ function renderToDoModal(toDoObj) {
             try {
                 toDoObj.addToCheckList(completeValue, textField.value);
                 closeModalEvent(event);
-                saveToDo(toDoObj);
+                save(toDoObj);
                 renderToDoList();
                 renderToDoModal(toDoObj);
             } catch (error) {

@@ -1,14 +1,20 @@
 import './styles/styles.css';
 import './styles/todo-modal.css';
 import './domController.js';
-import { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, loadProjects, loadToDos} from './storage.js';
+import { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, load, getStorage} from './storage.js';
 import { Project } from './Project';
 import { ToDo } from './ToDo';
 // import './storage.js';
 
 (function debugPrints() {
     console.group('debug prints');
-    clearStorage();
+    console.log(window['localStorage']);
+    //buildTestData();
+    console.groupEnd('debug prints');
+})();
+
+function buildTestData() {
+            clearStorage();
     // addTestToDosToStorage(7);
     let tProj = new Project("ptitle1", "pdesc1", "pnotes1", 5555);
     let t1 = new ToDo("ttitle1", "tdesc1", new Date(1,1,1), 1, 1111);
@@ -22,16 +28,14 @@ import { ToDo } from './ToDo';
     save(tProj);
     save(tProj2);
 
-    let whatever = loadProjects();
+    let whatever = load("project");
     console.log(whatever);
 
 
     console.log(window['localStorage']);
 
-    console.log(loadToDos());
-    console.groupEnd('debug prints');
-})();
-
+    console.log(load("todo"));
+}
 
 // (function generateTestToDos() {
 //     console.groupCollapsed('debug prints');

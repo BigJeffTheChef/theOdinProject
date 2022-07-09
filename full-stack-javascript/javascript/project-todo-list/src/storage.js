@@ -7,143 +7,170 @@ const jsonExample = require('./localStorageExample.json');
 /**
  * 
  * @param {ToDo | Project} objToSave 
- * @throws Error if objToSave parameter is not a ToDo or Project object.
+ * @throws LocalStorageError if localStorage not accessible, or ParameterError if parameter is not a ToDo or Project object.
  */
 function save(objToSave) {
-    if (localStorageAvailable()) {
 
-        if (objToSave instanceof ToDo) {
-            // save ToDo
-            sTodo(objToSave);
-        } else if (objToSave instanceof Project) {
-            // save Project
-            sProject(objToSave);
-        } else {
-            console.log('save function parameter "objToSave" must be a ToDo object or a Project object but was not');
+    if (!localStorageAvailable()) throw new LocalStorageError('save', 'Local storage is not available! - save action not complete');
+
+    if (objToSave instanceof ToDo) saveToDo(objToSave);
+
+    else if (objToSave instanceof Project) saveProject(objToSave);
+
+    else throw new ParameterError('objToSave', 'parameter must be a ToDo object or a Project object but was not');
+
+
+    function saveToDo(toDoObj) {
+        // console.log(toDoObj);
+
+        // console.log(storage);
+
+        let loadedTodo;
+        try {
+            // attempt to load todos object from localStorage
+            loadedTodo = JSON.parse(getStorage().todos);
+            // console.log(loaded);
+        } catch (err) {
+            // if parse fails then set to empty object
+            loadedTodo = {};
         }
 
-        function sTodo(toDoObj) {
-            // console.log(toDoObj);
+        loadedTodo[toDoObj.uid] = toDoObj;
+        // console.log(loaded[toDoObj.uid]);
+        // console.log(JSON.stringify(loaded));
+        getStorage().setItem('todos', JSON.stringify(loadedTodo));
+        //console.log(getStorage().getItem('todos'));
+        // console.log(jsonExample.todos["1"]);
+        // getStorage().['todos'][objToSave.uid].setItem(JSON.stringify(toDoObj));
+    }
+    function saveProject(projectObj) {
+        let loadedProject;
 
-            // console.log(storage);
-
-            let loadedTodo;
-            try {
-                // attempt to load todos object from localStorage
-                loadedTodo = JSON.parse(getStorage().todos);
-                // console.log(loaded);
-            } catch (err) {
-                // if parse fails then set to empty object
-                loadedTodo = {};
-            }
-
-            loadedTodo[toDoObj.uid] = toDoObj;
-            // console.log(loaded[toDoObj.uid]);
-            // console.log(JSON.stringify(loaded));
-            getStorage().setItem('todos', JSON.stringify(loadedTodo));
-            //console.log(getStorage().getItem('todos'));
-            // console.log(jsonExample.todos["1"]);
-            // getStorage().['todos'][objToSave.uid].setItem(JSON.stringify(toDoObj));
+        try {
+            // attempt to load todos object from localStorage
+            loadedProject = JSON.parse(getStorage().projects);
+            // console.log(loaded);
+        } catch (err) {
+            // if parse fails then set to empty object
+            loadedProject = {};
         }
 
-        function sProject(projectObj) {
-            let loadedProject;
-            
-            try {
-                // attempt to load todos object from localStorage
-                loadedProject = JSON.parse(getStorage().projects);
-                // console.log(loaded);
-            } catch (err) {
-                // if parse fails then set to empty object
-                loadedProject = {};
-            }
-            
-            for (let todo of projectObj.todos) {
-                sTodo(todo);
-            }
-
-            loadedProject[projectObj.uid] = JSON.stringify(projectObj);
-
-            getStorage().setItem('projects', JSON.stringify(loadedProject));
-
-            //localStorage.projects[projectObj.uid] = JSON.stringify(projectObj);
+        for (let todo of projectObj.todos) {
+            saveToDo(todo);
         }
-    } else {
-        console.log("Local storage is not available!");
+
+        loadedProject[projectObj.uid] = JSON.stringify(projectObj);
+
+        getStorage().setItem('projects', JSON.stringify(loadedProject));
+
+        //localStorage.projects[projectObj.uid] = JSON.stringify(projectObj);
     }
 }
 
-function loadProjects() {
-    let loadedProjects = JSON.parse(getStorage().getItem('projects'));
-    console.log(loadedProjects);
-    let projectObjs = [];
-    for (let projectUID in loadedProjects) {
-        //console.log("projectUID: " + projectUID);
+/**
+ * Multi-use
+ * @param {string} toLoad "todo" or "project"
+ * @param {number} uid uid of ToDo or Project object
+ * @return ToDo[] or Project[] if uid is specifed, ToDo or Project if not.
+ * @throws LocalStorageError if local storage not accessible.
+ */
+function load(toLoad, uid = null) {
 
-        let obj = JSON.parse(loadedProjects[projectUID]);
-        //console.log(obj);
+    if (!localStorageAvailable()) throw new LocalStorageError('load', 'Local storage is not available! - load action not complete');
 
-        let project = new Project(obj.title, obj.description, obj.notes, projectUID);
-        //console.log(project);
+    if (toLoad === 'todo') {
+        if (uid === null) return loadToDos();
+        return loadTodo(uid);
+    }
+    if (toLoad === 'project') {
+        if (uid === null) return loadProjects();
+        return loadProject(uid);
+    }
 
-        let todoUIDs = obj.toDoUids;
-        //console.log("todo uids:" + todoUIDs);
+    function loadProject(projectUid) {
+        throw 'loadSingleProject() not implemented - specified uid was ' + projectUid;
+    }
+    function loadProjects() {
+        let loadedProjects = JSON.parse(getStorage().getItem('projects'));
+        console.log(loadedProjects);
+        let projectObjs = [];
+        for (let projectUID in loadedProjects) {
+            //console.log("projectUID: " + projectUID);
 
-        let todos = [];
-        for (let tuid of todoUIDs) {
-            //console.log("a tuid: " + tuid);
-            let t = loadTodo(tuid);
-            project.addTodo(t);
+            let obj = JSON.parse(loadedProjects[projectUID]);
+            //console.log(obj);
+
+            let project = new Project(obj.title, obj.description, obj.notes, projectUID);
+            //console.log(project);
+
+            let todoUIDs = obj.toDoUids;
+            //console.log("todo uids:" + todoUIDs);
+
+            let todos = [];
+            for (let tuid of todoUIDs) {
+                //console.log("a tuid: " + tuid);
+                let t = loadTodo(tuid);
+                project.addTodo(t);
+            }
+            projectObjs.push(project);
         }
-        projectObjs.push(project);
+
+        // let data = jsonStructure;
+        // console.log(data);
+        return projectObjs;
     }
-    
-    // let data = jsonStructure;
-    // console.log(data);
-    return projectObjs;
-}
+    function loadTodo(toDoUid) {
+        //console.log("attempting to load todo with uid: " + toDoUid);
 
-function loadTodo(toDoUid) {
-    //console.log("attempting to load todo with uid: " + toDoUid);
-    
-    let loadedTodosAll = getStorage().getItem('todos');
-    //console.log(loadedTodosAll);
+        let loadedTodosAll = getStorage().getItem('todos');
+        //console.log(loadedTodosAll);
 
-    let loadedTodo = JSON.parse(loadedTodosAll)[toDoUid];
-    //console.log(loadedTodo);
+        let loadedTodo = JSON.parse(loadedTodosAll)[toDoUid];
+        //console.log(loadedTodo);
 
-    // let obj = JSON.parse(JSON.parse(loadedTodosAll)[toDoUid]);
-    // //console.log(obj);
+        // let obj = JSON.parse(JSON.parse(loadedTodosAll)[toDoUid]);
+        // //console.log(obj);
 
-    let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.uid);
-    //console.log(todo.toString());
+        let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.uid);
 
-    return todo;
+        for (let item of loadedTodo.checklist) {
+            console.log(item);
+        }
+
+        //console.log(todo.toString());
+
+        return todo;
 
 
-}
-
-function loadToDos() {
-    let r = getStorage().getItem('todos');
-    console.log(r);
-
-    let x = JSON.parse(r);
-    console.log(x);
-
-    let todos = [];
-    for (let i in x) {
-        
-        let u = x[i];
-        //console.log(u);
-        let t  = new ToDo(u.title, u.description, new Date(u.dueDate), u.priority, u.uid);
-        console.log(t);
-        todos.push(t);
     }
+    function loadToDos() {
+        let loadedTodosJson = getStorage().getItem('todos');
+        console.log(loadedTodosJson);
 
-    return todos;
+        let parsedTodos = JSON.parse(loadedTodosJson);
+        console.log(parsedTodos);
+
+        let builtTodos = [];
+        for (let keyUid in parsedTodos) {
+
+            let obj = parsedTodos[keyUid];
+            //console.log(u);
+            let todo = new ToDo(obj.title, obj.description, new Date(obj.dueDate), obj.priority, obj.uid);
+            for (let item of obj.checklist) {
+                todo.addToCheckList(item[0], item[1]);
+            }
+            console.log(todo);
+            builtTodos.push(todo);
+        }
+
+        return builtTodos;
+    }
 }
 
-
+/**
+ * Checks if localStorage is accessible.
+ * @returns a boolean representing if localStorage is accessible.
+ */
 function localStorageAvailable() {
     var storage;
     try {
@@ -228,7 +255,6 @@ function addTestToDosToStorage(numToAdd = 7) {
     console.log(`${todos.length} test ToDo objects added to storage!`);
 }
 
-
 function addTestProjectToStorage(numOfProjects = 1) {
     for (let i = 0; i < numOfProjects; i++) {
         let project = new Project("Test Project", "notes for test project");
@@ -238,4 +264,19 @@ function addTestProjectToStorage(numOfProjects = 1) {
     }
 
 }
-export { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, loadProjects, loadTodo, loadToDos };
+
+class LocalStorageError extends Error {
+    constructor(action, message) {
+        super(`${action} : ${message}`);
+        this.name = 'LocalStorageError';
+    }
+}
+
+class ParameterError extends Error {
+    constructor(parameterName, message) {
+        super(`${parameterName} : ${message}`);
+        this.name = `ParameterError`;
+    }
+}
+
+export { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, load, LocalStorageError, ParameterError };
