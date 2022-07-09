@@ -1,8 +1,5 @@
 import { ToDo } from './ToDo.js';
 import { Project } from './Project.js';
-//import {json} from './localStorageStructure.json';
-const jsonStructure = require('./localStorageStructure.json');
-const jsonExample = require('./localStorageExample.json');
 
 /**
  * 
@@ -12,58 +9,41 @@ const jsonExample = require('./localStorageExample.json');
 function save(objToSave) {
 
     if (!localStorageAvailable()) throw new LocalStorageError('save', 'Local storage is not available! - save action not complete');
-
     if (objToSave instanceof ToDo) saveToDo(objToSave);
-
     else if (objToSave instanceof Project) saveProject(objToSave);
-
     else throw new ParameterError('objToSave', 'parameter must be a ToDo object or a Project object but was not');
 
-
     function saveToDo(toDoObj) {
-        // console.log(toDoObj);
-
-        // console.log(storage);
-
-        let loadedTodo;
+        let todosFromStorage;
         try {
             // attempt to load todos object from localStorage
-            loadedTodo = JSON.parse(getStorage().todos);
-            // console.log(loaded);
+            todosFromStorage = JSON.parse(getStorage().todos);
         } catch (err) {
             // if parse fails then set to empty object
-            loadedTodo = {};
+            todosFromStorage = {};
         }
-
-        loadedTodo[toDoObj.uid] = toDoObj;
-        // console.log(loaded[toDoObj.uid]);
-        // console.log(JSON.stringify(loaded));
-        getStorage().setItem('todos', JSON.stringify(loadedTodo));
-        //console.log(getStorage().getItem('todos'));
-        // console.log(jsonExample.todos["1"]);
-        // getStorage().['todos'][objToSave.uid].setItem(JSON.stringify(toDoObj));
+        // set key of todo uid to stringified ToDo object
+        todosFromStorage[toDoObj.uid] = toDoObj;
+        // save data in localStorage
+        getStorage().setItem('todos', JSON.stringify(todosFromStorage));
     }
     function saveProject(projectObj) {
-        let loadedProject;
-
+        let projectsFromStorage;
         try {
             // attempt to load todos object from localStorage
-            loadedProject = JSON.parse(getStorage().projects);
-            // console.log(loaded);
+            projectsFromStorage = JSON.parse(getStorage().projects);
         } catch (err) {
             // if parse fails then set to empty object
-            loadedProject = {};
+            projectsFromStorage = {};
         }
-
+        // save all ToDos in project sequentially
         for (let todo of projectObj.todos) {
             saveToDo(todo);
         }
-
-        loadedProject[projectObj.uid] = JSON.stringify(projectObj);
-
-        getStorage().setItem('projects', JSON.stringify(loadedProject));
-
-        //localStorage.projects[projectObj.uid] = JSON.stringify(projectObj);
+        // set key of project uid to stringified Project object
+        projectsFromStorage[projectObj.uid] = JSON.stringify(projectObj);
+        // save data in storage
+        getStorage().setItem('projects', JSON.stringify(projectsFromStorage));
     }
 }
 
@@ -71,12 +51,14 @@ function save(objToSave) {
  * Multi-use
  * @param {string} toLoad "todo" or "project"
  * @param {number} uid uid of ToDo or Project object
- * @return ToDo[] or Project[] if uid is specifed, ToDo or Project if not.
- * @throws LocalStorageError if local storage not accessible.
+ * @return single instance of ToDo or Project if uid is specifed, ToDo[] or Project[] (all stored) if not.
+ * @throws LocalStorageError if local storage not accessible, or ParameterError if toLoad string was not recognised as valid.
  */
 function load(toLoad, uid = null) {
 
     if (!localStorageAvailable()) throw new LocalStorageError('load', 'Local storage is not available! - load action not complete');
+    if (toLoad !== 'project' && toLoad !== 'todo') throw new ParameterError('toLoad', `invalid paramter, must be "todo" or "project" but was "${toLoad}"`);
+
 
     if (toLoad === 'todo') {
         if (uid === null) return loadToDos();
@@ -213,7 +195,6 @@ function displayStorage() {
     // }
     // console.groupEnd('displaying storage');
 }
-
 
 class LocalStorageError extends Error {
     constructor(action, message) {

@@ -6,13 +6,7 @@ import { Project } from './Project';
 import { ToDo } from './ToDo';
 // import './storage.js';
 
-(function debugPrints() {
-    console.group('debug prints');
-    console.log(window['localStorage']);
-    //buildTestData();
-    console.log(load("todo", 1111));
-    console.groupEnd('debug prints');
-})();
+buildTestData();
 
 function buildTestData() {
     clearStorage();

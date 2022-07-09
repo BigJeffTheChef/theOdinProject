@@ -11,13 +11,17 @@ let elements = (function () {
     let themeBtn = document.querySelector('.change-theme');
     let header = document.querySelector('.header');
     let nav = document.querySelector('.nav');
-    let content = document.querySelector('.content')
+    let content = document.querySelector('.content');
+    let showAllTodosBtns = document.querySelectorAll('.burger-show-all');
+    let showAllProjectsBtns = document.querySelectorAll('.burger-show-projects');
     return {
         menuBtn,
         themeBtn,
         header,
         nav,
         content,
+        showAllTodosBtns,
+        showAllProjectsBtns
     }
 })();
 
@@ -27,13 +31,16 @@ let elements = (function () {
     setThemeChangeEvent();
     setMenuButtonEvent();
     setMenuPosition();
-    renderWelcome();
+    render_welcome();
 
     // document.querySelector('#burger-show-all').addEventListener('click', () => renderToDoList());
-    for (let showAllBtn of document.querySelectorAll('.burger-show-all')) {
-        showAllBtn.addEventListener('click', () => renderToDoList());
+    for (let btn of elements.showAllTodosBtns) {
+        btn.addEventListener('click', render_allTodos);
     }
 
+    for (let btn of elements.showAllProjectsBtns) {
+        btn.addEventListener('click', render_allProjects);
+    }
 
     function setMenuPosition() {
         elements.nav.style['top'] = (elements.header.offsetHeight - 2) + 'px';
@@ -61,14 +68,14 @@ let elements = (function () {
     }
 })();
 
-function renderWelcome() {
+function render_welcome() {
     clearContent();
     let tempWelcome = document.createElement('div');
     tempWelcome.textContent = "Welcome!";
     elements.content.appendChild(tempWelcome);
 }
 
-function renderToDoList() {
+function render_allTodos() {
     clearContent();
     /*
     <div class="todo-cards">
@@ -114,7 +121,7 @@ function renderToDoList() {
         // bottom cell -> due date and priority
         dateAndPriorityCell(toDoObj.dueDate, toDoObj.priority);
 
-        card.addEventListener('click', () => renderToDoModal(toDoObj));
+        card.addEventListener('click', () => render_toDoModal(toDoObj));
 
         return card;
 
@@ -198,7 +205,7 @@ function renderToDoList() {
  * Renders the ToDo modal to allow editing of a ToDo object.
  * @param {ToDo} toDoObj 
  */
-function renderToDoModal(toDoObj) {
+function render_toDoModal(toDoObj) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
 
@@ -222,15 +229,21 @@ function renderToDoModal(toDoObj) {
         //TODO_EDITOR_CHECKLIST_TEMPLATE
         let checklistSection = modalContent.querySelector('.checklist-section');
 
-        for (let i = 0; i < checklist.length; i++) {
-            let clistTemplate = document.createElement('template');
-            clistTemplate.innerHTML = modalTemplate_list;
-            let clistContent = clistTemplate.content.firstElementChild;
+        if (checklist.length > 0) {
+            for (let i = 0; i < checklist.length; i++) {
+                let clistTemplate = document.createElement('template');
+                clistTemplate.innerHTML = modalTemplate_list;
+                let clistContent = clistTemplate.content.firstElementChild;
 
-            clistContent.querySelector('.complete-field').value = checklist[i][0];
-            clistContent.querySelector('.checklist-text').value = checklist[i][1];
+                clistContent.querySelector('.complete-field').value = checklist[i][0];
+                clistContent.querySelector('.checklist-text').value = checklist[i][1];
 
-            checklistSection.appendChild(clistContent);
+                checklistSection.appendChild(clistContent);
+            }
+        } else {
+            let p = document.createElement('p');
+            p.textContent = "No Checklist Items";
+            checklistSection.appendChild(p);
         }
     }
 
@@ -249,8 +262,8 @@ function renderToDoModal(toDoObj) {
                 toDoObj.addToCheckList(completeValue, textField.value);
                 closeModalEvent(event);
                 save(toDoObj);
-                renderToDoList();
-                renderToDoModal(toDoObj);
+                render_allTodos();
+                render_toDoModal(toDoObj);
             } catch (error) {
                 textField.setCustomValidity(error.message);
                 textField.reportValidity();
@@ -273,8 +286,13 @@ function renderToDoModal(toDoObj) {
 
 };
 
+function render_allProjects() {
+    let projects = load('project');
+    console.log(projects);
+}
+
 /**
- * clear all child nodes from the 'content' div.
+ * clear all child nodes from the 'content' div - resetting it to empty.
  */
 function clearContent() {
     for (let i = elements.content.childNodes.length - 1; i >= 0; i--) {
