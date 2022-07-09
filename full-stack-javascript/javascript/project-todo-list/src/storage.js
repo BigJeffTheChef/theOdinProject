@@ -92,7 +92,7 @@ function load(toLoad, uid = null) {
     }
     function loadProjects() {
         let loadedProjects = JSON.parse(getStorage().getItem('projects'));
-        console.log(loadedProjects);
+        //console.log(loadedProjects);
         let projectObjs = [];
         for (let projectUID in loadedProjects) {
             //console.log("projectUID: " + projectUID);
@@ -134,6 +134,7 @@ function load(toLoad, uid = null) {
         let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.uid);
 
         for (let item of loadedTodo.checklist) {
+            todo.addToCheckList(item[0],item[1]);
             console.log(item);
         }
 
@@ -145,24 +146,24 @@ function load(toLoad, uid = null) {
     }
     function loadToDos() {
         let loadedTodosJson = getStorage().getItem('todos');
-        console.log(loadedTodosJson);
+        //console.log(loadedTodosJson);
 
         let parsedTodos = JSON.parse(loadedTodosJson);
-        console.log(parsedTodos);
+        //console.log(parsedTodos);
 
         let builtTodos = [];
         for (let keyUid in parsedTodos) {
-
-            let obj = parsedTodos[keyUid];
-            //console.log(u);
-            let todo = new ToDo(obj.title, obj.description, new Date(obj.dueDate), obj.priority, obj.uid);
-            for (let item of obj.checklist) {
-                todo.addToCheckList(item[0], item[1]);
-            }
-            console.log(todo);
-            builtTodos.push(todo);
+            //console.log(typeof keyUid);
+            // let obj = parsedTodos[keyUid];
+            // //console.log(u);
+            // let todo = new ToDo(obj.title, obj.description, new Date(obj.dueDate), obj.priority, obj.uid);
+            // for (let item of obj.checklist) {
+            //     todo.addToCheckList(item[0], item[1]);
+            // }
+            //console.log(todo);
+            builtTodos.push(loadTodo(keyUid));
         }
-
+        //console.log(builtTodos);
         return builtTodos;
     }
 }
@@ -213,57 +214,6 @@ function displayStorage() {
     // console.groupEnd('displaying storage');
 }
 
-/**
- * Generates a specified number of ToDo objects and returns them in an array.
- * @param {number} numToGenerate number of ToDo objects to generate, defaults to 7.
- * @returns an array of ToDo objects.
- */
-function generateToDos(numToGenerate = 7) {
-    let todos = [
-        new ToDo("Test ToDo 1", "Test Description 1", new Date(1980, 0, 1), 1),
-        new ToDo("Test ToDo 2", "Test Description 2", new Date(1985, 0, 12), 2),
-        new ToDo("Test ToDo 3", "Test Description 3", new Date(1990, 0, 18), 3),
-        new ToDo("Test ToDo 4", "Test Description 4", new Date(1995, 0, 19), 4),
-        new ToDo("Test ToDo 5", "Test Description 5", new Date(2000, 0, 21), 5),
-        new ToDo("Test ToDo 6", "Test Description 6", new Date(2005, 0, 29), 1),
-        new ToDo("Test ToDo 7", "Test Description 7", new Date(2022, 0, 10), 2),
-        new ToDo("Test ToDo 8", "Test Description 8", new Date(2022, 2, 12), 3),
-        new ToDo("Test ToDo 9", "Test Description 9", new Date(2022, 11, 21), 4),
-    ];
-    let checklistsToAdd = 1;
-    let checklistComplete = true;
-    for (let t of todos) {
-        for (let i = 0; i < checklistsToAdd; i++) {
-            checklistComplete = (checklistComplete) ? false : true;
-            t.addToCheckList(checklistComplete, "abcde ".repeat(checklistsToAdd));
-        }
-        checklistsToAdd++;
-    }
-    return todos;
-}
-
-/**
- * Add a specified number of test ToDo objects to localStorage
- * 
- * @param {number} numToAdd 
- */
-function addTestToDosToStorage(numToAdd = 7) {
-    let todos = generateToDos();
-    for (let todo of todos) {
-        saveToDo(todo);
-    }
-    console.log(`${todos.length} test ToDo objects added to storage!`);
-}
-
-function addTestProjectToStorage(numOfProjects = 1) {
-    for (let i = 0; i < numOfProjects; i++) {
-        let project = new Project("Test Project", "notes for test project");
-        let todos = generateToDos();
-        project.todos = todos;
-        console.log(project.toString());
-    }
-
-}
 
 class LocalStorageError extends Error {
     constructor(action, message) {
@@ -279,4 +229,4 @@ class ParameterError extends Error {
     }
 }
 
-export { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, load, LocalStorageError, ParameterError };
+export { clearStorage, displayStorage, save, load, LocalStorageError, ParameterError };

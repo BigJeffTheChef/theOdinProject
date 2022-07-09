@@ -10,11 +10,12 @@ import { ToDo } from './ToDo';
     console.group('debug prints');
     console.log(window['localStorage']);
     //buildTestData();
+    console.log(load("todo", 1111));
     console.groupEnd('debug prints');
 })();
 
 function buildTestData() {
-            clearStorage();
+    clearStorage();
     // addTestToDosToStorage(7);
     let tProj = new Project("ptitle1", "pdesc1", "pnotes1", 5555);
     let t1 = new ToDo("ttitle1", "tdesc1", new Date(1,1,1), 1, 1111);
