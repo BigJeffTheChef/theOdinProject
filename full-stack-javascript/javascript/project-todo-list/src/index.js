@@ -12,9 +12,13 @@ function buildTestData() {
     clearStorage();
     // addTestToDosToStorage(7);
     let tProj = new Project("ptitle1", "pdesc1", "pnotes1", 5555);
-    let t1 = new ToDo("ttitle1", "tdesc1", new Date(1,1,1), 1, 1111);
+    let t1 = new ToDo("ttitle1a", "tdesc1a", new Date(1,1,1), 1, 1111);
+    let t2 = new ToDo("ttitle1b", "tdesc1b", new Date(1,1,1), 1, 1112);
     t1.addToCheckList(true, "text checklist item");
+    t2.addToCheckList(false, "text checklist item");
+    t2.addToCheckList(true, "text checklist item");
     tProj.addTodo(t1);
+    tProj.addTodo(t2);
     tProj.addTodo(new ToDo("ttitle2", "tdesc2", new Date(2,2,2), 2, 2222));
 
     let tProj2 = new Project("ptitle2", "pdesc2", "pnotes2", 6666);

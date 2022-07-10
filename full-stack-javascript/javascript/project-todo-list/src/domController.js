@@ -5,6 +5,8 @@ import modalTemplate_container from './html-templates/toDoModal.html';
 import modalTemplate_new from './html-templates/toDoModal_new.html';
 import modalTemplate_list from './html-templates/toDoModal_list.html';
 
+import todoCardTemplate from './html-templates/toDoCard.html';
+
 // elements obj via IIFE - faster as DOM queried only once? maybe...
 let elements = (function () {
     let menuBtn = document.querySelector('button.hamburger');
@@ -77,127 +79,138 @@ function render_welcome() {
 
 function render_allTodos() {
     clearContent();
-    /*
-    <div class="todo-cards">
-                <div class="todo-card">
-                    <div>Title: </div>
-                    <span></span>
-                    <div>Description: </div>
-                    <span></span>
-                    <div>Due Date: </div>
-                    <span></span>
-                    <div>Priority: </div>
-                    <span></span>
-                    <div>Checklist: </div>
-                    <span></span>
-                    <div>uid:</div>
-                    <span></span>
-                </div>
-            </div>
-    */
-    let todoCards = document.createElement('div');
-    todoCards.classList.add('todo-cards');
+    //oldRender();
+    newRender();
 
-    let todoObjs = load("todo");
-    for (let i = 0; i < todoObjs.length; i++) {
-        todoCards.appendChild(createCard(todoObjs[i]));
+    function newRender() {
+        let todoCards = document.createElement('div');
+        todoCards.classList.add('todo-cards');
+
+        let loadedTodos = load('todo');
+        let loadedProjects = load('project');
+        for (let todo of loadedTodos) {
+            let template = document.createElement('template');
+            template.innerHTML = todoCardTemplate;
+            let card = template.content.firstElementChild;
+
+            card.querySelector('.title').textContent = todo.title;
+            card.querySelector('.description').textContent = todo.description;
+            card.querySelector('.checklist-summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
+            card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
+            card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
+            //console.log(card.outerHTML);
+            todoCards.appendChild(card);
+        }
+
+        elements.content.appendChild(todoCards);
     }
 
-    elements.content.appendChild(todoCards);
 
-    function createCard(toDoObj) {
-        let card = document.createElement('div');
-        card.classList.add('todo-card');
+    function oldRender() {
+        let todoCards = document.createElement('div');
+        todoCards.classList.add('todo-cards');
 
-        // title 
-        titleCell('title', toDoObj.title);
-
-        // description
-        descCell('description', toDoObj.description);
-
-        // checklist
-        checklistCell(toDoObj.checklist);
-
-        // bottom cell -> due date and priority
-        dateAndPriorityCell(toDoObj.dueDate, toDoObj.priority);
-
-        card.addEventListener('click', () => render_toDoModal(toDoObj));
-
-        return card;
-
-        /**
-         * Create a simple cell with a specified css class applied
-         * @param {string} cellClass css class to apply to cell
-         * @param {string} cellContent content to place in cell
-         * @returns created cellDiv
-         */
-        function titleCell(cellClass, cellContent) {
-            let cellDiv = document.createElement('div');
-            cellDiv.classList.add(cellClass)
-            cellDiv.textContent = cellContent;
-            card.appendChild(cellDiv);
+        let todoObjs = load("todo");
+        for (let i = 0; i < todoObjs.length; i++) {
+            todoCards.appendChild(createCard(todoObjs[i]));
         }
 
+        elements.content.appendChild(todoCards);
 
-        /**
-         * Create a simple cell with a specified css class applied
-         * @param {string} cellClass css class to apply to cell
-         * @param {string} cellContent content to place in cell
-         * @returns created cellDiv
-         */
-        function descCell(cellClass, cellContent) {
-            let cellDiv = document.createElement('div');
-            cellDiv.classList.add(cellClass);
-            const MAX_CHARS = 170;
-            cellDiv.textContent = (cellContent.length < MAX_CHARS) ? cellContent : cellContent.substring(0, MAX_CHARS) + "...";
-            card.appendChild(cellDiv);
-        }
+        function createCard(toDoObj) {
+            let card = document.createElement('div');
+            card.classList.add('todo-card');
 
-        /**
-         * Create the checklist cell
-         * @param {array} checklist a 2d array, with each 'row' being a checklist item. 
-         * 'column' index 0 is a boolean representing if the item is complete and 
-         * 'column' index 1 is the text of the item
-         */
-        function checklistCell(checklist) {
-            let checklistDiv = document.createElement('div');
-            checklistDiv.classList.add('checklist');
+            // title 
+            titleCell('title', toDoObj.title);
 
-            let checklistSummaryDiv = document.createElement('div');
-            checklistSummaryDiv.classList.add('checklist-summary');
-            checklistSummaryDiv.textContent = checklist.length + " checklist items";
+            // description
+            descCell('description', toDoObj.description);
 
-            checklistDiv.appendChild(checklistSummaryDiv);
-            card.appendChild(checklistDiv);
-        }
+            // checklist
+            checklistCell(toDoObj.checklist);
 
-        /**
-         * Create the bottom cell which houses both the due date and the priority of this
-         * ToDo.
-         * @param {string} date 
-         * @param {number} priority 
-         */
-        function dateAndPriorityCell(date, priority) {
-            // dueDate
-            let bottomCell = document.createElement('div');
-            bottomCell.classList.add('bottom-cell');
-            bottomCell.appendChild(footerCells('Due', format(date, 'dd/MM/yyyy')));
+            // bottom cell -> due date and priority
+            dateAndPriorityCell(toDoObj.dueDate, toDoObj.priority);
 
-            // priority
-            bottomCell.appendChild(footerCells('Priority', priority));
-            card.appendChild(bottomCell);
+            card.addEventListener('click', () => render_toDoModal(toDoObj));
 
-            function footerCells(label, value) {
+            return card;
+
+            /**
+             * Create a simple cell with a specified css class applied
+             * @param {string} cellClass css class to apply to cell
+             * @param {string} cellContent content to place in cell
+             * @returns created cellDiv
+             */
+            function titleCell(cellClass, cellContent) {
                 let cellDiv = document.createElement('div');
-                let cellLabel = document.createElement('span');
-                cellLabel.textContent = label + ': ';
-                let cellValue = document.createElement('span');
-                cellValue.textContent = value;
-                cellDiv.appendChild(cellLabel);
-                cellDiv.appendChild(cellValue);
-                return cellDiv;
+                cellDiv.classList.add(cellClass)
+                cellDiv.textContent = cellContent;
+                card.appendChild(cellDiv);
             }
-        };
+
+
+            /**
+             * Create a simple cell with a specified css class applied
+             * @param {string} cellClass css class to apply to cell
+             * @param {string} cellContent content to place in cell
+             * @returns created cellDiv
+             */
+            function descCell(cellClass, cellContent) {
+                let cellDiv = document.createElement('div');
+                cellDiv.classList.add(cellClass);
+                const MAX_CHARS = 170;
+                cellDiv.textContent = (cellContent.length < MAX_CHARS) ? cellContent : cellContent.substring(0, MAX_CHARS) + "...";
+                card.appendChild(cellDiv);
+            }
+
+            /**
+             * Create the checklist cell
+             * @param {array} checklist a 2d array, with each 'row' being a checklist item. 
+             * 'column' index 0 is a boolean representing if the item is complete and 
+             * 'column' index 1 is the text of the item
+             */
+            function checklistCell(checklist) {
+                let checklistDiv = document.createElement('div');
+                checklistDiv.classList.add('checklist');
+
+                let checklistSummaryDiv = document.createElement('div');
+                checklistSummaryDiv.classList.add('checklist-summary');
+                checklistSummaryDiv.textContent = checklist.length + " checklist items";
+
+                checklistDiv.appendChild(checklistSummaryDiv);
+                card.appendChild(checklistDiv);
+            }
+
+            /**
+             * Create the bottom cell which houses both the due date and the priority of this
+             * ToDo.
+             * @param {string} date 
+             * @param {number} priority 
+             */
+            function dateAndPriorityCell(date, priority) {
+                // dueDate
+                let bottomCell = document.createElement('div');
+                bottomCell.classList.add('bottom-cell');
+                bottomCell.appendChild(footerCells('Due', format(date, 'dd/MM/yyyy')));
+
+                // priority
+                bottomCell.appendChild(footerCells('Priority', priority));
+                card.appendChild(bottomCell);
+
+                function footerCells(label, value) {
+                    let cellDiv = document.createElement('div');
+                    let cellLabel = document.createElement('span');
+                    cellLabel.textContent = label + ': ';
+                    let cellValue = document.createElement('span');
+                    cellValue.textContent = value;
+                    cellDiv.appendChild(cellLabel);
+                    cellDiv.appendChild(cellValue);
+                    return cellDiv;
+                }
+            };
+        }
     }
 };
 

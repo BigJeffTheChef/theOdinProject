@@ -117,7 +117,7 @@ function load(toLoad, uid = null) {
 
         for (let item of loadedTodo.checklist) {
             todo.addToCheckList(item[0],item[1]);
-            console.log(item);
+            //console.log(item);
         }
 
         //console.log(todo.toString());
