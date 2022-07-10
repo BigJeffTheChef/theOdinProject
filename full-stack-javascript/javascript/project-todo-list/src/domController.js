@@ -225,6 +225,7 @@ function render_allTodos() {
 function render_toDoModal(toDoObj) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
+    const currentUid = toDoObj.uid;
     // setup modal
     document.body.classList.add('modal-active');
     let modal = generateTemplate(modalTemplate_container);
@@ -234,7 +235,7 @@ function render_toDoModal(toDoObj) {
     modal.querySelector('#priority-field').value = toDoObj.priority;
     renderChecklist_view(toDoObj);
     modal.querySelector('#add-todo-button').addEventListener('click', event => onAddNewItem(event));
-    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(toDoObj) );
+    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(currentUid) );
     // append modal to body
     document.body.appendChild(modal);
     document.querySelector('.todo-modal-wrapper').addEventListener('click', event => onCloseModal(event));
@@ -256,19 +257,23 @@ function render_toDoModal(toDoObj) {
             checklistSection.appendChild(p);
         }
     }
-    function onSave(t) {
-        t = pullTodo(toDoObj);
-        save(toDoObj);
-        closeModalAction(event);
-        render_allTodos();
-        render_toDoModal(toDoObj);
+    function onSave(currentUid) {
+        let t = pullTodo(currentUid);
+        save(t);
+        // save(toDoObj);
+        // closeModalAction(event);
+        // render_allTodos();
+        // render_toDoModal(toDoObj);
     }
     function onAddNewItem(event) {
         let completeValue = modal.querySelector('.checklist-new-item .complete-field').value == "true";
         let textField = modal.querySelector('.checklist-new-item .checklist-text');
         try {
             toDoObj.addToCheckList(completeValue, textField.value);
-            onSave(toDoObj);
+            onCloseModal(event);
+            save(toDoObj);
+            render_allTodos();
+            render_toDoModal(toDoObj);
         } catch (error) {
             textField.setCustomValidity(error.message);
             textField.reportValidity();
@@ -284,18 +289,18 @@ function render_toDoModal(toDoObj) {
         document.body.classList.remove('modal-active');
     }
 
-    function pullTodo(toDoObj) {
-        toDoObj.title = modal.querySelector('#title-field').value;
-        toDoObj.description = modal.querySelector('#desc-field').value;
-        toDoObj.dueDate = new Date(modal.querySelector('#due-date-field').value);
-        toDoObj.priority = modal.querySelector('#priority-field').value;
-        toDoObj.clearChecklist();
+    function pullTodo(currentUid) {
+        let title = modal.querySelector('#title-field').value;
+        let description = modal.querySelector('#desc-field').value;
+        let dueDate = new Date(modal.querySelector('#due-date-field').value);
+        let priority = modal.querySelector('#priority-field').value;
+        let t = new ToDo(title, description,dueDate, priority ,currentUid);
         for (let node of modal.querySelectorAll('.checklist-list-item')) {
             let complete = node.querySelector('.complete-field') === 'true';
             let text = node.querySelector('.checklist-text').value;
-            toDoObj.addToCheckList(complete, text);
+            t.addToCheckList(complete, text);
         }
-        return toDoObj;
+        return t;
     }
 };
 
