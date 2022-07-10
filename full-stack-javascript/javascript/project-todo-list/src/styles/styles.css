@@ -326,7 +326,7 @@ div.add-todo {
 
 .todo-card {
     display: grid;
-    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr / repeat(2, 1fr);
+    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr 1fr / repeat(2, 1fr);
 
     background-color: var(--bg-color-1);
     border-radius: 10px;
@@ -347,6 +347,7 @@ div.add-todo {
 .todo-card>* {
     /*position of all cells bar the bottom cell is to span 2 grid tracks*/
     grid-column: 2 span;
+    font-size: 1rem;
 }
 
 .todo-card>.title {
@@ -354,7 +355,7 @@ div.add-todo {
     align-items: center;
 
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.2em;
 }
 
 .todo-card>.description {
@@ -364,7 +365,7 @@ div.add-todo {
     padding: 10px;
     overflow: hidden;
 
-    font-size: 0.8rem;
+    font-size: 0.8em;
 }
 
 .todo-card>.checklist {
@@ -386,22 +387,27 @@ div.add-todo {
     margin: 5px 5px 5px 0px;
 }
 
+.todo-card>.bottom-cell,
+.todo-card>.project-info {
+    font-size: 0.8em;
+}
+
+.todo-card>.project-info>span:first-child,
+.todo-card>.bottom-cell>div>span:nth-child(1) {
+    font-weight: bold;
+}
 
 .todo-card>.bottom-cell {
     display: flex;
     align-items: center;
     grid-column: 1 / -1;
 
-    font-size: 0.8rem;
 }
 
 .todo-card>.bottom-cell>div:first-child {
     margin-right: auto;
 }
 
-.todo-card>.bottom-cell>div>span:nth-child(1) {
-    font-weight: bold;
-}
 
 
 

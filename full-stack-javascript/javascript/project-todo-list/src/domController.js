@@ -86,19 +86,27 @@ function render_allTodos() {
         let todoCards = document.createElement('div');
         todoCards.classList.add('todo-cards');
 
+
+
         let loadedTodos = load('todo');
         let loadedProjects = load('project');
         for (let todo of loadedTodos) {
-            let template = document.createElement('template');
-            template.innerHTML = todoCardTemplate;
-            let card = template.content.firstElementChild;
+            // let template = document.createElement('template');
+            // template.innerHTML = todoCardTemplate;
+            // let card = template.content.firstElementChild;
+            let card = generateTemplate(todoCardTemplate);
+
 
             card.querySelector('.title').textContent = todo.title;
             card.querySelector('.description').textContent = todo.description;
             card.querySelector('.checklist-summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
+            let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
+            card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
             card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
             card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
             //console.log(card.outerHTML);
+            card.addEventListener('click', () => render_toDoModal(todo));
+
             todoCards.appendChild(card);
         }
 
@@ -311,5 +319,11 @@ function clearContent() {
     for (let i = elements.content.childNodes.length - 1; i >= 0; i--) {
         elements.content.removeChild(elements.content.childNodes[i]);
     }
+}
+
+function generateTemplate(htmlTemplate) {
+    let template = document.createElement('template');
+    template.innerHTML = htmlTemplate;
+    return template.content.firstElementChild;
 }
 
