@@ -124,6 +124,10 @@ class ToDo {
         return false;
     }
 
+    clearChecklist() {
+        this.#checklist = [];
+    }
+
     toString() {
         return `Title:${this.#title}\nDescription:${this.#description}\nDue-Date:${this.#dueDate}\nPriority:${this.#priority}\nuid:${this.#uid}`;
     };

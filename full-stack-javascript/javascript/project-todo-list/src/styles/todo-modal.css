@@ -41,7 +41,7 @@ select.section-input,
     --margin-top:calc(var(--top-offset) + 10px);
     display: flex;
     flex-flow: column nowrap;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
 
     width: 50%;

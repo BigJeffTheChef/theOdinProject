@@ -2,7 +2,6 @@ import { ToDo } from './ToDo.js';
 import { format } from 'date-fns';
 import { save, load } from './storage.js';
 import modalTemplate_container from './html-templates/toDoModal.html';
-import modalTemplate_new from './html-templates/toDoModal_new.html';
 import modalTemplate_list from './html-templates/toDoModal_list.html';
 
 import todoCardTemplate from './html-templates/toDoCard.html';
@@ -80,38 +79,35 @@ function render_welcome() {
 function render_allTodos() {
     clearContent();
     //oldRender();
-    newRender();
 
-    function newRender() {
-        let todoCards = document.createElement('div');
-        todoCards.classList.add('todo-cards');
+    let todoCards = document.createElement('div');
+    todoCards.classList.add('todo-cards');
 
-
-
-        let loadedTodos = load('todo');
-        let loadedProjects = load('project');
-        for (let todo of loadedTodos) {
-            // let template = document.createElement('template');
-            // template.innerHTML = todoCardTemplate;
-            // let card = template.content.firstElementChild;
-            let card = generateTemplate(todoCardTemplate);
+    let loadedTodos = load('todo');
+    let loadedProjects = load('project');
+    for (let todo of loadedTodos) {
+        // let template = document.createElement('template');
+        // template.innerHTML = todoCardTemplate;
+        // let card = template.content.firstElementChild;
+        let card = generateTemplate(todoCardTemplate);
 
 
-            card.querySelector('.title').textContent = todo.title;
-            card.querySelector('.description').textContent = todo.description;
-            card.querySelector('.checklist-summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
-            let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
-            card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
-            card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
-            card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
-            //console.log(card.outerHTML);
-            card.addEventListener('click', () => render_toDoModal(todo));
+        card.querySelector('.title').textContent = todo.title;
+        //card.querySelector('.description').textContent = (todo.description.length < 170) ? todo.description : todo.description.substring(0, 170) + '...';
+        card.querySelector('.description').textContent = todo.description;
+        card.querySelector('.checklist-summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
+        let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
+        card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
+        card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
+        card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
+        //console.log(card.outerHTML);
+        card.addEventListener('click', () => render_toDoModal(todo));
 
-            todoCards.appendChild(card);
-        }
-
-        elements.content.appendChild(todoCards);
+        todoCards.appendChild(card);
     }
+
+    elements.content.appendChild(todoCards);
+
 
 
     function oldRender() {
@@ -229,75 +225,58 @@ function render_allTodos() {
 function render_toDoModal(toDoObj) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
-
     // setup modal
     document.body.classList.add('modal-active');
-    let modalTemplate = document.createElement('template');
-    modalTemplate.innerHTML = modalTemplate_container;
-    let modalContent = modalTemplate.content.firstElementChild;
-    modalContent.querySelector('#title-field').value = toDoObj.title;
-    modalContent.querySelector('#desc-field').value = toDoObj.description;
-    modalContent.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
-    modalContent.querySelector('#priority-field').value = toDoObj.priority;
-    renderChecklist_view(toDoObj.checklist);
-    renderChecklist_add();
-
+    let modal = generateTemplate(modalTemplate_container);
+    modal.querySelector('#title-field').value = toDoObj.title;
+    modal.querySelector('#desc-field').value = toDoObj.description;
+    modal.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
+    modal.querySelector('#priority-field').value = toDoObj.priority;
+    renderChecklist_view(toDoObj);
+    modal.querySelector('#add-todo-button').addEventListener('click', event => onAddNewItem(event));
+    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(toDoObj) );
     // append modal to body
-    document.body.appendChild(modalContent);
-    document.querySelector('.todo-modal-wrapper').addEventListener('click', event => closeModalEvent(event));
+    document.body.appendChild(modal);
+    document.querySelector('.todo-modal-wrapper').addEventListener('click', event => onCloseModal(event));
 
-    function renderChecklist_view(checklist) {
-        //TODO_EDITOR_CHECKLIST_TEMPLATE
-        let checklistSection = modalContent.querySelector('.checklist-section');
-
+    // HELPER FUNCTIONS
+    function renderChecklist_view(toDoObj) {
+        let checklist = toDoObj.checklist;
+        let checklistSection = modal.querySelector('.checklist-section');
         if (checklist.length > 0) {
             for (let i = 0; i < checklist.length; i++) {
-                let clistTemplate = document.createElement('template');
-                clistTemplate.innerHTML = modalTemplate_list;
-                let clistContent = clistTemplate.content.firstElementChild;
-
-                clistContent.querySelector('.complete-field').value = checklist[i][0];
-                clistContent.querySelector('.checklist-text').value = checklist[i][1];
-
-                checklistSection.appendChild(clistContent);
+                let checklistItem = generateTemplate(modalTemplate_list);
+                checklistItem.querySelector('.complete-field').value = checklist[i][0];
+                checklistItem.querySelector('.checklist-text').value = checklist[i][1];
+                checklistSection.appendChild(checklistItem);
             }
         } else {
             let p = document.createElement('p');
-            p.textContent = "No Checklist Items";
+            p.textContent = 'No Checklist Items';
             checklistSection.appendChild(p);
         }
     }
-
-    function renderChecklist_add() {
-        let checklistSection = modalContent.querySelector('.checklist-section.new-item');
-
-        let newListItemTemplate = document.createElement('template');
-        newListItemTemplate.innerHTML = modalTemplate_new;
-
-        let newListItemContent = newListItemTemplate.content.firstElementChild;
-
-        newListItemContent.querySelector('#add-todo-button').addEventListener('click', (event) => {
-            let completeValue = newListItemContent.querySelector('.checklist-new-item .complete-field').value == "true";
-            let textField = newListItemContent.querySelector('.checklist-new-item .checklist-text');
-            try {
-                toDoObj.addToCheckList(completeValue, textField.value);
-                closeModalEvent(event);
-                save(toDoObj);
-                render_allTodos();
-                render_toDoModal(toDoObj);
-            } catch (error) {
-                textField.setCustomValidity(error.message);
-                textField.reportValidity();
-            }
-        });
-
-        checklistSection.appendChild(newListItemContent);
+    function onSave(t) {
+        t = pullTodo(toDoObj);
+        save(toDoObj);
+        closeModalAction(event);
+        render_allTodos();
+        render_toDoModal(toDoObj);
     }
-
-    function closeModalEvent(event) {
+    function onAddNewItem(event) {
+        let completeValue = modal.querySelector('.checklist-new-item .complete-field').value == "true";
+        let textField = modal.querySelector('.checklist-new-item .checklist-text');
+        try {
+            toDoObj.addToCheckList(completeValue, textField.value);
+            onSave(toDoObj);
+        } catch (error) {
+            textField.setCustomValidity(error.message);
+            textField.reportValidity();
+        }
+    }
+    function onCloseModal(event) {
         if (event.target.closest('#todo-modal-form') === null) closeModalAction();
     }
-
     function closeModalAction() {
         let modalSelector = '.todo-modal-wrapper';
         let modal = document.querySelector(modalSelector);
@@ -305,6 +284,19 @@ function render_toDoModal(toDoObj) {
         document.body.classList.remove('modal-active');
     }
 
+    function pullTodo(toDoObj) {
+        toDoObj.title = modal.querySelector('#title-field').value;
+        toDoObj.description = modal.querySelector('#desc-field').value;
+        toDoObj.dueDate = new Date(modal.querySelector('#due-date-field').value);
+        toDoObj.priority = modal.querySelector('#priority-field').value;
+        toDoObj.clearChecklist();
+        for (let node of modal.querySelectorAll('.checklist-list-item')) {
+            let complete = node.querySelector('.complete-field') === 'true';
+            let text = node.querySelector('.checklist-text').value;
+            toDoObj.addToCheckList(complete, text);
+        }
+        return toDoObj;
+    }
 };
 
 function render_allProjects() {
