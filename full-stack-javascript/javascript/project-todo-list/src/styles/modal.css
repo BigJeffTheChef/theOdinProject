@@ -7,7 +7,7 @@ select.section-input,
 .checklist-section>button,
 .checklist-section,
 .checklist-text,
-#todo-modal-form {
+#modal-form {
     background-color: var(--bg-color-1);
     border-radius: var(--border-rad);
     border: 2px solid var(--bg-color-3);
@@ -19,7 +19,7 @@ select.section-input,
     border: 1px solid var(--bg-color-3);
 }
 
-.todo-modal-wrapper {
+.modal-wrapper {
     --top-offset: 3.5rem;
     display: flex;
     justify-content: center;
@@ -37,7 +37,7 @@ select.section-input,
 
 }
 
-#todo-modal-form {
+#modal-form {
     --margin-top:calc(var(--top-offset) + 10px);
     display: flex;
     flex-flow: column nowrap;
@@ -146,18 +146,18 @@ select.section-input,
     color: var(--text-1);
 }
 
-#todo-modal-form button {
+#modal-form button {
     border: 0px;
     border-radius: var(--border-rad);
     height: 2.5rem;
 }
 
-#todo-modal-form button:hover {
+#modal-form button:hover {
     background-color: var(--bg-color-2);
     transition: background-color 0.1s;
 }
 
-#todo-modal-form button:active {
+#modal-form button:active {
     background-color: var(--bg-color-1);
     transition: none;
 }
@@ -174,7 +174,7 @@ select.section-input,
 }
 
 @media only screen and (max-width: 750px) {
-    #todo-modal-form {
+    #modal-form {
         width: 95%;
     }
     .checklist-section {

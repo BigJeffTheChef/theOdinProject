@@ -208,6 +208,7 @@ button.hamburger:hover {
 /* CONTENT */
 
 .content {
+    --content-padding: 10px;
     display: flex;
     flex: 1 1 0;
 
@@ -216,7 +217,7 @@ button.hamburger:hover {
     background-color: var(--bg-color-3);
     border-radius: 10px;
     max-width: 600px;
-    padding: 10px;
+    padding: var(--content-padding);
 
     transition: color var(--theme-transition-speed),
         background-color var(--theme-transition-speed),
@@ -259,47 +260,6 @@ button.hamburger:hover {
 
 /* ADD TODO */
 
-form.add-todo {
-    display: grid;
-    grid-template: repeat(5, 1fr) / 1fr 3fr;
-    justify-content: space-around;
-
-    width: 100%;
-
-    gap: 5px;
-}
-
-form.add-todo+button {
-    grid-column: 1 / -1;
-
-    min-width: 100px;
-    max-width: 170px;
-    border: 0px;
-    border-radius: 10px;
-    background-color: var(--bg-color-1);
-    color: var(--text-1);
-
-    padding: 5px 25px;
-    margin-top: 5px;
-
-    transition: all 0.1s;
-}
-
-
-form.add-todo+button:hover {
-    background-color: var(--accent);
-
-    transition: all 0.1s;
-}
-
-form.add-todo>input:invalid {
-    border: 1px solid red;
-}
-
-form.add-todo>input:valid {
-    border: 1px solid green;
-}
-
 div.add-todo {
     display: flex;
     justify-content: center;
@@ -312,45 +272,67 @@ div.add-todo {
 }
 
 /* TODO CARD */
-
-.todo-cards {
+.todo-cards,
+.project-cards {
     display: grid;
-    grid-template: 1fr / repeat(2, 1fr);
-    grid-auto-rows: 1fr;
     gap: 10px;
     justify-items: center;
 
     width: 100%;
 }
 
+.todo-cards {
+    grid-template: 1fr / repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+}
 
-.todo-card {
-    display: grid;
-    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr 1fr / repeat(2, 1fr);
+.project-cards {
+    grid-template: 1fr / 1fr;
+    grid-auto-flow: 1fr;
+}
 
+.todo-card,
+.project-card {
     background-color: var(--bg-color-1);
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0);
-    width: 90%;
+    display: grid;
+
 
     padding: 10px;
 }
 
+.todo-card {
+    grid-template: calc(1.2rem + 20px) 6rem 2fr 1fr 1fr / repeat(2, 1fr);
+
+    width: 90%;
+
+}
+
+.project-card {
+    grid-template: calc(1.2rem + 20px) 6rem 6rem 2fr / repeat(2, 1fr);;
+
+    width: 95%;
+}
 
 
 
-.todo-card:hover {
+
+.todo-card:hover,
+.project-card:hover {
     border: 1px solid var(--text-1);
     box-shadow: 5px 5px 15px var(--accent);
 }
 
-.todo-card>* {
+.todo-card>*,
+.project-card>* {
     /*position of all cells bar the bottom cell is to span 2 grid tracks*/
     grid-column: 2 span;
     font-size: 1rem;
 }
 
-.todo-card>.title {
+.todo-card>.title,
+.project-card>.title {
     display: flex;
     align-items: center;
 
@@ -358,12 +340,20 @@ div.add-todo {
     font-size: 1.2em;
 }
 
-.todo-card>.description {
+.notes {
+    margin: 10px 0px;
+}
+
+.notes,
+.todo-card>.description,
+.project-card>.description {
     background-color: var(--bg-color-3);
     border-radius: 10px;
+    position: relative;
 
     padding: 10px;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     font-size: 0.8em;
 }
@@ -380,13 +370,18 @@ div.add-todo {
     grid-template: 1fr/ 1fr 4fr;
 }
 
-.todo-card>.checklist>.checklist-summary {
+.summary {
     background-color: var(--accent);
     border-radius: 10px;
     padding: 5px 10px;
     margin: 5px 5px 5px 0px;
 }
 
+.project-card>.summary {
+    margin-top: 0px;
+}
+
+.project-card>.bottom-cell,
 .todo-card>.bottom-cell,
 .todo-card>.project-info {
     font-size: 0.8em;
@@ -397,24 +392,49 @@ div.add-todo {
     font-weight: bold;
 }
 
+.project-card>.bottom-cell,
 .todo-card>.bottom-cell {
     display: flex;
     align-items: center;
     grid-column: 1 / -1;
-
 }
-
+.project-card>.bottom-cell>div:first-child,
 .todo-card>.bottom-cell>div:first-child {
     margin-right: auto;
 }
 
 
+/* TOOL TIP */
 
+.tooltip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    /* transform: translate(-50%, -50%); */
+    display: none;
+    background-color: var(--text-1);
+    color: var(--text-2);
+    padding: 5px;
+    border-radius: var(--border-rad);
+}
+
+.description:hover .tooltip,
+.notes:hover .tooltip {
+    display: block;
+}
+
+.description:focus .tooltip,
+.notes:focus .tooltip {
+    display: none;
+}
 
 /* HIDDEN */
+
 .hidden {
     display: none;
 }
+
+/* MEDIA QUERIES */
 
 @media only screen and (max-width: 655px) {
     .body {
@@ -430,7 +450,9 @@ div.add-todo {
         grid-template-columns: 1fr;
     }
 
-    .todo-card {
-        width: 250px;
+    .todo-card,
+    .project-card {
+        min-width: 240px;
+        width: 95%;
     }
 }

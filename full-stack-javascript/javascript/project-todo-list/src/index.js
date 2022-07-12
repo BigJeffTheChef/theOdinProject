@@ -1,5 +1,5 @@
 import './styles/styles.css';
-import './styles/todo-modal.css';
+import './styles/modal.css';
 import './domController.js';
 import { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, load, getStorage} from './storage.js';
 import { Project } from './Project';

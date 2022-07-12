@@ -3,18 +3,51 @@ import { format } from 'date-fns';
 import { save, load } from './storage.js';
 import modalTemplate_container from './html-templates/toDoModal.html';
 import modalTemplate_list from './html-templates/toDoModal_list.html';
-
 import todoCardTemplate from './html-templates/toDoCard.html';
+import projectCardTemplate from './html-templates/projectCard.html';
 
-// elements obj via IIFE - faster as DOM queried only once? maybe...
+let selectors = {
+    buttons: {
+        menu: 'button.hamburger',
+        theme: '.change-theme',
+        showTodos: '.burger-show-all',
+        showProjects: '.burger-show-projects',
+    },
+    elements: {
+        header: '.header',
+        nav: '.nav',
+        content: '.content',
+        todoCards: '.todo-cards',
+    },
+
+};
+
+let elementsObj = {
+    buttons: {
+        menu: document.querySelector(selectors.buttons.menu),
+        theme: document.querySelector(selectors.buttons.theme),
+        showTodos: document.querySelectorAll(selectors.buttons.showTodos),
+        showProjects: document.querySelectorAll(selectors.buttons.showProjects),
+    },
+    containers: {
+        header: document.querySelector(selectors.elements.header),
+        nav: document.querySelector(selectors.elements.nav),
+        content: document.querySelector(selectors.elements.content),
+    },
+};
+
 let elements = (function () {
-    let menuBtn = document.querySelector('button.hamburger');
-    let themeBtn = document.querySelector('.change-theme');
-    let header = document.querySelector('.header');
-    let nav = document.querySelector('.nav');
-    let content = document.querySelector('.content');
-    let showAllTodosBtns = document.querySelectorAll('.burger-show-all');
-    let showAllProjectsBtns = document.querySelectorAll('.burger-show-projects');
+    //buttons
+    let menuBtn = document.querySelector(selectors.buttons.menu);
+    let themeBtn = document.querySelector(selectors.buttons.theme);
+    let showAllTodosBtns = document.querySelectorAll(selectors.buttons.showTodos);
+    let showAllProjectsBtns = document.querySelectorAll(selectors.buttons.showProjects);
+
+    // containers
+    let header = document.querySelector(selectors.elements.header);
+    let nav = document.querySelector(selectors.elements.nav);
+    let content = document.querySelector(selectors.elements.content);
+
     return {
         menuBtn,
         themeBtn,
@@ -26,6 +59,8 @@ let elements = (function () {
     }
 })();
 
+
+
 // page initialisation
 (function initialize() {
 
@@ -35,35 +70,35 @@ let elements = (function () {
     render_welcome();
 
     // document.querySelector('#burger-show-all').addEventListener('click', () => renderToDoList());
-    for (let btn of elements.showAllTodosBtns) {
+    for (let btn of elementsObj.buttons.showTodos) {
         btn.addEventListener('click', render_allTodos);
     }
 
-    for (let btn of elements.showAllProjectsBtns) {
+    for (let btn of elementsObj.buttons.showProjects) {
         btn.addEventListener('click', render_allProjects);
     }
 
     function setMenuPosition() {
-        elements.nav.style['top'] = (elements.header.offsetHeight - 2) + 'px';
-        elements.nav.style['left'] = '10px';
+        elementsObj.containers.nav.style['top'] = (elementsObj.containers.header.offsetHeight - 2) + 'px';
+        elementsObj.containers.nav.style['left'] = '10px';
         setTimeout(() => {
-            elements.nav.classList.remove('hidden');
+            elementsObj.containers.nav.classList.remove('hidden');
         }, 200)
     }
 
     function setMenuButtonEvent() {
-        elements.menuBtn.addEventListener('click', () => {
+        elementsObj.buttons.menu.addEventListener('click', () => {
             const showSelector = 'nav-open';
-            if (elements.nav.classList.contains(showSelector)) {
-                elements.nav.classList.remove(showSelector);
+            if (elementsObj.containers.nav.classList.contains(showSelector)) {
+                elementsObj.containers.nav.classList.remove(showSelector);
             } else {
-                elements.nav.classList.add(showSelector);
+                elementsObj.containers.nav.classList.add(showSelector);
             }
         });
     }
 
     function setThemeChangeEvent() {
-        elements.themeBtn.addEventListener('click', () => {
+        elementsObj.buttons.theme.addEventListener('click', () => {
             document.body.classList.toggle('dark');
         });
     }
@@ -73,7 +108,7 @@ function render_welcome() {
     clearContent();
     let tempWelcome = document.createElement('div');
     tempWelcome.textContent = "Welcome!";
-    elements.content.appendChild(tempWelcome);
+    elementsObj.containers.content.appendChild(tempWelcome);
 }
 
 function render_allTodos() {
@@ -81,7 +116,7 @@ function render_allTodos() {
     //oldRender();
 
     let todoCards = document.createElement('div');
-    todoCards.classList.add('todo-cards');
+    todoCards.classList.add(selectors.elements.todoCards);
 
     let loadedTodos = load('todo');
     let loadedProjects = load('project');
@@ -95,7 +130,7 @@ function render_allTodos() {
         card.querySelector('.title').textContent = todo.title;
         //card.querySelector('.description').textContent = (todo.description.length < 170) ? todo.description : todo.description.substring(0, 170) + '...';
         card.querySelector('.description').textContent = todo.description;
-        card.querySelector('.checklist-summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
+        card.querySelector('.summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
         let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
         card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
         card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
@@ -106,20 +141,20 @@ function render_allTodos() {
         todoCards.appendChild(card);
     }
 
-    elements.content.appendChild(todoCards);
+    elementsObj.containers.content.appendChild(todoCards);
 
 
 
     function oldRender() {
         let todoCards = document.createElement('div');
-        todoCards.classList.add('todo-cards');
+        todoCards.classList.add(selectors.elements.todoCards);
 
         let todoObjs = load("todo");
         for (let i = 0; i < todoObjs.length; i++) {
             todoCards.appendChild(createCard(todoObjs[i]));
         }
 
-        elements.content.appendChild(todoCards);
+        elementsObj.containers.content.appendChild(todoCards);
 
         function createCard(toDoObj) {
             let card = document.createElement('div');
@@ -180,7 +215,7 @@ function render_allTodos() {
                 checklistDiv.classList.add('checklist');
 
                 let checklistSummaryDiv = document.createElement('div');
-                checklistSummaryDiv.classList.add('checklist-summary');
+                checklistSummaryDiv.classList.add('summary');
                 checklistSummaryDiv.textContent = checklist.length + " checklist items";
 
                 checklistDiv.appendChild(checklistSummaryDiv);
@@ -235,10 +270,10 @@ function render_toDoModal(toDoObj) {
     modal.querySelector('#priority-field').value = toDoObj.priority;
     renderChecklist_view(toDoObj);
     modal.querySelector('#add-todo-button').addEventListener('click', event => onAddNewItem(event));
-    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(currentUid) );
+    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(currentUid));
     // append modal to body
     document.body.appendChild(modal);
-    document.querySelector('.todo-modal-wrapper').addEventListener('click', event => onCloseModal(event));
+    document.querySelector('.modal-wrapper').addEventListener('click', event => onCloseModal(event));
 
     // HELPER FUNCTIONS
     function renderChecklist_view(toDoObj) {
@@ -260,10 +295,6 @@ function render_toDoModal(toDoObj) {
     function onSave(currentUid) {
         let t = pullTodo(currentUid);
         save(t);
-        // save(toDoObj);
-        // closeModalAction(event);
-        // render_allTodos();
-        // render_toDoModal(toDoObj);
     }
     function onAddNewItem(event) {
         let completeValue = modal.querySelector('.checklist-new-item .complete-field').value == "true";
@@ -280,21 +311,20 @@ function render_toDoModal(toDoObj) {
         }
     }
     function onCloseModal(event) {
-        if (event.target.closest('#todo-modal-form') === null) closeModalAction();
+        if (event.target.closest('#modal-form') === null) closeModalAction();
     }
     function closeModalAction() {
-        let modalSelector = '.todo-modal-wrapper';
+        let modalSelector = '.modal-wrapper';
         let modal = document.querySelector(modalSelector);
         document.body.removeChild(modal);
         document.body.classList.remove('modal-active');
     }
-
     function pullTodo(currentUid) {
         let title = modal.querySelector('#title-field').value;
         let description = modal.querySelector('#desc-field').value;
         let dueDate = new Date(modal.querySelector('#due-date-field').value);
         let priority = modal.querySelector('#priority-field').value;
-        let t = new ToDo(title, description,dueDate, priority ,currentUid);
+        let t = new ToDo(title, description, dueDate, priority, currentUid);
         for (let node of modal.querySelectorAll('.checklist-list-item')) {
             let complete = node.querySelector('.complete-field') === 'true';
             let text = node.querySelector('.checklist-text').value;
@@ -305,16 +335,42 @@ function render_toDoModal(toDoObj) {
 };
 
 function render_allProjects() {
+    clearContent();
     let projects = load('project');
-    console.log(projects);
+    let cards = document.createElement('div');
+    cards.classList.add('project-cards');
+    for (let project of projects) {
+        console.log(project);
+        let card = generateTemplate(projectCardTemplate);
+        card.querySelector('.title').textContent = project.title;
+        card.querySelector('.description').textContent = project.description;
+        card.querySelector('.notes').textContent = project.notes;
+        card.querySelector('.summary').textContent = ((project.todos.length === 0) ? "No" : project.todos.length) + " todo" + (project.todos.left >= 1) ? "s" : "";
+        card.addEventListener('click', render_projectModal)
+        cards.appendChild(card);
+    }
+    elementsObj.containers.content.appendChild(cards);
 }
+function render_projectModal() {
+    // ensure modal doesn't render twice
+    if (document.body.classList.contains('modal-active')) closeModalAction('.modal-wrapper');
+    const currentUid = toDoObj.uid;
+    // setup modal
+    document.body.classList.add('modal-active');
 
+    function closeModalAction(modalClassSelector) {
+        let modalSelector = '.modal-wrapper';
+        let modal = document.querySelector(modalSelector);
+        document.body.removeChild(modal);
+        document.body.classList.remove('modal-active');
+    }
+}
 /**
  * clear all child nodes from the 'content' div - resetting it to empty.
  */
 function clearContent() {
-    for (let i = elements.content.childNodes.length - 1; i >= 0; i--) {
-        elements.content.removeChild(elements.content.childNodes[i]);
+    for (let i = elementsObj.containers.content.childNodes.length - 1; i >= 0; i--) {
+        elementsObj.containers.content.removeChild(elementsObj.containers.content.childNodes[i]);
     }
 }
 
