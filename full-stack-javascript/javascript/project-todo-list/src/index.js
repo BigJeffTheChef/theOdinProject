@@ -6,7 +6,7 @@ import { Project } from './Project';
 import { ToDo } from './ToDo';
 // import './storage.js';
 
-//buildTestData();
+buildTestData();
 
 function buildTestData() {
     clearStorage();
@@ -28,6 +28,7 @@ function buildTestData() {
     save(tProj2);
 
     let loneT = new ToDo("not in any project", "description - this one isnt in a project ".repeat(70), new Date(5,5,5), 5);
+    loneT.notes = "test notes";
     save(loneT);
 
     let whatever = load("project");

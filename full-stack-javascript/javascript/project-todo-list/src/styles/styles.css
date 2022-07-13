@@ -119,17 +119,21 @@ body {
 
 .header-body {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
 }
 
-.menu-button {
-    background-color: var(--accent);
+.menu-button,
+.menu-expanding-button {
+    position: relative;
     border-radius: 5px;
-
     padding: 2px 5px;
     margin: 0px 5px;
+}
+
+.menu-button {
+    background-color: var(--accent);
 }
 
 .menu-button:hover {
@@ -146,8 +150,43 @@ body {
 
 }
 
-li.menu-button {
+/* li.menu-button {
     margin: 5px 0px;
+} */
+
+.menu-expanding-button {
+    font-size: 0.85em;
+    visibility: collapse;
+    transition: transform 0s, visibility 0s;
+    background-color: var(--bg-color-3);
+}
+
+.menu-expanding-button.active {
+    visibility: visible;
+    transition: transform 0.5s ease-in-out, visibility 0.5s ease-in-out, height 0.5s ease-in-out;
+
+    padding: 2px 5px;
+}
+
+.header-body>.menu-expanding-button {
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+.nav>ul>li.menu-expanding-button {
+    transform: scaleY(0);
+    transform-origin: top;
+    height: 0;
+}
+
+.header-body>.menu-expanding-button.active {
+    transform: scaleX(1);
+}
+
+.nav>ul>li.menu-expanding-button.active {
+    height:auto;
+    margin: 5px 0px;
+    transform: scaleY(1);
 }
 
 button.hamburger {

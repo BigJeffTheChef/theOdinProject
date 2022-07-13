@@ -6,25 +6,16 @@ import modalTemplate_list from './html-templates/toDoModal_list.html';
 import todoCardTemplate from './html-templates/toDoCard.html';
 import projectCardTemplate from './html-templates/projectCard.html';
 
-// elements obj via IIFE - faster as DOM queried only once? maybe...
-let elements = (function () {
-    let menuBtn = document.querySelector('button.hamburger');
-    let themeBtn = document.querySelector('.change-theme');
-    let header = document.querySelector('.header');
-    let nav = document.querySelector('.nav');
-    let content = document.querySelector('.content');
-    let showAllTodosBtns = document.querySelectorAll('.burger-show-all');
-    let showAllProjectsBtns = document.querySelectorAll('.burger-show-projects');
-    return {
-        menuBtn,
-        themeBtn,
-        header,
-        nav,
-        content,
-        showAllTodosBtns,
-        showAllProjectsBtns
-    }
-})();
+let elements = {
+    menuBtn: document.querySelector('button.hamburger'),
+    themeBtn: document.querySelector('.change-theme'),
+    header: document.querySelector('.header'),
+    nav: document.querySelector('.nav'),
+    content: document.querySelector('.content'),
+    showAllTodosBtns: document.querySelectorAll('.button-show-todos'),
+    showAllProjectsBtns: document.querySelectorAll('.button-show-projects'),
+    menuExpandingBtns: document.querySelectorAll('.menu-expanding-button'),
+};
 
 // page initialisation
 (function initialize() {
@@ -34,7 +25,7 @@ let elements = (function () {
     setMenuPosition();
     render_welcome();
 
-    // document.querySelector('#burger-show-all').addEventListener('click', () => renderToDoList());
+    // document.querySelector('#button-show-todos').addEventListener('click', () => renderToDoList());
     for (let btn of elements.showAllTodosBtns) {
         btn.addEventListener('click', render_allTodos);
     }
@@ -78,7 +69,8 @@ function render_welcome() {
 
 function render_allTodos() {
     clearContent();
-    //oldRender();
+    configExpandingMenuBtns('add-todo-button');
+    
 
     let todoCards = document.createElement('div');
     todoCards.classList.add('todo-cards');
@@ -115,13 +107,15 @@ function render_toDoModal(toDoObj) {
     // setup modal
     document.body.classList.add('modal-active');
     let modal = generateTemplate(modalTemplate_container);
+    console.log(toDoObj);
     modal.querySelector('#title-field').value = toDoObj.title;
     modal.querySelector('#desc-field').value = toDoObj.description;
+    modal.querySelector('#notes-field').value = toDoObj.notes;
     modal.querySelector('#due-date-field').value = format(toDoObj.dueDate, 'yyyy-MM-dd');
     modal.querySelector('#priority-field').value = toDoObj.priority;
     renderChecklist_view(toDoObj);
     modal.querySelector('#add-todo-button').addEventListener('click', event => onAddNewItem(event));
-    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(currentUid) );
+    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(currentUid));
     // append modal to body
     document.body.appendChild(modal);
     document.querySelector('.modal-wrapper').addEventListener('click', event => onCloseModal(event));
@@ -166,7 +160,8 @@ function render_toDoModal(toDoObj) {
         let description = modal.querySelector('#desc-field').value;
         let dueDate = new Date(modal.querySelector('#due-date-field').value);
         let priority = modal.querySelector('#priority-field').value;
-        let t = new ToDo(title, description,dueDate, priority ,currentUid);
+        let t = new ToDo(title, description, dueDate, priority, currentUid);
+        t.notes = modal.querySelector('#notes-field').value;
         for (let node of modal.querySelectorAll('.checklist-list-item')) {
             let complete = node.querySelector('.complete-field') === 'true';
             let text = node.querySelector('.checklist-text').value;
@@ -178,6 +173,7 @@ function render_toDoModal(toDoObj) {
 
 function render_allProjects() {
     clearContent();
+    configExpandingMenuBtns('add-project-button');
     let projects = load('project');
     let cards = document.createElement('div');
     cards.classList.add('project-cards');
@@ -226,4 +222,14 @@ function closeModalAction() {
 
 function onCloseModal(event) {
     if (event.target.closest('#modal-form') === null) closeModalAction();
+}
+
+function configExpandingMenuBtns(selector) {
+    for (let expandingBtn of elements.menuExpandingBtns) {
+        if (expandingBtn.classList.contains(selector)) {
+            expandingBtn.classList.add('active');
+        } else {
+            expandingBtn.classList.remove('active');
+        }
+    }
 }

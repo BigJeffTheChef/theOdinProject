@@ -114,6 +114,7 @@ function load(toLoad, uid = null) {
         // //console.log(obj);
 
         let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.uid);
+        todo.notes = loadedTodo.notes;
 
         for (let item of loadedTodo.checklist) {
             todo.addToCheckList(item[0],item[1]);

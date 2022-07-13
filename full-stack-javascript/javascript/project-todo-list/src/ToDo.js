@@ -140,6 +140,7 @@ class ToDo {
         return {
             title: this.#title,
             description: this.#description,
+            notes: this.#notes,
             dueDate: this.#dueDate,
             priority: this.#priority,
             checklist: this.#checklist,
