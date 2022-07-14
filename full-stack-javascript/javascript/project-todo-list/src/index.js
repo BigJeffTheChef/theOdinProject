@@ -5,7 +5,16 @@ import { Project } from './scripts/obj/Project.js';
 import { ToDo } from './scripts/obj/ToDo.js';
 // import './storage.js';
 
+
+
 buildTestData();
+
+// set uid seeds
+let todos = load('todo');
+let highest = todos.reduce((p, el) => {
+    if (p <= el.uid) return p+1;
+}, 0);
+console.log("highest: " + highest)
 
 function buildTestData() {
     clearStorage();

@@ -34,7 +34,7 @@ class ToDo {
     constructor(title, description, dueDate, priority, uid) {
         this.title = title || 'New task';
         this.description = description || 'No description added';
-        this.dueDate = dueDate;
+        this.dueDate = dueDate || null;
         this.priority = priority || null;
         this.notes = "";
         this.#checklist = []; // directly set to empty array
@@ -149,4 +149,4 @@ class ToDo {
     };
 }
 
-export { ToDo };
+export { ToDo, uidSeed };
