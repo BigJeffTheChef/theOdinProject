@@ -22,7 +22,6 @@
     margin: 0px;
     transition: color var(--theme-transition-speed),
         background-color var(--theme-transition-speed);
-
 }
 
 .dark {
@@ -255,7 +254,7 @@ button.hamburger:hover {
     overflow: hidden;
     background-color: var(--bg-color-3);
     border-radius: 10px;
-    max-width: 600px;
+    max-width: 800px;
     padding: var(--content-padding);
 
     transition: color var(--theme-transition-speed),
@@ -321,7 +320,7 @@ div.add-todo {
 }
 
 .todo-cards {
-    grid-template: 1fr / repeat(2, 1fr);
+    grid-template: 1fr / repeat(3, 1fr);
     grid-auto-rows: 1fr;
 }
 
