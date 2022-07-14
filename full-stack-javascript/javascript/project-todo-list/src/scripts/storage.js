@@ -1,5 +1,5 @@
-import { ToDo } from './ToDo.js';
-import { Project } from './Project.js';
+import { ToDo } from './obj/ToDo.js';
+import { Project } from './obj/Project.js';
 
 /**
  * 

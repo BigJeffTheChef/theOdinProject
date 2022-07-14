@@ -1,9 +1,9 @@
 import './styles/styles.css';
 import './styles/modal.css';
-import './domController.js';
-import { clearStorage, addTestToDosToStorage, addTestProjectToStorage, displayStorage, save, load, getStorage} from './storage.js';
-import { Project } from './Project';
-import { ToDo } from './ToDo';
+import './scripts/dom/domController.js';
+import { clearStorage, save, load, } from './scripts/storage.js';
+import { Project } from './scripts/obj/Project.js';
+import { ToDo } from './scripts/obj/ToDo.js';
 // import './storage.js';
 
 buildTestData();
