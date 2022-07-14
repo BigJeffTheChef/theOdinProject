@@ -126,4 +126,4 @@ function createToDoCards(todos, onCloseEvent) {
     return todoCards;
 }
 
-export {render_allTodos, createToDoCards};
+export {render_allTodos, createToDoCards, render_toDoModal};

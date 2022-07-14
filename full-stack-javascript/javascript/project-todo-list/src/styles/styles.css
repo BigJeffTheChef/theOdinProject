@@ -451,7 +451,7 @@ div.add-todo {
     display: grid;
 }
 
-#project-form>button {
+.menu-button {
     margin-top: 5px;
     max-width: 150px;
     justify-self: center;
@@ -462,12 +462,8 @@ div.add-todo {
     grid-template: 1fr /1fr;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
-    justify-content: space-around;
+    justify-items: center;
     column-gap: 10px;
-}
-
-.project-editor-button-panel>button {
-    justify-self: center;
 }
 
 /* TOOL TIP */
@@ -502,13 +498,17 @@ div.add-todo {
 
 select.section-input,
 .section-input,
-.checklist-section>button,
+.content-button,
 .checklist-section,
 .checklist-text,
 #modal-form {
     background-color: var(--bg-color-1);
     border-radius: var(--border-rad);
     border: 2px solid var(--bg-color-3);
+}
+
+.modal-wrapper .content-button {
+    background-color: var(--bg-color-3);
 }
 
 .section-label {
@@ -644,39 +644,25 @@ select.section-input,
     color: var(--text-1);
 }
 
-#save-button,
-.project button {
+.content-button {
     width: 100px;
 
     padding: 5px 10px;
     margin-top: 5px;
-}
-
-#modal-form button,
-.project button,
-#save-button {
     border: 0px;
     border-radius: var(--border-rad);
     height: 2.5rem;
 }
 
-#modal-form button:hover,
-#save-button:hover {
+
+.content-button:hover {
     background-color: var(--bg-color-2);
     transition: background-color 0.1s;
 }
 
-#modal-form button:active,
-#save-button:active {
+.content-button:active {
     background-color: var(--bg-color-1);
     transition: none;
-}
-
-
-
-
-#add-todo-button {
-    align-self: center;
 }
 
 @media only screen and (max-width: 750px) {

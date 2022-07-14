@@ -1,6 +1,6 @@
 // function imports
 import {clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction} from './domController.js';
-import { createToDoCards } from './domToDos.js';
+import { createToDoCards, render_toDoModal } from './domToDos.js';
 import {save, load} from '../storage.js';
 
 // js objects
@@ -42,7 +42,8 @@ function render_project(projectObj) {
     btnPanel.before(createToDoCards(projectObj.todos, () => render_project(projectObj)));
     elements.content.appendChild(content);
 
-    content.querySelector('#save-button').addEventListener('click', () => save(pull(uid)))
+    content.querySelector('#save-button').addEventListener('click', () => save(pull(uid)));
+    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal())
 
     function pull() {
         let title = document.querySelector('#title-field').value;
