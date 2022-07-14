@@ -1,5 +1,4 @@
 import './styles/styles.css';
-import './styles/modal.css';
 import './scripts/dom/domController.js';
 import { clearStorage, save, load, } from './scripts/storage.js';
 import { Project } from './scripts/obj/Project.js';

@@ -24,14 +24,14 @@ function render_allTodos() {
     clearContent();
     configExpandingMenuBtns('add-todo-button');
     let loadedTodos = load('todo');
-    elements.content.appendChild(createToDoCards(loadedTodos));
+    elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos));
 };
 
 /**
  * Renders the ToDo modal to allow editing of a ToDo object.
  * @param {ToDo} toDoObj 
  */
-function render_toDoModal(toDoObj) {
+function render_toDoModal(toDoObj, onCloseEvent) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
     const currentUid = toDoObj.uid;
@@ -46,12 +46,12 @@ function render_toDoModal(toDoObj) {
     modal.querySelector('#priority-field').value = toDoObj.priority;
     renderChecklist_view(toDoObj);
     modal.querySelector('#add-todo-button').addEventListener('click', event => onAddNewChecklistItem(event));
-    modal.querySelector('#save-todo-button').addEventListener('click', () => onSave(currentUid));
+    modal.querySelector('#save-button').addEventListener('click', () => onSave(currentUid));
     // append modal to body
     document.body.appendChild(modal);
     document.querySelector('.modal-wrapper').addEventListener('click', event => {
         onCloseModal(event);
-        render_allTodos();
+        onCloseEvent();
     });
 
     // HELPER FUNCTIONS
@@ -81,9 +81,8 @@ function render_toDoModal(toDoObj) {
         try {
             toDoObj.addToCheckList(completeValue, textField.value);
             onCloseModal(event);
-            save(toDoObj);
             render_allTodos();
-            render_toDoModal(toDoObj);
+            render_toDoModal(toDoObj, render_allTodos);
         } catch (error) {
             textField.setCustomValidity(error.message);
             textField.reportValidity();
@@ -105,7 +104,7 @@ function render_toDoModal(toDoObj) {
     }
 };
 
-function createToDoCards(todos) {
+function createToDoCards(todos, onCloseEvent) {
     let todoCards = document.createElement('div');
     todoCards.classList.add('todo-cards');
     let loadedProjects = load('project');
@@ -120,7 +119,7 @@ function createToDoCards(todos) {
         card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
         card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
         //console.log(card.outerHTML);
-        card.addEventListener('click', () => render_toDoModal(todo));
+        card.addEventListener('click', () => render_toDoModal(todo, onCloseEvent));
 
         todoCards.appendChild(card);
     }

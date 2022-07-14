@@ -8,8 +8,7 @@ import {Project} from '../obj/Project.js';
 
 // html templates
 import templateCardProject from '../../html-templates/projectCard.html';
-import templateModalProject_container from '../../html-templates/projectModal.html';
-import templateCardToDo from '../../html-templates/toDoCard.html';
+import templateProjectEditor from '../../html-templates/projectEditor.html';
 
 
 function render_allProjects() {
@@ -25,37 +24,33 @@ function render_allProjects() {
         card.querySelector('.description').textContent = project.description;
         card.querySelector('.notes').textContent = project.notes;
         card.querySelector('.summary').textContent = ((project.todos.length === 0) ? "No" : project.todos.length) + " todo" + ((project.todos.length >= 1) ? "s" : "");
-        card.addEventListener('click', () => render_projectModal(project));
+        card.addEventListener('click', () => render_project(project));
         cards.appendChild(card);
     }
     elements.content.appendChild(cards);
 }
-function render_projectModal(projectObj) {
+function render_project(projectObj) {
     // ensure modal doesn't render twice
-    if (document.body.classList.contains('modal-active')) closeModalAction();
-    const currentUid = projectObj.uid;
-    // setup modal
-    document.body.classList.add('modal-active');
+    clearContent();
+    const uid = projectObj.uid;
 
-    let modal = generateTemplate(templateModalProject_container);
+    let content = generateTemplate(templateProjectEditor);
+    let btnPanel = content.querySelector('.project-editor-button-panel');
+    content.querySelector('#title-field').value = projectObj.title;
+    content.querySelector('#desc-field').value = projectObj.description;
+    content.querySelector('#notes-field').value = projectObj.notes;
+    btnPanel.before(createToDoCards(projectObj.todos, () => render_project(projectObj)));
+    elements.content.appendChild(content);
 
-    modal.querySelector('#title-field').value = projectObj.title;
-    modal.querySelector('#desc-field').value = projectObj.description;
-    modal.querySelector('#notes-field').value = projectObj.notes;
+    content.querySelector('#save-button').addEventListener('click', () => save(pull(uid)))
 
-    modal.querySelector('#modal-form').appendChild(createToDoCards(projectObj.todos));
-    document.body.appendChild(modal);
-
-    document.querySelector('.modal-wrapper').addEventListener('click', event => {
-        onCloseModal(event);
-        render_allProjects();
-    });
-
-    function pull(projectUid) {
+    function pull() {
         let title = document.querySelector('#title-field').value;
         let description = document.querySelector('#desc-field').value;
         let notes = document.querySelector('#notes-field').value;
-        let p = new Project(title, description, notes, projectUid);
+        let p = new Project(title, description, notes, uid);
+        p.todos = projectObj.todos;
+        return p;
         /* PULL TODOS FROM MODAL TOO */
     }
 }
