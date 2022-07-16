@@ -5,7 +5,8 @@ import {
     generateTemplate, 
     elements,
     onCloseModal, 
-    closeModalAction
+    closeModalAction,
+    setContentTitle
 } from './domController.js';
 import {save, load} from '../storage.js';
 
@@ -22,6 +23,7 @@ import templateCardToDo from '../../html-templates/toDoCard.html';
 
 function render_allTodos() {
     clearContent();
+    setContentTitle("All ToDos")
     configExpandingMenuBtns('add-todo-button');
     let loadedTodos = load('todo');
     elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos));
@@ -81,8 +83,8 @@ function render_toDoModal(toDoObj, onCloseEvent) {
         try {
             toDoObj.addToCheckList(completeValue, textField.value);
             onCloseModal(event);
-            render_allTodos();
-            render_toDoModal(toDoObj, render_allTodos);
+            //render_allTodos();
+            render_toDoModal(toDoObj, onCloseEvent);
         } catch (error) {
             textField.setCustomValidity(error.message);
             textField.reportValidity();

@@ -1,5 +1,5 @@
 // function imports
-import {clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction} from './domController.js';
+import {clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction, setContentTitle} from './domController.js';
 import { createToDoCards, render_toDoModal } from './domToDos.js';
 import {save, load} from '../storage.js';
 
@@ -13,6 +13,7 @@ import templateProjectEditor from '../../html-templates/projectEditor.html';
 
 function render_allProjects() {
     clearContent();
+    setContentTitle('All Projects');
     configExpandingMenuBtns('add-project-button');
     let projects = load('project');
     let cards = document.createElement('div');
@@ -32,6 +33,7 @@ function render_allProjects() {
 function render_project(projectObj) {
     // ensure modal doesn't render twice
     clearContent();
+    setContentTitle('Project: ' + projectObj.title);
     const uid = projectObj.uid;
 
     let content = generateTemplate(templateProjectEditor);

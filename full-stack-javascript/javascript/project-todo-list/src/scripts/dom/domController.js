@@ -68,12 +68,12 @@ function setThemeChangeEvent() {
     });
 }
 
-
 function render_welcome() {
     clearContent();
-    let tempWelcome = document.createElement('div');
-    tempWelcome.textContent = "Welcome!";
-    elements.content.appendChild(tempWelcome);
+    setContentTitle('Welcome to TooDoo!');
+    let welcomeDiv = document.createElement('div');
+    welcomeDiv.textContent = "Welcome!";
+    elements.content.appendChild(welcomeDiv);
 }
 
 /**
@@ -112,4 +112,8 @@ function configExpandingMenuBtns(selector) {
     }
 }
 
-export { clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction };
+function setContentTitle(newTitle) {
+    document.querySelector('.content-title').textContent = newTitle;
+}
+
+export { clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction ,setContentTitle};

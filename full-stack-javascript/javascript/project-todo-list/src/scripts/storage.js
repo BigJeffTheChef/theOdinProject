@@ -82,7 +82,7 @@ function load(toLoad, uid = null) {
             let obj = JSON.parse(loadedProjects[projectUID]);
             //console.log(obj);
 
-            let project = new Project(obj.title, obj.description, obj.notes, projectUID);
+            let project = new Project(obj.title, obj.description, obj.notes, parseInt(projectUID));
             //console.log(project);
 
             let todoUIDs = obj.toDoUids;

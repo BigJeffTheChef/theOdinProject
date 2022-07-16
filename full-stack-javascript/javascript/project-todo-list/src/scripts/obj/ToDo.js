@@ -1,7 +1,11 @@
 import { format } from 'date-fns';
 
 const WHITESPACE_ONLY_REGEX = /^\s+$/;
-let uidSeed = 0;
+let todoUidSeed = 0;
+
+function setTodoUidSeed(newSeed) {
+    todoUidSeed = newSeed;
+}
 
 /**
  * ToDo object class
@@ -38,7 +42,7 @@ class ToDo {
         this.priority = priority || null;
         this.notes = "";
         this.#checklist = []; // directly set to empty array
-        this.#uid = uid || ++uidSeed;
+        this.#uid = uid || ++todoUidSeed;
     }
 
     get checklist() { return this.#checklist };
@@ -149,4 +153,4 @@ class ToDo {
     };
 }
 
-export { ToDo, uidSeed };
+export { ToDo, setTodoUidSeed, todoUidSeed };

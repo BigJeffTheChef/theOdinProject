@@ -1,6 +1,10 @@
 import {Todo} from './ToDo.js';
 
-let uidSeed = 0;
+let projectUidSeed = 0;
+
+function setProjectUidSeed(newSeed) {
+    projectUidSeed = newSeed;
+}
 
 class Project {
     
@@ -22,7 +26,7 @@ class Project {
         this.description = description;
         this.notes = notes;
         this.#todos = [];
-        this.#uid = uid || ++uidSeed;
+        this.#uid = uid || ++projectUidSeed;
     }
 
     set title(newTitle) {this.#title = newTitle};
@@ -68,4 +72,4 @@ class Project {
     }
 }
 
-export {Project, uidSeed};
+export {Project, setProjectUidSeed, projectUidSeed};

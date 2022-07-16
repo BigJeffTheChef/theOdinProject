@@ -1,20 +1,32 @@
 import './styles/styles.css';
 import './scripts/dom/domController.js';
 import { clearStorage, save, load, } from './scripts/storage.js';
-import { Project } from './scripts/obj/Project.js';
-import { ToDo } from './scripts/obj/ToDo.js';
-// import './storage.js';
+import { Project, setProjectUidSeed, projectUidSeed } from './scripts/obj/Project.js';
+import { ToDo, setTodoUidSeed, todoUidSeed } from './scripts/obj/ToDo.js';
 
 
 
 buildTestData();
+setUIDs();
 
 // set uid seeds
-let todos = load('todo');
-let highest = todos.reduce((p, el) => {
-    if (p <= el.uid) return p+1;
-}, 0);
-console.log("highest: " + highest)
+
+
+function setUIDs() {
+    setTodoUidSeed(determinedNewUidSeed(load('todo'))); 
+    setProjectUidSeed(determinedNewUidSeed(load('project')));
+    console.log("TUID: " + todoUidSeed);
+    console.log("PUID: " + projectUidSeed);
+
+    function determinedNewUidSeed(objects) {
+        let highest = objects.reduce((p, el) => {
+            if (p <= el.uid) return el.uid+1;
+        }, 0);
+        return highest;
+    }
+}
+
+
 
 function buildTestData() {
     clearStorage();
@@ -39,13 +51,13 @@ function buildTestData() {
     loneT.notes = "test notes";
     save(loneT);
 
-    let whatever = load("project");
-    console.log(whatever);
+    //let whatever = load("project");
+    //console.log(whatever);
 
 
-    console.log(window['localStorage']);
+    //console.log(window['localStorage']);
 
-    console.log(load("todo"));
+    //console.log(load("todo"));
 }
 
 // (function generateTestToDos() {
