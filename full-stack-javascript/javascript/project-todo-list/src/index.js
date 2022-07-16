@@ -1,22 +1,27 @@
 import './styles/styles.css';
 import './scripts/dom/domController.js';
-import { clearStorage, save, load, } from './scripts/storage.js';
-import { Project, setProjectUidSeed, projectUidSeed } from './scripts/obj/Project.js';
-import { ToDo, setTodoUidSeed, todoUidSeed } from './scripts/obj/ToDo.js';
+import { clearStorage, save, load } from './scripts/storage.js';
+import { Project  } from './scripts/obj/Project.js';
+import { ToDo } from './scripts/obj/ToDo.js';
 
+let loaded = {};
 
+(function initialise() {
+    clearStorage();
+    buildTestData();
+    loaded.todos = load('todo');
+    loaded.projects = load('project');
+    setUIDs(loaded.todos, loaded.projects);
+    let t = new ToDo(null, null, null, null);
+    console.log(t);
+})();
 
-buildTestData();
-setUIDs();
+function setUIDs(todos, projects) {
+    ToDo.updateUidSeed(determinedNewUidSeed(todos)); 
+    console.log("TUID seed: " + ToDo.getUidSeed());
 
-// set uid seeds
-
-
-function setUIDs() {
-    setTodoUidSeed(determinedNewUidSeed(load('todo'))); 
-    setProjectUidSeed(determinedNewUidSeed(load('project')));
-    console.log("TUID: " + todoUidSeed);
-    console.log("PUID: " + projectUidSeed);
+    Project.updateUidSeed(determinedNewUidSeed(projects));
+    console.log("PUID seed: " + Project.getUidSeed());
 
     function determinedNewUidSeed(objects) {
         let highest = objects.reduce((p, el) => {
@@ -24,12 +29,9 @@ function setUIDs() {
         }, 0);
         return highest;
     }
-}
-
-
+};
 
 function buildTestData() {
-    clearStorage();
     // addTestToDosToStorage(7);
     let tProj = new Project("ptitle1", "pdesc1", "pnotes1", 5555);
     let t1 = new ToDo("ttitle1a", "tdesc1a", new Date(1,1,1), 1, 1111);
@@ -59,12 +61,3 @@ function buildTestData() {
 
     //console.log(load("todo"));
 }
-
-// (function generateTestToDos() {
-//     console.groupCollapsed('debug prints');
-//     clearStorage();
-//     displayStorage();
-//     addTestProjectToStorage();
-    
-//     console.groupEnd('debug prints');
-// })();

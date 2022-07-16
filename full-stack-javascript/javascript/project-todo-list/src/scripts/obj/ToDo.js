@@ -1,11 +1,6 @@
 import { format } from 'date-fns';
 
 const WHITESPACE_ONLY_REGEX = /^\s+$/;
-let todoUidSeed = 0;
-
-function setTodoUidSeed(newSeed) {
-    todoUidSeed = newSeed;
-}
 
 /**
  * ToDo object class
@@ -20,6 +15,8 @@ class ToDo {
     #notes;
     #checklist;
     #uid;
+
+    static #uidSeed = 0;
 
     // static fields
     static MIN_PRIORITY = 1;
@@ -38,12 +35,18 @@ class ToDo {
     constructor(title, description, dueDate, priority, uid) {
         this.title = title || 'New task';
         this.description = description || 'No description added';
-        this.dueDate = dueDate || null;
-        this.priority = priority || null;
+        this.dueDate = dueDate || new Date();
+        this.priority = priority || ToDo.MAX_PRIORITY;
         this.notes = "";
         this.#checklist = []; // directly set to empty array
-        this.#uid = uid || ++todoUidSeed;
+        this.#uid = uid || ++ToDo.#uidSeed;
     }
+
+    static updateUidSeed(newSeed) {
+        ToDo.#uidSeed = newSeed;
+    }
+
+    static getUidSeed() { return ToDo.#uidSeed };
 
     get checklist() { return this.#checklist };
 
@@ -153,4 +156,4 @@ class ToDo {
     };
 }
 
-export { ToDo, setTodoUidSeed, todoUidSeed };
+export { ToDo };

@@ -36,6 +36,9 @@ function render_allTodos() {
 function render_toDoModal(toDoObj, onCloseEvent) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
+    if (!toDoObj) {
+        toDoObj = new ToDo(null, null, null, null);
+    }
     const currentUid = toDoObj.uid;
     // setup modal
     document.body.classList.add('modal-active');

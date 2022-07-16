@@ -12,7 +12,6 @@ import templateModalToDo_container from '../../html-templates/toDoModal.html';
 import templateModalToDo_list from '../../html-templates/toDoModal_list.html';
 import templateCardToDo from '../../html-templates/toDoCard.html';
 
-
 // elements object
 let elements = {
     menuBtn: document.querySelector('button.hamburger'),

@@ -26,6 +26,7 @@ function save(objToSave) {
         todosFromStorage[toDoObj.uid] = toDoObj;
         // save data in localStorage
         getStorage().setItem('todos', JSON.stringify(todosFromStorage));
+        console.log(`Todo saved: [uid: ${toDoObj.uid}] [title: ${toDoObj.title}]`);
     }
     function saveProject(projectObj) {
         let projectsFromStorage;
@@ -44,6 +45,7 @@ function save(objToSave) {
         projectsFromStorage[projectObj.uid] = JSON.stringify(projectObj);
         // save data in storage
         getStorage().setItem('projects', JSON.stringify(projectsFromStorage));
+        console.log(`Project saved: [uid: ${projectObj.uid}] [title: ${projectObj.title}]`);
     }
 }
 
@@ -99,6 +101,13 @@ function load(toLoad, uid = null) {
 
         // let data = jsonStructure;
         // console.log(data);
+        console.groupCollapsed('Projects loaded')
+        console.log(`Projects loaded [number loaded: ${projectObjs.length}]`);
+        for (let project of projectObjs) {
+            console.log(project);
+        }
+        console.groupEnd('Projects loaded')
+
         return projectObjs;
     }
     function loadTodo(toDoUid) {
@@ -147,6 +156,12 @@ function load(toLoad, uid = null) {
             builtTodos.push(loadTodo(keyUid));
         }
         //console.log(builtTodos);
+        console.groupCollapsed('ToDos loaded')
+        console.log(`ToDos loaded [number loaded: ${builtTodos.length}]`);
+        for (let todo of builtTodos) {
+            console.log(todo);
+        }
+        console.groupEnd('ToDos loaded')
         return builtTodos;
     }
 }
