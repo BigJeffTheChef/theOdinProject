@@ -25,9 +25,9 @@ class Project {
      * @param {number | undefined} uid 
      */
     constructor(title, description, notes, uid) {
-        this.title = title;
-        this.description = description;
-        this.notes = notes;
+        this.title = title || 'New Project';
+        this.description = description || 'New Project description';
+        this.notes = notes | "";
         this.#todos = [];
         this.#uid = uid || ++Project.#uidSeed;
     }

@@ -136,6 +136,7 @@ body {
 
 .menu-button {
     background-color: var(--theme-accent);
+    max-width: 150px;
 }
 
 .menu-button:hover {
@@ -457,12 +458,6 @@ div.add-todo {
 
 #project-form {
     display: grid;
-}
-
-.menu-button {
-    margin-top: 5px;
-    max-width: 150px;
-    justify-self: center;
 }
 
 .project-editor-button-panel {

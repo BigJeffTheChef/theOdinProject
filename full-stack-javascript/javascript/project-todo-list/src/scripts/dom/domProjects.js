@@ -15,6 +15,9 @@ function render_allProjects() {
     clearContent();
     setContentTitle('All Projects');
     configExpandingMenuBtns('add-project-button');
+
+    elements.menuAddProjectBtns.forEach(element => element.addEventListener('click', () => render_project(null))) ;
+
     let projects = load('project');
     let cards = document.createElement('div');
     cards.classList.add('project-cards');
@@ -33,9 +36,14 @@ function render_allProjects() {
 function render_project(projectObj) {
     // ensure modal doesn't render twice
     clearContent();
+    configExpandingMenuBtns('add-project-button','add-todo-to-project-button');
+    if (!projectObj) {
+        projectObj = new Project(null, null, null);
+        save(projectObj);
+    }
     setContentTitle('Project: ' + projectObj.title);
-    const uid = projectObj.uid;
 
+    const uid = projectObj.uid;
     let content = generateTemplate(templateProjectEditor);
     let btnPanel = content.querySelector('.project-editor-button-panel');
     content.querySelector('#title-field').value = projectObj.title;
@@ -45,7 +53,7 @@ function render_project(projectObj) {
     elements.content.appendChild(content);
 
     content.querySelector('#save-button').addEventListener('click', () => save(pull(uid)));
-    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal())
+    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(projectObj)));
 
     function pull() {
         let title = document.querySelector('#title-field').value;

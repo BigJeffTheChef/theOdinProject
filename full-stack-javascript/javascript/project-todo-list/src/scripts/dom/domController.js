@@ -5,7 +5,7 @@ import { save, load } from '../storage.js';
 
 // dom scripts
 import { render_allProjects } from './domProjects.js';
-import { render_allTodos } from './domToDos.js';
+import { render_allTodos, render_toDoModal } from './domToDos.js';
 
 // html templates
 import templateModalToDo_container from '../../html-templates/toDoModal.html';
@@ -22,6 +22,8 @@ let elements = {
     showAllTodosBtns: document.querySelectorAll('.button-show-todos'),
     showAllProjectsBtns: document.querySelectorAll('.button-show-projects'),
     menuExpandingBtns: document.querySelectorAll('.menu-expanding-button'),
+    menuAddToDoBtns: document.querySelectorAll('.menu-expanding-button.add-todo-button'),
+    menuAddProjectBtns: document.querySelectorAll('.menu-expanding-button.add-project-button')
 };
 
 /*
@@ -40,6 +42,10 @@ for (let btn of elements.showAllTodosBtns) {
 
 for (let btn of elements.showAllProjectsBtns) {
     btn.addEventListener('click', render_allProjects);
+}
+
+for (let btn of elements.menuAddToDoBtns) {
+    btn.addEventListener('click', () => render_toDoModal(new ToDo(null, null, null, null), render_allTodos));
 }
 
 function setMenuPosition() {
@@ -97,16 +103,28 @@ function closeModalAction() {
     document.body.classList.remove('modal-active');
 }
 
-function onCloseModal(event) {
-    if (event.target.closest('#modal-form') === null) closeModalAction();
+function onCloseModal(event, onCloseEvent) {
+    if (event.target.closest('#modal-form') === null) {
+        closeModalAction();
+        if (onCloseEvent !== undefined) onCloseEvent();
+    }
 }
 
-function configExpandingMenuBtns(selector) {
-    for (let expandingBtn of elements.menuExpandingBtns) {
-        if (expandingBtn.classList.contains(selector)) {
-            expandingBtn.classList.add('active');
+function configExpandingMenuBtns(...selectors) {
+    for (let btn of elements.menuExpandingBtns) {
+
+        let makeActive = selectors.reduce(
+            (selectorFound, selector) => {
+                if (btn.classList.contains(selector)) return true;
+                else return selectorFound;
+            },
+            false
+        );
+
+        if (makeActive) {
+            btn.classList.add('active');
         } else {
-            expandingBtn.classList.remove('active');
+            btn.classList.remove('active');
         }
     }
 }
@@ -115,4 +133,4 @@ function setContentTitle(newTitle) {
     document.querySelector('.content-title').textContent = newTitle;
 }
 
-export { clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction ,setContentTitle};
+export { clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction, setContentTitle };

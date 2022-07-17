@@ -36,7 +36,7 @@ function render_allTodos() {
 function render_toDoModal(toDoObj, onCloseEvent) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
-    if (!toDoObj) {
+    if (!toDoObj) { // if toDoObj undefined create a new blank todo
         toDoObj = new ToDo(null, null, null, null);
     }
     const currentUid = toDoObj.uid;
@@ -55,8 +55,7 @@ function render_toDoModal(toDoObj, onCloseEvent) {
     // append modal to body
     document.body.appendChild(modal);
     document.querySelector('.modal-wrapper').addEventListener('click', event => {
-        onCloseModal(event);
-        onCloseEvent();
+        onCloseModal(event, onCloseEvent);
     });
 
     // HELPER FUNCTIONS
@@ -84,10 +83,10 @@ function render_toDoModal(toDoObj, onCloseEvent) {
         let completeValue = modal.querySelector('.checklist-new-item .complete-field').value == "true";
         let textField = modal.querySelector('.checklist-new-item .checklist-text');
         try {
-            toDoObj.addToCheckList(completeValue, textField.value);
+            let t = pullTodo();
+            t.addToCheckList(completeValue, textField.value);
             onCloseModal(event);
-            //render_allTodos();
-            render_toDoModal(toDoObj, onCloseEvent);
+            render_toDoModal(t, onCloseEvent);
         } catch (error) {
             textField.setCustomValidity(error.message);
             textField.reportValidity();
