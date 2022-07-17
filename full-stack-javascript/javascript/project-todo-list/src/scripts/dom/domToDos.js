@@ -33,7 +33,7 @@ function render_allTodos() {
  * Renders the ToDo modal to allow editing of a ToDo object.
  * @param {ToDo} toDoObj 
  */
-function render_toDoModal(toDoObj, onCloseEvent) {
+function render_toDoModal(toDoObj, onCloseEvent, containingProject) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
     if (!toDoObj) { // if toDoObj undefined create a new blank todo
@@ -78,6 +78,10 @@ function render_toDoModal(toDoObj, onCloseEvent) {
     function onSave(currentUid) {
         let t = pullTodo(currentUid);
         save(t);
+        if (containingProject !== undefined) {
+            containingProject.addTodo(t);
+            save(containingProject);
+        }
     }
     function onAddNewChecklistItem(event) {
         let completeValue = modal.querySelector('.checklist-new-item .complete-field').value == "true";

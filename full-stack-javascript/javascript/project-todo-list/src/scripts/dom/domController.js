@@ -45,7 +45,7 @@ for (let btn of elements.showAllProjectsBtns) {
 }
 
 for (let btn of elements.menuAddToDoBtns) {
-    btn.addEventListener('click', () => render_toDoModal(new ToDo(null, null, null, null), render_allTodos));
+    btn.addEventListener('click', () => render_toDoModal(null, render_allTodos));
 }
 
 function setMenuPosition() {

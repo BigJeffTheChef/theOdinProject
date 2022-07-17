@@ -72,7 +72,13 @@ function load(toLoad, uid = null) {
     }
 
     function loadProject(projectUid) {
-        throw 'loadSingleProject() not implemented - specified uid was ' + projectUid;
+        let loadedProjects = JSON.parse(getStorage().getItem('projects'));
+        let poi = JSON.parse(loadedProjects[projectUid]);
+        let p = new Project(poi.title, poi.description, poi.notes, poi.uid);
+        for (let tuid in poi.toDoUids) {
+            console.log(load('todo', tuid));
+        }
+        return poi;
     }
     function loadProjects() {
         let loadedProjects = JSON.parse(getStorage().getItem('projects'));

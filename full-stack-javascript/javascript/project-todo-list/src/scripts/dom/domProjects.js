@@ -1,10 +1,10 @@
 // function imports
-import {clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction, setContentTitle} from './domController.js';
+import { clearContent, configExpandingMenuBtns, generateTemplate, elements, onCloseModal, closeModalAction, setContentTitle } from './domController.js';
 import { createToDoCards, render_toDoModal } from './domToDos.js';
-import {save, load} from '../storage.js';
+import { save, load } from '../storage.js';
 
 // js objects
-import {Project} from '../obj/Project.js';
+import { Project } from '../obj/Project.js';
 
 // html templates
 import templateCardProject from '../../html-templates/projectCard.html';
@@ -16,7 +16,7 @@ function render_allProjects() {
     setContentTitle('All Projects');
     configExpandingMenuBtns('add-project-button');
 
-    elements.menuAddProjectBtns.forEach(element => element.addEventListener('click', () => render_project(null))) ;
+    elements.menuAddProjectBtns.forEach(element => element.addEventListener('click', () => render_project(null)));
 
     let projects = load('project');
     let cards = document.createElement('div');
@@ -34,9 +34,8 @@ function render_allProjects() {
     elements.content.appendChild(cards);
 }
 function render_project(projectObj) {
-    // ensure modal doesn't render twice
     clearContent();
-    configExpandingMenuBtns('add-project-button','add-todo-to-project-button');
+    configExpandingMenuBtns('add-project-button', 'add-todo-to-project-button');
     if (!projectObj) {
         projectObj = new Project(null, null, null);
         save(projectObj);
@@ -44,6 +43,9 @@ function render_project(projectObj) {
     setContentTitle('Project: ' + projectObj.title);
 
     const uid = projectObj.uid;
+    let x = load('project', projectObj.uid);
+    console.log('loaded single project:');
+    console.log(x);
     let content = generateTemplate(templateProjectEditor);
     let btnPanel = content.querySelector('.project-editor-button-panel');
     content.querySelector('#title-field').value = projectObj.title;
@@ -52,8 +54,8 @@ function render_project(projectObj) {
     btnPanel.before(createToDoCards(projectObj.todos, () => render_project(projectObj)));
     elements.content.appendChild(content);
 
-    content.querySelector('#save-button').addEventListener('click', () => save(pull(uid)));
-    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(projectObj)));
+    content.querySelector('#save-button').addEventListener('click', () => save(pull()));
+    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(projectObj), projectObj));
 
     function pull() {
         let title = document.querySelector('#title-field').value;
@@ -66,4 +68,4 @@ function render_project(projectObj) {
     }
 }
 
-export {render_allProjects};
+export { render_allProjects };
