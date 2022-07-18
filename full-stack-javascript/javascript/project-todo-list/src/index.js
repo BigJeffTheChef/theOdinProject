@@ -1,8 +1,8 @@
 import './styles/styles.css';
-import './scripts/dom/domController.js';
-import { clearStorage, save, load, deleteFromStorage } from './scripts/storage.js';
-import { Project } from './scripts/obj/Project.js';
-import { ToDo } from './scripts/obj/ToDo.js';
+import './controller.js';
+import { clearStorage, save, load, deleteFromStorage } from './storage.js';
+import { Project } from './classes/Project.js';
+import { ToDo } from './classes/ToDo.js';
 
 let loaded = {};
 
