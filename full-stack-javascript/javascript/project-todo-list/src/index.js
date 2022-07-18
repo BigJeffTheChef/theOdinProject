@@ -12,8 +12,8 @@ let loaded = {};
     loaded.todos = load('todo');
     loaded.projects = load('project');
     setUIDs(loaded.todos, loaded.projects);
-    let t = new ToDo(null, null, null, null);
-    console.log(t);
+    // let t = new ToDo(null, null, null, null);
+    // console.log(t);
 })();
 
 function setUIDs(todos, projects) {
@@ -49,7 +49,7 @@ function buildTestData() {
     save(tProj);
     save(tProj2);
 
-    let loneT = new ToDo("not in any project", "description - this one isnt in a project ".repeat(70), new Date(5,5,5), 5);
+    let loneT = new ToDo("not in any project", "description - this one isnt in a project ".repeat(10), new Date(5,5,5), 5, 1337);
     loneT.notes = "test notes";
     save(loneT);
 

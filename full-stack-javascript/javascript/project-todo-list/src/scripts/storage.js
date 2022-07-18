@@ -53,7 +53,7 @@ function save(objToSave) {
  * Multi-use
  * @param {string} toLoad "todo" or "project"
  * @param {number} uid uid of ToDo or Project object
- * @return single instance of ToDo or Project if uid is specifed, ToDo[] or Project[] (all stored) if not.
+ * @return single instance of ToDo or Project if uid is specifed, ToDo[] or Project[] (all stored) if not. Returns null if specific project is not found.
  * @throws LocalStorageError if local storage not accessible, or ParameterError if toLoad string was not recognised as valid.
  */
 function load(toLoad, uid = null) {
@@ -72,41 +72,34 @@ function load(toLoad, uid = null) {
     }
 
     function loadProject(projectUid) {
-        let loadedProjects = JSON.parse(getStorage().getItem('projects'));
-        let poi = JSON.parse(loadedProjects[projectUid]);
-        let p = new Project(poi.title, poi.description, poi.notes, poi.uid);
-        for (let tuid in poi.toDoUids) {
-            console.log(load('todo', tuid));
+        if (typeof projectUid !== 'number') {
+            throw new Error('loadProject(projectUid) projectUID parameter must be a number');
         }
-        return poi;
+        let loadedProjects = JSON.parse(getStorage().getItem('projects'));
+        if (!loadedProjects.hasOwnProperty(projectUid)) {
+            return null; // return null if project with projectUid not found
+        }
+        let parsedObj = JSON.parse(loadedProjects[projectUid]);
+        let projectObj = new Project(parsedObj.title, parsedObj.description, parsedObj.notes, projectUid);
+        for (let tuid of parsedObj.toDoUids) {
+            let t = load('todo', tuid);
+            //console.log(t);
+            projectObj.addTodo(t);
+        }
+        return projectObj;
     }
     function loadProjects() {
         let loadedProjects = JSON.parse(getStorage().getItem('projects'));
-        //console.log(loadedProjects);
         let projectObjs = [];
         for (let projectUID in loadedProjects) {
-            //console.log("projectUID: " + projectUID);
-
-            let obj = JSON.parse(loadedProjects[projectUID]);
-            //console.log(obj);
-
-            let project = new Project(obj.title, obj.description, obj.notes, parseInt(projectUID));
-            //console.log(project);
-
-            let todoUIDs = obj.toDoUids;
-            //console.log("todo uids:" + todoUIDs);
-
-            let todos = [];
-            for (let tuid of todoUIDs) {
-                //console.log("a tuid: " + tuid);
-                let t = loadTodo(tuid);
-                project.addTodo(t);
+            let parsedObj = JSON.parse(loadedProjects[projectUID]);
+            let projectObj = new Project(parsedObj.title, parsedObj.description, parsedObj.notes, parseInt(projectUID));
+            for (let tuid of parsedObj.toDoUids) {
+                projectObj.addTodo(loadTodo(tuid));
             }
-            projectObjs.push(project);
+            projectObjs.push(projectObj);
         }
 
-        // let data = jsonStructure;
-        // console.log(data);
         console.groupCollapsed('Projects loaded')
         console.log(`Projects loaded [number loaded: ${projectObjs.length}]`);
         for (let project of projectObjs) {
@@ -123,7 +116,6 @@ function load(toLoad, uid = null) {
         //console.log(loadedTodosAll);
 
         let loadedTodo = JSON.parse(loadedTodosAll)[toDoUid];
-        //console.log(loadedTodo);
 
         // let obj = JSON.parse(JSON.parse(loadedTodosAll)[toDoUid]);
         // //console.log(obj);
@@ -132,7 +124,7 @@ function load(toLoad, uid = null) {
         todo.notes = loadedTodo.notes;
 
         for (let item of loadedTodo.checklist) {
-            todo.addToCheckList(item[0],item[1]);
+            todo.addToCheckList(item[0], item[1]);
             //console.log(item);
         }
 
@@ -150,7 +142,7 @@ function load(toLoad, uid = null) {
         //console.log(parsedTodos);
 
         let builtTodos = [];
-        for (let keyUid in parsedTodos) {
+        for (let tuid in parsedTodos) {
             //console.log(typeof keyUid);
             // let obj = parsedTodos[keyUid];
             // //console.log(u);
@@ -159,7 +151,7 @@ function load(toLoad, uid = null) {
             //     todo.addToCheckList(item[0], item[1]);
             // }
             //console.log(todo);
-            builtTodos.push(loadTodo(keyUid));
+            builtTodos.push(loadTodo(tuid));
         }
         //console.log(builtTodos);
         console.groupCollapsed('ToDos loaded')

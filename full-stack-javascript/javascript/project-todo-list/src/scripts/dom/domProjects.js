@@ -22,40 +22,41 @@ function render_allProjects() {
     let cards = document.createElement('div');
     cards.classList.add('project-cards');
     for (let project of projects) {
-        console.log(project);
+        //console.log(project);
         let card = generateTemplate(templateCardProject);
         card.querySelector('.title').textContent = project.title;
         card.querySelector('.description').textContent = project.description;
         card.querySelector('.notes').textContent = project.notes;
         card.querySelector('.summary').textContent = ((project.todos.length === 0) ? "No" : project.todos.length) + " todo" + ((project.todos.length >= 1) ? "s" : "");
-        card.addEventListener('click', () => render_project(project));
+        card.addEventListener('click', () => render_project(project.uid));
         cards.appendChild(card);
     }
     elements.content.appendChild(cards);
 }
-function render_project(projectObj) {
+function render_project(projectUid) {
     clearContent();
     configExpandingMenuBtns('add-project-button', 'add-todo-to-project-button');
-    if (!projectObj) {
+    let projectObj = load('project', projectUid);
+    if (projectObj === null) {
         projectObj = new Project(null, null, null);
         save(projectObj);
     }
     setContentTitle('Project: ' + projectObj.title);
 
     const uid = projectObj.uid;
-    let x = load('project', projectObj.uid);
-    console.log('loaded single project:');
-    console.log(x);
+    console.log('uid is meant to be: ' + uid);
     let content = generateTemplate(templateProjectEditor);
     let btnPanel = content.querySelector('.project-editor-button-panel');
     content.querySelector('#title-field').value = projectObj.title;
     content.querySelector('#desc-field').value = projectObj.description;
     content.querySelector('#notes-field').value = projectObj.notes;
-    btnPanel.before(createToDoCards(projectObj.todos, () => render_project(projectObj)));
+    btnPanel.before(createToDoCards(projectObj.todos,
+        () => {console.log('uid is: ' + uid); render_project(captureUid(uid))}
+    ));
     elements.content.appendChild(content);
 
     content.querySelector('#save-button').addEventListener('click', () => save(pull()));
-    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(projectObj), projectObj));
+    content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(uid), uid));
 
     function pull() {
         let title = document.querySelector('#title-field').value;
@@ -64,7 +65,10 @@ function render_project(projectObj) {
         let p = new Project(title, description, notes, uid);
         p.todos = projectObj.todos;
         return p;
-        /* PULL TODOS FROM MODAL TOO */
+    }
+
+    function captureUid(uid) {
+        return uid;
     }
 }
 
