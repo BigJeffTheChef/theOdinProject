@@ -16,34 +16,50 @@ function render_allProjects() {
     setContentTitle('All Projects');
     configExpandingMenuBtns('add-project-button');
 
-    elements.menuAddProjectBtns.forEach(element => element.addEventListener('click', () => render_project(null)));
+    //elements.menuAddProjectBtns.forEach(element => element.addEventListener('click', () => render_project(null)));
 
     let projects = load('project');
-    let cards = document.createElement('div');
-    cards.classList.add('project-cards');
-    for (let project of projects) {
-        //console.log(project);
-        let card = generateTemplate(templateCardProject);
-        card.querySelector('.title').textContent = project.title;
-        card.querySelector('.description').textContent = project.description;
-        card.querySelector('.notes').textContent = project.notes;
-        card.querySelector('.summary').textContent = ((project.todos.length === 0) ? "No" : project.todos.length) + " todo" + ((project.todos.length >= 1) ? "s" : "");
-        card.addEventListener('click', () => render_project(project.uid));
-        cards.appendChild(card);
+
+    if (projects.length !== 0) {
+        let cards = document.createElement('div');
+        cards.classList.add('project-cards');
+        for (let project of projects) {
+            //console.log(project);
+            let card = generateTemplate(templateCardProject);
+            card.querySelector('.title').textContent = project.title;
+            card.querySelector('.description').textContent = project.description;
+            card.querySelector('.notes').textContent = project.notes;
+            card.querySelector('.summary').textContent = ((project.todos.length === 0) ? "No" : project.todos.length) + " todo" + ((project.todos.length >= 1) ? "s" : "");
+            card.addEventListener('click', () => render_project(project.uid));
+            cards.appendChild(card);
+        }
+        elements.content.appendChild(cards);
+    } else {
+        let msg = document.createElement('div');
+        msg.textContent = "You don't have any projects yet!";
+        elements.content.appendChild(msg);
     }
-    elements.content.appendChild(cards);
+
+
 }
+
 function render_project(projectUid) {
     clearContent();
     configExpandingMenuBtns('add-project-button', 'add-todo-to-project-button');
-    let projectObj = load('project', projectUid);
-    if (projectObj === null) {
-        projectObj = new Project(null, null, null);
+
+    let projectObj;
+    if (projectUid === null) {
+        projectObj = new Project();
         save(projectObj);
+    } else {
+        projectObj =  load('project', projectUid);
     }
     setContentTitle('Project: ' + projectObj.title);
 
     const uid = projectObj.uid;
+
+    elements.menuAddToDoToProjectBtns.forEach(element => element.addEventListener('click', () => render_toDoModal(null, ()=> render_project(uid), uid)));
+
     console.log('uid is meant to be: ' + uid);
     let content = generateTemplate(templateProjectEditor);
     let btnPanel = content.querySelector('.project-editor-button-panel');
@@ -51,9 +67,11 @@ function render_project(projectUid) {
     content.querySelector('#desc-field').value = projectObj.description;
     content.querySelector('#notes-field').value = projectObj.notes;
     btnPanel.before(createToDoCards(projectObj.todos,
-        () => {console.log('uid is: ' + uid); render_project(captureUid(uid))}
+        () => { console.log('uid is: ' + uid); render_project(captureUid(uid)) }
     ));
     elements.content.appendChild(content);
+
+    console.log(load('project'));
 
     content.querySelector('#save-button').addEventListener('click', () => save(pull()));
     content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(uid), uid));
@@ -72,4 +90,4 @@ function render_project(projectUid) {
     }
 }
 
-export { render_allProjects };
+export { render_allProjects, render_project };

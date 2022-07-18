@@ -32,12 +32,12 @@ class ToDo {
      * @param {number} priority 
      * @param {number|undefined} uid  
      */
-    constructor(title, description, dueDate, priority, uid) {
+    constructor(title, description, dueDate, priority, notes, uid) {
         this.title = title || 'New task';
         this.description = description || 'No description added';
         this.dueDate = dueDate || new Date();
         this.priority = priority || ToDo.MAX_PRIORITY;
-        this.notes = "";
+        this.notes = notes || "";
         this.#checklist = []; // directly set to empty array
         this.#uid = uid || ++ToDo.#uidSeed;
     }

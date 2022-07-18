@@ -115,13 +115,14 @@ function load(toLoad, uid = null) {
         let loadedTodosAll = getStorage().getItem('todos');
         //console.log(loadedTodosAll);
 
-        let loadedTodo = JSON.parse(loadedTodosAll)[toDoUid];
+        let parsed = JSON.parse(loadedTodosAll);
+
+        let loadedTodo = parsed[toDoUid];
 
         // let obj = JSON.parse(JSON.parse(loadedTodosAll)[toDoUid]);
         // //console.log(obj);
 
-        let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.uid);
-        todo.notes = loadedTodo.notes;
+        let todo = new ToDo(loadedTodo.title, loadedTodo.description, new Date(loadedTodo.dueDate), loadedTodo.priority, loadedTodo.notes, loadedTodo.uid);
 
         for (let item of loadedTodo.checklist) {
             todo.addToCheckList(item[0], item[1]);
@@ -161,6 +162,56 @@ function load(toLoad, uid = null) {
         }
         console.groupEnd('ToDos loaded')
         return builtTodos;
+    }
+}
+
+function deleteFromStorage(toDelete, uid) {
+    if (!localStorageAvailable()) throw new LocalStorageError('load', 'Local storage is not available! - load action not complete');
+    if (toDelete !== 'project' && toDelete !== 'todo') throw new ParameterError('toLoad', `invalid paramter, must be "todo" or "project" but was "${toLoad}"`);
+
+
+    if (toDelete === 'todo') deleteToDo(uid);
+    if (toDelete === 'project') deleteProject(uid);
+
+    function deleteProject(puid) {
+        throw new Error('deleteProject(puid) not yet implemented');
+    }
+    function deleteToDo(tuid) {
+        //console.log("loaded:");
+        //console.log(getStorage().getItem('todos'));
+
+        let loadedTodos = load('todo');
+        let loadedProjects = load('project');
+
+
+        //console.log(todos);
+        let index = loadedTodos.findIndex((element) => element.uid === tuid);
+        //console.log('index: ' + index);
+        loadedTodos.splice(index, 1);
+        let toStore = {};
+        for (let todo of loadedTodos) {
+            toStore[todo.uid] = todo;
+        }
+        //console.log("toStore:");
+        //console.log(toStore);
+        //console.log("toStore stringified:");
+        //console.log(JSON.stringify(toStore));
+        //getStorage().setItem('todos', JSON.stringify(toStore));
+
+        let containingProject = loadedProjects.find(p => p.todos.filter(t => t.uid === uid).length > 0);
+        if (containingProject) {
+            let puid = containingProject.uid;
+            console.log('containing project uid');
+            console.log(puid);
+            let p = load('project', puid);
+            console.log(p);
+            let ptodoindex = p.todos.findIndex(element => element.uid === tuid);
+            console.log(ptodoindex);
+            p.todos.splice(ptodoindex, 1);
+            save(p);
+        }
+
+
     }
 }
 
@@ -224,4 +275,4 @@ class ParameterError extends Error {
     }
 }
 
-export { clearStorage, displayStorage, save, load, LocalStorageError, ParameterError };
+export { clearStorage, displayStorage, save, load, LocalStorageError, ParameterError, deleteFromStorage };

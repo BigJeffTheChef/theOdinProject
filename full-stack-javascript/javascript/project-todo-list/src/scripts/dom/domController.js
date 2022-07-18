@@ -4,7 +4,7 @@ import { Project } from '../obj/Project.js';
 import { save, load } from '../storage.js';
 
 // dom scripts
-import { render_allProjects } from './domProjects.js';
+import { render_allProjects, render_project } from './domProjects.js';
 import { render_allTodos, render_toDoModal } from './domToDos.js';
 
 // html templates
@@ -23,7 +23,8 @@ let elements = {
     showAllProjectsBtns: document.querySelectorAll('.button-show-projects'),
     menuExpandingBtns: document.querySelectorAll('.menu-expanding-button'),
     menuAddToDoBtns: document.querySelectorAll('.menu-expanding-button.add-todo-button'),
-    menuAddProjectBtns: document.querySelectorAll('.menu-expanding-button.add-project-button')
+    menuAddProjectBtns: document.querySelectorAll('.menu-expanding-button.add-project-button'),
+    menuAddToDoToProjectBtns : document.querySelectorAll('.menu-expanding-button.add-todo-to-project-button'),
 };
 
 /*
@@ -46,6 +47,10 @@ for (let btn of elements.showAllProjectsBtns) {
 
 for (let btn of elements.menuAddToDoBtns) {
     btn.addEventListener('click', () => render_toDoModal(null, render_allTodos));
+}
+
+for (let btn of elements.menuAddProjectBtns) {
+    btn.addEventListener('click', () => render_project(null));
 }
 
 function setMenuPosition() {

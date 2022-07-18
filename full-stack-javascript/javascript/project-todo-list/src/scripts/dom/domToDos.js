@@ -1,20 +1,20 @@
 // function imports
 import {
-    clearContent, 
-    configExpandingMenuBtns, 
-    generateTemplate, 
+    clearContent,
+    configExpandingMenuBtns,
+    generateTemplate,
     elements,
-    onCloseModal, 
+    onCloseModal,
     closeModalAction,
     setContentTitle
 } from './domController.js';
-import {save, load} from '../storage.js';
+import { save, load, deleteFromStorage } from '../storage.js';
 
 // js objects
 import { ToDo } from '../obj/ToDo.js';
 
 // node modules
-import {format} from 'date-fns'
+import { format } from 'date-fns'
 
 // html templates
 import templateModalToDo_container from '../../html-templates/toDoModal.html';
@@ -26,7 +26,13 @@ function render_allTodos() {
     setContentTitle("All ToDos")
     configExpandingMenuBtns('add-todo-button');
     let loadedTodos = load('todo');
-    elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos));
+    if (loadedTodos.length != 0) {
+        elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos));
+    } else {
+        let msg = document.createElement('div');
+        msg.textContent = "You don't have any to do's yet!";
+        elements.content.appendChild(msg);
+    }
 };
 
 /**
@@ -36,12 +42,12 @@ function render_allTodos() {
 function render_toDoModal(toDoUid, onCloseEvent, puid) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
-    let toDoObj = load('todo', toDoUid);
+    let toDoObj = (toDoUid === null) ? new ToDo() : load('todo', toDoUid);
+
     const currentUid = toDoObj.uid;
     // setup modal
     document.body.classList.add('modal-active');
     let modal = generateTemplate(templateModalToDo_container);
-    console.log(toDoObj);
     modal.querySelector('#title-field').value = toDoObj.title;
     modal.querySelector('#desc-field').value = toDoObj.description;
     modal.querySelector('#notes-field').value = toDoObj.notes;
@@ -50,6 +56,11 @@ function render_toDoModal(toDoUid, onCloseEvent, puid) {
     renderChecklist_view(toDoObj);
     modal.querySelector('#add-todo-button').addEventListener('click', event => onAddNewChecklistItem(event));
     modal.querySelector('#save-button').addEventListener('click', () => onSave(currentUid));
+    modal.querySelector('#delete-button').addEventListener('click', event => {
+        console.log("DELETING");
+        deleteFromStorage('todo', currentUid)
+        onCloseModal(event, onCloseEvent);
+    });
     // append modal to body
     document.body.appendChild(modal);
     document.querySelector('.modal-wrapper').addEventListener('click', event => {
@@ -101,8 +112,8 @@ function render_toDoModal(toDoUid, onCloseEvent, puid) {
         let description = modal.querySelector('#desc-field').value;
         let dueDate = new Date(modal.querySelector('#due-date-field').value);
         let priority = modal.querySelector('#priority-field').value;
-        let t = new ToDo(title, description, dueDate, parseInt(priority), currentUid);
-        t.notes = modal.querySelector('#notes-field').value;
+        let notes = modal.querySelector('#notes-field').value;
+        let t = new ToDo(title, description, dueDate, parseInt(priority), notes, currentUid);
         for (let node of modal.querySelectorAll('.checklist-list-item')) {
             let complete = node.querySelector('.complete-field') === 'true';
             let text = node.querySelector('.checklist-text').value;
@@ -134,4 +145,4 @@ function createToDoCards(todos, onCloseEvent) {
     return todoCards;
 }
 
-export {render_allTodos, createToDoCards, render_toDoModal};
+export { render_allTodos, createToDoCards, render_toDoModal };
