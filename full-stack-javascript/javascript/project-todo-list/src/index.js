@@ -7,8 +7,8 @@ import { ToDo } from './classes/ToDo.js';
 let loaded = {};
 
 (function initialise() {
-    //clearStorage();
-    //buildTestData();
+    clearStorage();
+    buildTestData();
     let todos = load('todo');
     let projects = load('project');
     setUIDs(todos, projects);
@@ -49,8 +49,11 @@ function buildTestData() {
     save(tProj);
     save(tProj2);
 
-    let loneT = new ToDo("not in any project", "description - this one isnt in a project ".repeat(10), new Date(5, 5, 5), 5, "some notes", 1337);
-    save(loneT);
+    let loneT1 = new ToDo("not in any project 1", "description - this one isnt in a project 1".repeat(10), new Date(5, 5, 5), 5, "some notes 1", 1337);
+    save(loneT1);
+    let loneT2 = new ToDo("not in any project 2", "description - this one isnt in a project 2", new Date(6, 6, 6), 5, "some notes 2", 1338);
+    save(loneT2);
+
 
     //deleteFromStorage('todo', t2.uid);
     //console.log(load('todo'));

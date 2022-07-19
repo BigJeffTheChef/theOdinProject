@@ -42,9 +42,9 @@ let elements = {
             elements.nav.classList.add(showSelector);
         }
     });
-    initButtonEvents(elements.showAllTodosBtns, () => render_allTodos());
+    initButtonEvents(elements.showAllTodosBtns, () => render_allTodos('All ToDos'));
     initButtonEvents(elements.showAllProjectsBtns, render_allProjects);
-    initButtonEvents(elements.menuAddToDoBtns, () => render_toDoModal(null, render_allTodos));
+    initButtonEvents(elements.menuAddToDoBtns, () => render_toDoModal(null, () => render_allTodos('All Todos')));
     initButtonEvents(elements.menuAddProjectBtns, () => render_project(null));
 
     render_welcome();
@@ -60,7 +60,7 @@ let elements = {
         elements.nav.style['left'] = '10px';
         setTimeout(() => {
             elements.nav.classList.remove('hidden');
-        }, 200)
+        }, 200);
     }
 
 })();
@@ -141,13 +141,13 @@ function setContentTitle(newTitle) {
 /**
  * Render all todo objects into todo "cards" and place into the ".content" div.
  */
-function render_allTodos(onClickEvent, predicate) {
+function render_allTodos(title, onClickEvent, predicate) {
     clearContent();
-    setContentTitle("All ToDos")
+    setContentTitle(title);
     configExpandingMenuBtns('add-todo-button');
     let loadedTodos = load('todo');
     if (loadedTodos.length != 0) {
-        elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos, onClickEvent, predicate));
+        elements.content.appendChild(createToDoCards(loadedTodos, () => render_allTodos(title), onClickEvent, predicate));
     } else {
         let msg = document.createElement('div');
         msg.textContent = "You don't have any to do's yet!";
@@ -261,14 +261,24 @@ function createToDoCards(todos, onCloseEvent, onClickEvent, predicate) {
             //card.querySelector('.description').textContent = (todo.description.length < 170) ? todo.description : todo.description.substring(0, 170) + '...';
             card.querySelector('.description').textContent = todo.description;
             card.querySelector('.summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
+
+            /**
+             * Go through projects, checking if 
+             */
             let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
+            // let containingProjects;
+            // loadedProjects.forEach(project => {
+            //     if (project.todos.find())
+            // });
+
+
             card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
             card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
             card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
             //console.log(card.outerHTML);
-            card.addEventListener('click', (onClickEvent === undefined) 
-            ? () => render_toDoModal(todo.uid, onCloseEvent) 
-            : () => onClickEvent(todo));
+            card.addEventListener('click', (onClickEvent === undefined)
+                ? () => render_toDoModal(todo.uid, onCloseEvent)
+                : () => onClickEvent(todo));
 
             todoCards.appendChild(card);
         }
@@ -335,22 +345,17 @@ function render_project(projectUid) {
 
     //console.log(load('project'));
 
-    content.querySelector('#save-button').addEventListener('click', () => save(pull()));
+    content.querySelector('#save-button').addEventListener('click', () => save(pullProjectFromEditorDiv()));
     content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(uid), uid));
     content.querySelector('#delete-button').addEventListener('click', () => {
         let deleteTodos = confirm('Would you like to delete all associated todos?\nPress ok to delete all associated todos, or cancel to delete only the project');
         deleteFromStorage('project', uid, deleteTodos);
         render_allProjects();
     });
-    content.querySelector('#add-existing-button').addEventListener('click', () => {
-        render_allTodos((todo) => { projectObj.addTodo(todo); save(projectObj); render_project(projectUid); }, (todo) => {
-            if (projectObj.todos.find(e => todo.uid === e.uid)) { return true; }
-            else { return false; }
-        });
-    });
-    content.querySelector('#remove-existing-button').addEventListener('click', () => alert('not implemented'));
+    content.querySelector('#add-existing-button').addEventListener('click', () => render_allTodos('Choose a ToDo to add to your project', (todo) => onClicks.addExistingTodo(todo), (todo) => predicates.isNotInAnyProject(todo)));
+    content.querySelector('#remove-existing-button').addEventListener('click', () => render_allTodos('Choose a ToDo to remove from your project',(todo) => onClicks.removeTodoFromProject(todo), (todo) => predicates.isInThisProject(todo)));
 
-    function pull() {
+    function pullProjectFromEditorDiv() {
         let title = document.querySelector('#title-field').value;
         let description = document.querySelector('#desc-field').value;
         let notes = document.querySelector('#notes-field').value;
@@ -358,6 +363,58 @@ function render_project(projectUid) {
         p.todos = projectObj.todos;
         return p;
     }
+
+    let onClicks = {
+        addExistingTodo: function (todo) {
+            projectObj.addTodo(todo);
+            save(projectObj);
+            render_project(projectUid);
+        },
+        removeTodoFromProject: function (todo) {
+            projectObj.removeTodo(todo);
+            save(projectObj);
+            render_project(projectUid);
+        }
+    };
+
+    let predicates = {
+        isNotInAnyProject: function (todo) {
+            for (let p of load('project')) {
+                if (p.todos.find(e => todo.uid === e.uid)) return false;
+            }
+            return true;
+        },
+        isInThisProject: function (todo) {
+            if (projectObj.todos.find(e => todo.uid === e.uid)) return true;
+            return false;
+        }
+    };
+
+    // let onClick_addExistingTodo = function (todo) {
+    //     projectObj.addTodo(todo);
+    //     save(projectObj);
+    //     render_project(projectUid);
+    // }
+
+    // let onClick_removeTodoFromProject = function (todo) {
+    //     projectObj.removeTodo(todo);
+    //     save(projectObj);
+    //     render_project(projectUid);
+    // }
+
+    // let isNotInAnyProjectPredicate = function (todo) {
+    //     // discern all todos not currently in a project, and display only them using the following predicate
+    //     for (let p of load('project')) {
+    //         if (p.todos.find(e => todo.uid === e.uid)) return false;
+    //     }
+    //     return true;
+    // }
+
+    // let isInThisProjectPredicate = function (todo) {
+    //     // discern all todos not currently in a project, and display only them using the following predicate
+    //     if (projectObj.todos.find(e => todo.uid === e.uid)) return true;
+    //     return false;
+    // }
 }
 
 export { clearContent, elements, onCloseModal, closeModalAction, setContentTitle, render_allTodos, createToDoCards, render_toDoModal, render_allProjects, render_project };
