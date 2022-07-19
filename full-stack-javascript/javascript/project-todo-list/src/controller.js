@@ -42,7 +42,7 @@ let elements = {
             elements.nav.classList.add(showSelector);
         }
     });
-    initButtonEvents(elements.showAllTodosBtns, render_allTodos);
+    initButtonEvents(elements.showAllTodosBtns, () => render_allTodos());
     initButtonEvents(elements.showAllProjectsBtns, render_allProjects);
     initButtonEvents(elements.menuAddToDoBtns, () => render_toDoModal(null, render_allTodos));
     initButtonEvents(elements.menuAddProjectBtns, () => render_project(null));
@@ -141,13 +141,13 @@ function setContentTitle(newTitle) {
 /**
  * Render all todo objects into todo "cards" and place into the ".content" div.
  */
-function render_allTodos() {
+function render_allTodos(onClickEvent, predicate) {
     clearContent();
     setContentTitle("All ToDos")
     configExpandingMenuBtns('add-todo-button');
     let loadedTodos = load('todo');
     if (loadedTodos.length != 0) {
-        elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos));
+        elements.content.appendChild(createToDoCards(loadedTodos, render_allTodos, onClickEvent, predicate));
     } else {
         let msg = document.createElement('div');
         msg.textContent = "You don't have any to do's yet!";
@@ -242,7 +242,7 @@ function render_toDoModal(tuid, onCloseEvent, puid) {
         let notes = modal.querySelector('#notes-field').value;
         let t = new ToDo(title, description, dueDate, parseInt(priority), notes, currentUid);
         for (let node of modal.querySelectorAll('.checklist-list-item')) {
-            let complete = node.querySelector('.complete-field') === 'true';
+            let complete = node.querySelector('.complete-field').value === 'true';
             let text = node.querySelector('.checklist-text').value;
             t.addToCheckList(complete, text);
         }
@@ -250,24 +250,28 @@ function render_toDoModal(tuid, onCloseEvent, puid) {
     }
 };
 
-function createToDoCards(todos, onCloseEvent) {
+function createToDoCards(todos, onCloseEvent, onClickEvent, predicate) {
     let todoCards = document.createElement('div');
     todoCards.classList.add('todo-cards');
     let loadedProjects = load('project');
     for (let todo of todos) {
-        let card = generateTemplate(templateCardToDo);
-        card.querySelector('.title').textContent = todo.title;
-        //card.querySelector('.description').textContent = (todo.description.length < 170) ? todo.description : todo.description.substring(0, 170) + '...';
-        card.querySelector('.description').textContent = todo.description;
-        card.querySelector('.summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
-        let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
-        card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
-        card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
-        card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
-        //console.log(card.outerHTML);
-        card.addEventListener('click', () => render_toDoModal(todo.uid, onCloseEvent));
+        if (predicate === undefined || predicate(todo)) {
+            let card = generateTemplate(templateCardToDo);
+            card.querySelector('.title').textContent = todo.title;
+            //card.querySelector('.description').textContent = (todo.description.length < 170) ? todo.description : todo.description.substring(0, 170) + '...';
+            card.querySelector('.description').textContent = todo.description;
+            card.querySelector('.summary').textContent = (todo.checklist.length === 0 ? 'No' : todo.checklist.length) + ' checklist item' + (todo.checklist.length !== 1 ? 's' : '');
+            let containingProject = (loadedProjects.find(p => p.todos.filter(t => t.uid === todo.uid).length > 0));
+            card.querySelector('.project-info>span:last-child').textContent = containingProject !== undefined ? containingProject.title : 'Not in any project';
+            card.querySelector('.bottom-cell>div:first-child>span:last-child').textContent = format(todo.dueDate, 'do LLLL y');
+            card.querySelector('.bottom-cell>div:last-child>span:last-child').textContent = todo.priority;
+            //console.log(card.outerHTML);
+            card.addEventListener('click', (onClickEvent === undefined) 
+            ? () => render_toDoModal(todo.uid, onCloseEvent) 
+            : () => onClickEvent(todo));
 
-        todoCards.appendChild(card);
+            todoCards.appendChild(card);
+        }
     }
     return todoCards;
 }
@@ -326,7 +330,7 @@ function render_project(projectUid) {
     content.querySelector('#title-field').value = projectObj.title;
     content.querySelector('#desc-field').value = projectObj.description;
     content.querySelector('#notes-field').value = projectObj.notes;
-    btnPanel.before(createToDoCards(projectObj.todos, () =>  render_project(uid)));
+    btnPanel.before(createToDoCards(projectObj.todos, () => render_project(uid)));
     elements.content.appendChild(content);
 
     //console.log(load('project'));
@@ -338,6 +342,13 @@ function render_project(projectUid) {
         deleteFromStorage('project', uid, deleteTodos);
         render_allProjects();
     });
+    content.querySelector('#add-existing-button').addEventListener('click', () => {
+        render_allTodos((todo) => { projectObj.addTodo(todo); save(projectObj); render_project(projectUid); }, (todo) => {
+            if (projectObj.todos.find(e => todo.uid === e.uid)) { return true; }
+            else { return false; }
+        });
+    });
+    content.querySelector('#remove-existing-button').addEventListener('click', () => alert('not implemented'));
 
     function pull() {
         let title = document.querySelector('#title-field').value;
@@ -346,10 +357,6 @@ function render_project(projectUid) {
         let p = new Project(title, description, notes, uid);
         p.todos = projectObj.todos;
         return p;
-    }
-
-    function captureUid(uid) {
-        return uid;
     }
 }
 
