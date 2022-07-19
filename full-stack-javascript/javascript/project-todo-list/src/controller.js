@@ -333,6 +333,11 @@ function render_project(projectUid) {
 
     content.querySelector('#save-button').addEventListener('click', () => save(pull()));
     content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(uid), uid));
+    content.querySelector('#delete-button').addEventListener('click', () => {
+        let deleteTodos = confirm('Would you like to delete all associated todos?\nPress ok to delete all associated todos, or cancel to delete only the project');
+        deleteFromStorage('project', uid, deleteTodos);
+        render_allProjects();
+    });
 
     function pull() {
         let title = document.querySelector('#title-field').value;

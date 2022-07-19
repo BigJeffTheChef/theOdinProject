@@ -165,18 +165,55 @@ function load(toLoad, uid = null) {
     }
 }
 
-function deleteFromStorage(toDelete, uid) {
-    if (!localStorageAvailable()) throw new LocalStorageError('load', 'Local storage is not available! - load action not complete');
-    if (toDelete !== 'project' && toDelete !== 'todo') throw new ParameterError('toLoad', `invalid paramter, must be "todo" or "project" but was "${toLoad}"`);
+/**
+ * Delete data from storage, depending on parameters
+ * @param {string} toDelete either 'todo' or 'project'
+ * @param {number} uid the uid of either the project or todo to delete 
+ * @param {boolean | undefined} deleteAssociatedTodos if deleting a project, this boolean respresents the users choice to delete all associated todo objects from storage
+ */
+function deleteFromStorage(toDelete, uid, deleteAssociatedTodos) {
+    if (!localStorageAvailable()) throw new LocalStorageError('deleteFromStorage', 'Local storage is not available! - delete action not complete');
+    if (toDelete !== 'project' && toDelete !== 'todo') throw new ParameterError('toDelete', `invalid paramter, must be "todo" or "project" but was "${toDelete}"`);
 
 
-    if (toDelete === 'todo') deleteToDo(uid);
-    if (toDelete === 'project') deleteProject(uid);
+    if (toDelete === 'todo') return deleteToDo(uid);
+    if (toDelete === 'project') return deleteProject(uid, deleteAssociatedTodos);
 
-    function deleteProject(puid) {
-        throw new Error('deleteProject(puid) not yet implemented');
+    function deleteProject(puid, deleteAssociatedTodos) {
+        if (deleteAssociatedTodos === undefined) {
+            console.log('deleteAssociatedTodos was not defined, defaulting to false');
+            deleteAssociatedTodos = false;
+        }
+        //console.log(puid);
+
+        let loadedProjects = load('project');
+        //console.log(loadedProjects);
+
+        let index = loadedProjects.findIndex(e => e.uid === puid);
+        //console.log(index);
+
+        let todosInProjectUids = loadedProjects[index].todos.map(e => e.uid );
+        //console.log(todosInProjectUids);
+
+        loadedProjects.splice(index, 1);
+
+        let toStore = {};
+        for (let project of loadedProjects) {
+            toStore[project.uid] = project;
+        }
+
+        let stringified = JSON.stringify(toStore);
+        getStorage().setItem('projects', stringified);
+        if (deleteAssociatedTodos) {
+            for (let tuid of todosInProjectUids) {
+                deleteToDo(tuid);
+            }
+        }
+
     }
     function deleteToDo(tuid) {
+        //TODO optimise by hiding loading projects behind a conditional (if todo is in project)?
+        
         //console.log("loaded:");
         //console.log(getStorage().getItem('todos'));
 
@@ -196,8 +233,9 @@ function deleteFromStorage(toDelete, uid) {
         //console.log(toStore);
         //console.log("toStore stringified:");
         //console.log(JSON.stringify(toStore));
-        //getStorage().setItem('todos', JSON.stringify(toStore));
+        let stringified =  JSON.stringify(toStore);
 
+        // remove refences to deleted todos from project json object
         let containingProject = loadedProjects.find(p => p.todos.filter(t => t.uid === uid).length > 0);
         if (containingProject) {
             let puid = containingProject.uid;
@@ -210,6 +248,9 @@ function deleteFromStorage(toDelete, uid) {
             p.todos.splice(ptodoindex, 1);
             save(p);
         }
+
+        getStorage().setItem('todos', stringified);
+
 
 
     }
