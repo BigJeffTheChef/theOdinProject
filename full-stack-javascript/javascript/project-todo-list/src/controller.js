@@ -11,7 +11,7 @@ import templateCardProject from './html-templates/projectCard.html';
 import templateProjectEditor from './html-templates/projectEditor.html';
 
 // node modules
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 
 // elements object
 let elements = {
@@ -28,21 +28,26 @@ let elements = {
     menuAddToDoToProjectBtns: document.querySelectorAll('.menu-expanding-button.add-todo-to-project-button'),
 };
 
-/*
-
-    DOM INITIALISATION
-
- */
+// initialise DOM
 (function initialise() {
-    setThemeChangeEvent();
-    setMenuButtonEvent();
-    setMenuPosition();
-    render_welcome();
 
+    setMenuPosition();
+
+    initButtonEvents([elements.themeBtn], () => document.body.classList.toggle('dark'));
+    initButtonEvents([elements.menuBtn], () => {
+        const showSelector = 'nav-open';
+        if (elements.nav.classList.contains(showSelector)) {
+            elements.nav.classList.remove(showSelector);
+        } else {
+            elements.nav.classList.add(showSelector);
+        }
+    });
     initButtonEvents(elements.showAllTodosBtns, render_allTodos);
     initButtonEvents(elements.showAllProjectsBtns, render_allProjects);
     initButtonEvents(elements.menuAddToDoBtns, () => render_toDoModal(null, render_allTodos));
     initButtonEvents(elements.menuAddProjectBtns, () => render_project(null));
+
+    render_welcome();
 
     function initButtonEvents(btns, eventFunc) {
         for (let btn of btns) {
@@ -58,24 +63,11 @@ let elements = {
         }, 200)
     }
 
-    function setMenuButtonEvent() {
-        elements.menuBtn.addEventListener('click', () => {
-            const showSelector = 'nav-open';
-            if (elements.nav.classList.contains(showSelector)) {
-                elements.nav.classList.remove(showSelector);
-            } else {
-                elements.nav.classList.add(showSelector);
-            }
-        });
-    }
-    
-    function setThemeChangeEvent() {
-        elements.themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark');
-        });
-    }
 })();
 
+/**
+ * Render the welcome message that is first shown to user on page load.
+ */
 function render_welcome() {
     clearContent();
     setContentTitle('Welcome to TooDoo!');
@@ -93,12 +85,20 @@ function clearContent() {
     }
 }
 
+/**
+ * Load up a html template from a file and parse into an Element object
+ * @param {HTMLTemplateElement} htmlTemplate 
+ * @returns a HTML element object
+ */
 function generateTemplate(htmlTemplate) {
     let template = document.createElement('template');
     template.innerHTML = htmlTemplate;
     return template.content.firstElementChild;
 }
 
+/**
+ * Close any open modals
+ */
 function closeModalAction() {
     let modalSelector = '.modal-wrapper';
     let modal = document.querySelector(modalSelector);
@@ -106,6 +106,11 @@ function closeModalAction() {
     document.body.classList.remove('modal-active');
 }
 
+/**
+ * Close modal event handler
+ * @param {event} event 
+ * @param {function} onCloseEvent 
+ */
 function onCloseModal(event, onCloseEvent) {
     if (event.target.closest('#modal-form') === null) {
         closeModalAction();
@@ -113,29 +118,29 @@ function onCloseModal(event, onCloseEvent) {
     }
 }
 
+/**
+ * Configure which expanding menu buttons to show
+ * @param  {string} selectors - a comma separated list of css class selectors that determines what expanding buttons to show
+ */
 function configExpandingMenuBtns(...selectors) {
     for (let btn of elements.menuExpandingBtns) {
-
-        let makeActive = selectors.reduce(
-            (selectorFound, selector) => {
-                if (btn.classList.contains(selector)) return true;
-                else return selectorFound;
-            },
-            false
-        );
-
-        if (makeActive) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+        let makeActive = selectors.reduce((selectorFound, selector) => { if (btn.classList.contains(selector)) return true; else return selectorFound; }, false);
+        if (makeActive) { btn.classList.add('active'); }
+        else { btn.classList.remove('active'); }
     }
 }
 
+/**
+ * Set the title of the ".content-title" div which sits atop the ".content" divs.
+ * @param {string} newTitle 
+ */
 function setContentTitle(newTitle) {
     document.querySelector('.content-title').textContent = newTitle;
 }
 
+/**
+ * Render all todo objects into todo "cards" and place into the ".content" div.
+ */
 function render_allTodos() {
     clearContent();
     setContentTitle("All ToDos")
@@ -151,13 +156,15 @@ function render_allTodos() {
 };
 
 /**
- * Renders the ToDo modal to allow editing of a ToDo object.
- * @param {ToDo} toDoObj 
+ * 
+ * @param {number} tuid ToDo unique identifier
+ * @param {function} onCloseEvent a function that is called when the modal is closed
+ * @param {number} puid Project unique identifier
  */
-function render_toDoModal(toDoUid, onCloseEvent, puid) {
+function render_toDoModal(tuid, onCloseEvent, puid) {
     // ensure modal doesn't render twice
     if (document.body.classList.contains('modal-active')) closeModalAction();
-    let toDoObj = (toDoUid === null) ? new ToDo() : load('todo', toDoUid);
+    let toDoObj = (tuid === null) ? new ToDo() : load('todo', tuid);
 
     const currentUid = toDoObj.uid;
     // setup modal
@@ -173,8 +180,10 @@ function render_toDoModal(toDoUid, onCloseEvent, puid) {
     modal.querySelector('#save-button').addEventListener('click', () => onSave(currentUid));
     modal.querySelector('#delete-button').addEventListener('click', event => {
         console.log("DELETING");
-        deleteFromStorage('todo', currentUid)
-        onCloseModal(event, onCloseEvent);
+        deleteFromStorage('todo', currentUid);
+        //onCloseModal(event, onCloseEvent);
+        closeModalAction();
+        if (onCloseEvent) onCloseEvent();
     });
     // append modal to body
     document.body.appendChild(modal);
@@ -207,6 +216,9 @@ function render_toDoModal(toDoUid, onCloseEvent, puid) {
             project.addTodo(t);
             save(project);
         }
+        let cont = confirm("Saved.\nPress ok to keep editing.");
+        if (!cont) closeModalAction();
+        if (onCloseEvent) onCloseEvent();
     }
     function onAddNewChecklistItem(event) {
         let completeValue = modal.querySelector('.checklist-new-item .complete-field').value == "true";
@@ -309,18 +321,15 @@ function render_project(projectUid) {
 
     elements.menuAddToDoToProjectBtns.forEach(element => element.addEventListener('click', () => render_toDoModal(null, () => render_project(uid), uid)));
 
-    console.log('uid is meant to be: ' + uid);
     let content = generateTemplate(templateProjectEditor);
     let btnPanel = content.querySelector('.project-editor-button-panel');
     content.querySelector('#title-field').value = projectObj.title;
     content.querySelector('#desc-field').value = projectObj.description;
     content.querySelector('#notes-field').value = projectObj.notes;
-    btnPanel.before(createToDoCards(projectObj.todos,
-        () => { console.log('uid is: ' + uid); render_project(captureUid(uid)) }
-    ));
+    btnPanel.before(createToDoCards(projectObj.todos, () =>  render_project(uid)));
     elements.content.appendChild(content);
 
-    console.log(load('project'));
+    //console.log(load('project'));
 
     content.querySelector('#save-button').addEventListener('click', () => save(pull()));
     content.querySelector('#add-button').addEventListener('click', () => render_toDoModal(null, () => render_project(uid), uid));
