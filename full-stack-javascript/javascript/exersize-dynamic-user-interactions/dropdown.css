@@ -1,0 +1,33 @@
+.menu-trigger {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  border: 5px solid grey;
+}
+
+.menu {
+  position: absolute;
+  /* width: 100px; */
+  height:fit-content;
+  width: fit-content;
+  top: auto;
+  left: 0px;
+  right: 0px;
+  background-color: pink;
+  transition: transform 300ms ease-in-out;
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+.visible {
+  /* transform: translate(200px, 200px) rotate(45deg); */
+  transform: scaleY(1);
+} 
+
+.menu>ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  width: max-content;
+  height: fit-content;
+}
