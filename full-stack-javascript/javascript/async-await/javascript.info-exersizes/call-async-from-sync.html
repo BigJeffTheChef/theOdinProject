@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asyn / Await from javascript.info 3</title>
+</head>
+
+<body>
+  <!-- https://javascript.info/async-await exersize "Call async from non-async" -->
+  <script>
+
+    async function wait() {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return 10;
+    }
+
+    function f() {
+      wait()
+      .then(val => alert(val));
+    }
+ 
+    f();
+  </script>
+</body>
+
+</html>
