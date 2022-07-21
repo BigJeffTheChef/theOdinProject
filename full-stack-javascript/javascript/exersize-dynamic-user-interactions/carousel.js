@@ -1,5 +1,5 @@
 const elements = {};
-
+let prevList, nextList;
 window.onload = function initialise() {
     elements.carousel = {
         container: document.querySelector('.carousel'),
@@ -40,7 +40,7 @@ window.onload = function initialise() {
                 imgContainer.classList.add('off-right');
                 dot.classList.add('off-right')
             }
-            dot.addEventListener('click', ()=> slideTo(i));
+            dot.addEventListener('click', () => slideTo(i));
             imgContainer.appendChild(imgElement);
             elements.carousel.view.appendChild(imgContainer);
             elements.carousel.hud.appendChild(dot);
@@ -48,59 +48,87 @@ window.onload = function initialise() {
         }
         // document.querySelector('.carousel>.controls>div:first-child').addEventListener('click', () => slide('previous'));
         if (imgs.length > 1) {
-            document.querySelector('.carousel>.controls>div:last-child').addEventListener('click', () => slideTo(1));
+            nextList = () => slideTo(1);
+            document.querySelector('.carousel>.controls>div:last-child').addEventListener('click', nextList);
         }
-        
+
     })());
 };
 
 function slideTo(slideNumber) {
-    const dots = elements.carousel.hud.querySelectorAll('div');
-    const slides = elements.carousel.view.querySelectorAll('.carousel-image');
+    // const dots = elements.carousel.hud.querySelectorAll('div');
 
-    // const currentDot = elements.carousel.hud.querySelector('current');
-    // const prevDot = currentDot.previousElementSibling;
-    // const nextDot = currentDot.nextElementSibling;
+    const currentDot = elements.carousel.hud.querySelector('.current');
+    const prevDot = currentDot.previousElementSibling;
+    const nextDot = currentDot.nextElementSibling;
 
-    for (let i = 0; i < dots.length && i < slides.length; i++) {
-        if (i < slideNumber) {
-            dots[i].classList.add('off-left');
-            dots[i].classList.remove('off-right');
-            dots[i].classList.remove('current');
+    const currentSlide = elements.carousel.view.querySelector('.current');
+    const prevSlide = currentSlide.previousElementSibling;
+    const nextSlide = currentSlide.nextElementSibling;
 
-            slides[i].classList.add('off-left');
-            slides[i].classList.remove('off-right');
-            slides[i].classList.remove('current');
-        } else if (i > slideNumber) {
-            dots[i].classList.remove('off-left');
-            dots[i].classList.add('off-right');
-            dots[i].classList.remove('current');
+    elements.carousel.previousBtn.removeEventListener('click', prevList);
+    elements.carousel.nextBtn.removeEventListener('click', nextList);
 
-            slides[i].classList.remove('off-left');
-            slides[i].classList.add('off-right');
-            slides[i].classList.remove('current');
-        } else {
-            dots[i].classList.remove('off-left');
-            dots[i].classList.remove('off-right');
-            dots[i].classList.add('current');
+    if (prevSlide) {
+        prevList = () => slideTo(slideNumber - 1);
+        elements.carousel.previousBtn.addEventListener('click', prevList);
+        prevSlide.classList.add('off-left');
+        prevSlide.classList.remove('off-right');
+        prevSlide.classList.remove('current');
 
-            slides[i].classList.remove('off-left');
-            slides[i].classList.remove('off-right');
-            slides[i].classList.add('current');
-        }
+        prevDot.classList.add('off-left');
+        prevDot.classList.remove('off-right');
+        prevDot.classList.remove('current');
     }
 
-    if (slideNumber - 1 > 0) {
-        elements.carousel.previousBtn.addEventListener('click', () => slideTo(slideNumber - 1));
-    } else {
-        elements.carousel.previousBtn.removeEventListener('click', () => {});
+    if (nextSlide) {
+        nextList = () => slideTo(slideNumber + 1);
+        elements.carousel.nextBtn.addEventListener('click', nextList);
+
+        nextSlide.classList.add('off-left');
+        nextSlide.classList.remove('off-right');
+        nextSlide.classList.remove('current');
+
+        nextDot.classList.add('off-left');
+        nextDot.classList.remove('off-right');
+        nextDot.classList.remove('current');
     }
 
-    if (slideNumber + 1 < slides.length) {
-        elements.carousel.nextBtn.addEventListener('click', () => slideTo(slideNumber + 1));
-    } else {
-        elements.carousel.nextBtn.removeEventListener('click', () => {});
-    }
+    // if (i < slideNumber) {
+    //     prevSlide.classList.add('off-left');
+    //     prevSlide.classList.remove('off-right');
+    //     prevSlide.classList.remove('current');
+    // } else if (i > slideNumber) {
+    //     dots[i].classList.remove('off-left');
+    //     dots[i].classList.add('off-right');
+    //     dots[i].classList.remove('current');
+
+    //     slides[i].classList.remove('off-left');
+    //     slides[i].classList.add('off-right');
+    //     slides[i].classList.remove('current');
+    // } else {
+    //     dots[i].classList.remove('off-left');
+    //     dots[i].classList.remove('off-right');
+    //     dots[i].classList.add('current');
+
+    //     slides[i].classList.remove('off-left');
+    //     slides[i].classList.remove('off-right');
+    //     slides[i].classList.add('current');
+    // }
+
+
+
+    // if (slideNumber - 1 > 0) {
+    //     elements.carousel.previousBtn.addEventListener('click', () => slideTo(slideNumber - 1));
+    // } else {
+    //     elements.carousel.previousBtn.removeEventListener('click', () => {});
+    // }
+
+    // if (slideNumber + 1 < slides.length) {
+    //     elements.carousel.nextBtn.addEventListener('click', () => slideTo(slideNumber + 1));
+    // } else {
+    //     elements.carousel.nextBtn.removeEventListener('click', () => {});
+    // }
 }
 
 function slide(direction) {
