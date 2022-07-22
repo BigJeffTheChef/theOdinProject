@@ -1,0 +1,85 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: rgb(146, 146, 146);
+}
+
+.container {
+  display: grid;
+  grid-template: 1fr 10fr/ repeat(2, 1fr);
+  height: 100vh;
+  width: 100vw;
+}
+
+.container>.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  grid-column: span 2;
+  background-color: green;
+
+  width: 100%;
+}
+
+.container>.search>input {
+  width: 10rem;
+  height: 1.5rem;
+}
+
+.container>.search>#search-submit {
+  width: 5rem;
+  height: 1.5rem;
+  margin: 0px 10px;
+}
+
+.container>.current,
+.container>.five-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container>.current {
+  background-color: red;
+}
+
+.container>.current>.display {
+  display: grid;
+
+  grid-template: 1fr / repeat(2, 1fr);
+  background-color: orange;
+
+  /* display: grid;
+  grid-template: 3fr repeat(3, 1fr)/ 6rem; */
+
+}
+
+.container>.current>.display>.left>* {
+  border: 1px solid black;
+}
+
+.container>.current>.display>.left {
+  width: 150px;
+}
+
+.container>.current>.display>.left>.weather {
+  position: relative;
+  height: 4em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container>.current>.display>.left>.weather>img {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.five-day {
+  background-color: blue;
+}

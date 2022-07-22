@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather</title>
+  <link href="styles.css" rel="stylesheet">
+  <script src="weather.js" type="module" defer></script>
+</head>
+
+<body>
+  <div class="container">
+    <!-- top -->
+    <form class="search">
+      <input type="text" minlength="1" placeholder="search for your city" id="search-param">
+      <button type="button" id="search-submit">Search</button>
+      <button type="button" id="temp-unit-selector"></Button>
+
+    </form>
+
+
+    <!-- left -->
+    <div class="current">
+      <!-- City name;
+        
+        Icon
+        Temps: min, max, current
+        Humidity %
+        Visibility
+        Wind Speed, direction
+        Cloudiness %
+        Rain/ Snow
+        Sunrise time, sunset time -->
+      <div class="display">
+        <div class="left">
+          <div class="weather">
+            <img src="">
+            Weather
+            <div class="main">Main</div>
+            <div class="desc">Desc</div>
+          </div>
+          <div class="humidity"><span>Humidity</span><span></span></div>
+          <div class="visibility"><span>Visibility</span><span></span></div>
+          <div class="wind">
+            Wind
+            <div class="speed">Speed</div>
+            <span class="direction">Direction</span><!-- <span><img src="right-arrow.png"></span> -->
+          </div>
+        </div>
+
+        <div class="right">
+          <div>Temperature</div>
+          <div class="current"><span>Current: </span><span></span><span></span></div>
+          <div class="min"><span>Min: </span><span></span><span></span></div>
+          <div class="max"><span>Max: </span><span></span><span></span></div>
+          <div class="feels-like"><span>Feels like: </span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right -->
+    <div class="five-day">
+      <div class="display"></div>
+    </div>
+  </div>
+</body>
+
+</html>
