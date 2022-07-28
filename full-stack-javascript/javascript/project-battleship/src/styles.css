@@ -1,0 +1,47 @@
+:root {
+  --square-dimension: 45px;
+}
+
+/* Board */
+
+div.board-container {
+  display: grid;
+  grid-template: 1fr/ repeat(2, 1fr);
+  justify-items: center;
+  align-items: center;
+
+  width: 50%;
+
+  border: 1px solid blueviolet;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  
+  border: 5px solid red;
+}
+
+.board>.row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Board square borders */
+
+.board .square {
+  height: var(--square-dimension);
+  width: var(--square-dimension);
+
+  /* border: 1px solid blue; */
+  border-top: 1px solid blue;
+  border-right: 1px solid blue;
+}
+
+.board .square[data-row="9"] {
+  border-bottom: 1px solid blue;
+}
+
+.board .square[data-col="0"] {
+  border-left: 1px solid blue;
+}
