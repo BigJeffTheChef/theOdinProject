@@ -39,6 +39,11 @@ class Ship {
     }
     return true;
   }
+
+  
+  toString() {
+    return `ship length: [${this.length}], hits: [${this.#hits.toString()}]`;
+  }
 }
 
 // function Ship(length) {
