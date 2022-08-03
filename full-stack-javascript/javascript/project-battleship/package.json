@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "watch": "webpack --watch",
+    "build-watch": "webpack --watch",
     "test": "jest",
-    "testWatch": "jest --watch",
-    "buildThenTest": "webpack; jest"
+    "test-watch": "jest --watchAll",
+    "build-then-test": "webpack; jest"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.9",
