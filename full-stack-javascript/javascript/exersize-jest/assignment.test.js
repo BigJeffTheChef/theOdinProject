@@ -222,6 +222,33 @@ describe('analyzeArray(arrayOfNums)', () => {
         length: 4
       });
     });
+
+    test('[1,3,5,7,4]', () => {
+      expect(analyzeArray([1,3,5,7,4])).toEqual({
+        average: 4,
+        min: 1,
+        max: 7,
+        length: 5
+      });
+    });
+  });
+
+  describe('integers in, floating points out', () => {
+    test('[2,2,2,3] in', () => {
+      const result = analyzeArray([2,2,2,3]);
+      expect(result.average).toBeCloseTo(2.25);
+      expect(result.min).toBe(2);
+      expect(result.max).toBe(3);
+      expect(result.length).toBe(4);
+    });
+
+    test('[0.1,2,2,3.2] in', () => {
+      const result = analyzeArray([0.1,2,2,3.2]);
+      expect(result.average).toBeCloseTo(1.825);
+      expect(result.min).toBe(0.1);
+      expect(result.max).toBe(3.2);
+      expect(result.length).toBe(4);
+    });
   });
 });
 
