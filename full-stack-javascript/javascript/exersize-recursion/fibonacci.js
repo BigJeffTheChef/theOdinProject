@@ -1,4 +1,4 @@
-
+//===================
 function fibs(num) {
   const seq = [0, 1];
   if (num <= 2) return seq.slice(0, num);
@@ -7,15 +7,15 @@ function fibs(num) {
   }
   return seq;
 }
-
 console.log(fibs(3));
+
+//===================
 
 function fibsRec(num) {
   const seq = new Array(num - 1).fill(null);
   for (let i = 1; i <= num; i++) seq[i - 1] = f(i);
   return seq;
 }
-
 
 function f(number) {
   if (number <= 0) throw Error('cannot find zeroth number of fibonacci sequence');
@@ -24,3 +24,5 @@ function f(number) {
 
 console.log(f(8));
 console.log(fibsRec(8));
+
+
