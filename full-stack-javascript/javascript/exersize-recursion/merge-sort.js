@@ -24,7 +24,7 @@ function mergeSort(data) {
    * merge two arrays together
    * @param {Array<number>} left 
    * @param {Array<number>} right 
-   * @returns merged
+   * @returns merged arrays (incrementing order)
    */
   function merge(left, right) {
     const arr = [];

@@ -1,4 +1,9 @@
 //===================
+/**
+ * Calculate a fibonacci sequence up to number 'num' of sequence iteratively.
+ * @param {number} num 
+ * @returns array - fibonacci sequence
+ */
 function fibs(num) {
   const seq = [0, 1];
   if (num <= 2) return seq.slice(0, num);
@@ -7,22 +12,23 @@ function fibs(num) {
   }
   return seq;
 }
+
 console.log(fibs(3));
 
-//===================
-
-function fibsRec(num) {
-  const seq = new Array(num - 1).fill(null);
-  for (let i = 1; i <= num; i++) seq[i - 1] = f(i);
-  return seq;
+/**
+ * Calculate a fibonacci sequence up to number 'num' of sequence recursively.
+ * @param {number} num 
+ * @param {Array<number>} seq 
+ * @returns array - fibonacci sequence
+ */
+function fibsRec(num, seq = [0, 1]) {
+  return num < 1 
+    ? `number ${num} of a sequence is not possible` 
+    : num <= 2
+    ? seq.slice(0, num) 
+    : num === seq.length 
+    ? seq 
+    : fibsRec(num, seq.concat(seq.at(-2) + seq.at(-1)));
 }
 
-function f(number) {
-  if (number <= 0) throw Error('cannot find zeroth number of fibonacci sequence');
-  return (number === 1 || number === 2) ? number - 1 : f(number - 2) + f(number - 1);
-}
-
-console.log(f(8));
-console.log(fibsRec(8));
-
-
+console.log(fibsRec(12));
