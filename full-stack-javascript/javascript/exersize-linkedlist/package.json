@@ -1,3 +1,10 @@
 {
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "test-watch": "npx jest --watch"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3"
+  }
+
 }
