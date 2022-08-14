@@ -27,7 +27,7 @@ LinkedList.prototype.append = function appendNewNodeToTail(value) {
   if (tail === null) { // meaning there is no head
     this.headNode = new Node(value);
   } else {
-    tail.next = new Node(value);
+    tail.nextNode = new Node(value);
   }
   this.nodeCount++;
 }
@@ -72,10 +72,22 @@ LinkedList.prototype.at = function getNodeAtIndex(index) {
   if (current === null) throw new Error('cannot retrieve Node from empty linked list');
 
   for (let i = 0; i < index; i++) {
-    current = current.next;
+    current = current.nextNode;
     if (current === null) throw new Error(`no Node found at index ${index}`);
   }
   return current;
+}
+
+LinkedList.prototype.pop = function removeAndReturnTailElement() {
+  if (this.nodeCount === 0) return null;
+  if (this.nodeCount === 1) {
+    this.nodeCount--;
+    return this.headNode;
+  }
+  const tail = getTailNode.call(this);
+  this.at(this.nodeCount - 2)
+  this.nodeCount--;
+  return tail;
 }
 
 /********************************************
@@ -90,7 +102,10 @@ LinkedList.prototype.at = function getNodeAtIndex(index) {
 function getTailNode() {
   let current = this.headNode;
   if (current === null) return current;
-  else while (current.next !== null) current = current.next;
+  while (current.nextNode !== null) {
+    //console.log(current);
+    current = current.nextNode;
+  };
   return current;
 }
 

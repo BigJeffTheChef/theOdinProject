@@ -2,11 +2,11 @@
 /**
  * Create a Node, intended for use in Linked Lists
  * @param {*} data 
- * @param {Node} next 
+ * @param {Node} nextNode 
  */
-function Node(data = null, next = null) {
+function Node(data = null, nextNode = null) {
   this.data = data;
-  this.next = next;
+  this.nextNode = nextNode;
 }
 
 Node.prototype.value = function getDataInNode() {

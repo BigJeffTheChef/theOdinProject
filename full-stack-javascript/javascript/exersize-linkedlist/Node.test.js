@@ -12,7 +12,7 @@ describe('Node object has correct properties and methods', () => {
   test('Node object has expected properties', () => {
     const props = Object.getOwnPropertyNames(nodeEmpty);
     expect(props).toContain('data');
-    expect(props).toContain('next');
+    expect(props).toContain('nextNode');
   });
 
   test('Node object has expected methods', () => {
@@ -24,16 +24,16 @@ describe('Node object has correct properties and methods', () => {
 describe('constructors', () => {
   test('empty node', () => {
     expect(nodeEmpty.data).toBe(null);
-    expect(nodeEmpty.next).toBe(null);
+    expect(nodeEmpty.nextNode).toBe(null);
   });
 
   test('node with data but no next', () => {
     expect(nodeWithData.data).toEqual([1, 2, 3]);
-    expect(nodeWithData.next).toBe(null);
+    expect(nodeWithData.nextNode).toBe(null);
   });
 
   test('node with data and next', () => {
     expect(nodeWithDataAndNext.data).toEqual([4, 5, 6, 7]);
-    expect(nodeWithDataAndNext.next).toEqual(nodeWithData);
+    expect(nodeWithDataAndNext.nextNode).toEqual(nodeWithData);
   });
 });
