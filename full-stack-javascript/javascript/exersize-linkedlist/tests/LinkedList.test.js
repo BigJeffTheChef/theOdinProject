@@ -106,7 +106,18 @@ describe('head method', () => {
 });
 
 describe('tail method', () => {
-  test('tail returns last node', () => {
+  test('tail returns null of 0 long list', () => {
+    const tail = linkedListEmpty.tail();
+    expect(tail).toEqual(null);
+  });
+  
+  test('tail returns last node of 1 long list', () => {
+    const tail = linkedList1Element.tail();
+    expect(tail).toEqual(expect.any(Node));
+    expect(tail.data).toBe(e0);
+  });
+  
+  test('tail returns last node of 6 long list', () => {
     const tail = linkedList6Elements.tail();
     expect(tail).toEqual(expect.any(Node));
     expect(tail.data).toBe(e5);

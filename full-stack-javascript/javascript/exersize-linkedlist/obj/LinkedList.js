@@ -22,12 +22,9 @@ function LinkedList() {
  * @param {*} value 
  */
 LinkedList.prototype.append = function (value) {
-  if (this.nodeCount === 0) {
-    this.headNode = new Node(value);
-  } else {
-    const tail = this.at(this.nodeCount - 1);
-    tail.nextNode = new Node(value);
-  }
+  const node = new Node(value);
+  if (this.nodeCount === 0) this.headNode = node;
+  else this.at(this.nodeCount - 1).nextNode = node;
   this.nodeCount++;
 }
 
@@ -36,8 +33,7 @@ LinkedList.prototype.append = function (value) {
  * @param {*} value 
  */
 LinkedList.prototype.prepend = function (value) {
-  let newHead = new Node(value, this.headNode);
-  this.headNode = newHead;
+  this.headNode = new Node(value, this.headNode);
   this.nodeCount++;
 }
 
@@ -51,9 +47,10 @@ LinkedList.prototype.head = function () {
 
 /**
  * Get the tail (last) node in the linked list.
- * @returns {Node} the tail (last) Node object of this linked list.
+ * @returns {Node} the tail (last) Node object of this linked list, or null if list is empty
  */
 LinkedList.prototype.tail = function () {
+  if (this.nodeCount === 0) return null;
   return this.at(this.nodeCount - 1);
 }
 
