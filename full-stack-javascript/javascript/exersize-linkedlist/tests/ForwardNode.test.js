@@ -1,4 +1,4 @@
-const Node = require('./Node.js');
+const Node = require('../obj/ForwardNode.js');
 
 let nodeEmpty, nodeWithData, nodeWithDataAndNext;
 
