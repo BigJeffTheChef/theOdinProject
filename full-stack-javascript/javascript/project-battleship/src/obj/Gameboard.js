@@ -1,4 +1,4 @@
-import Ship from './ShipObj.js';
+import Ship from './Ship.js';
 import {validateCoords, validateOrientation, validateShip} from './Validate.js';
 
 const GAMEBOARD_STANDARD_LENGTH = 10;

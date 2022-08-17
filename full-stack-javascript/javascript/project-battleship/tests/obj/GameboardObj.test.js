@@ -1,4 +1,4 @@
-import Gameboard from './GameboardObj.js';
+import Gameboard from '../../src/obj/Gameboard.js';
 
 let gameboard;
 

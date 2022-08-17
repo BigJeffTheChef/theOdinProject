@@ -1,4 +1,4 @@
-import Ship from './ShipObj.js';
+import Ship from '../../src/obj/Ship.js';
 
 let ship2Long, ship3Long, ship4Long, ship5Long;
 

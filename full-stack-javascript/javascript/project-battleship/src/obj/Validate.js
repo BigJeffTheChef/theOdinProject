@@ -1,4 +1,4 @@
-import Ship from './ShipObj.js';
+import Ship from './Ship.js';
 
 /**
  * Validate a pair of coordinates to be valid coordinates, that is: greater or equal to 0 and less than (gameboard length - 1). 

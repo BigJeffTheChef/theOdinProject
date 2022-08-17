@@ -1,4 +1,4 @@
-import Gameboard from './GameboardObj.js';
+import Gameboard from './Gameboard.js';
 
 /**
  * Player object constructor

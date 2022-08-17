@@ -1,4 +1,4 @@
-import Player from './PlayerObj.js';
+import Player from '../../src/obj/Player.js';
 
 let player, computer;
 beforeEach(() => {

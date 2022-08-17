@@ -1,5 +1,5 @@
-import { validateCoords, validateShip } from "./Validate";
-import Ship from './ShipObj.js';
+import { validateCoords, validateShip } from "../../src/obj/Validate.js";
+import Ship from '../../src/obj/Ship.js';
 
 describe('validateCoords', () => {
   test('happy path: returns valid coords as a {x,y} coords object', () => {
