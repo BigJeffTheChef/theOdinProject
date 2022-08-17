@@ -110,23 +110,13 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 
 /***/ }),
 
-/***/ "./src/dom-scripts/build-board.js":
-/*!****************************************!*\
-  !*** ./src/dom-scripts/build-board.js ***!
-  \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nfunction buildBoard(classSelector) {\n  const board = document.createElement('div');\n  board.className = 'board';\n\n  for (let i = 0; i < 10; i++) {\n    const row = document.createElement('div');\n    row.className = 'row';\n\n    for (let j = 0; j < 10; j++) {\n      const square = document.createElement('div');\n      square.className = 'square';\n      square.dataset.row = i;\n      square.dataset.col = j;\n      square.textContent = 'x';\n      row.appendChild(square);\n    }\n\n    board.appendChild(row);\n  }\n\n  board.classList.add(classSelector);\n\n  return board;\n}\n\nfunction buildBoards() {\n  const player = buildBoard('player');\n  const comp = buildBoard('computer');\n\n  const boards = document.createElement('div');\n  boards.classList = 'board-container';\n  boards.append(player, comp);\n\n  return boards;\n}\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (buildBoards);\n\n\n//# sourceURL=webpack://project-battleship/./src/dom-scripts/build-board.js?");
-
-/***/ }),
-
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles.css */ \"./src/styles.css\");\n/* harmony import */ var _dom_scripts_build_board__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dom-scripts/build-board */ \"./src/dom-scripts/build-board.js\");\n\n\n\nconst boards = (0,_dom_scripts_build_board__WEBPACK_IMPORTED_MODULE_1__[\"default\"])();\nconsole.dir(boards);\ndocument.body.appendChild(boards);\n\n\n//# sourceURL=webpack://project-battleship/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _styles_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles.css */ \"./src/styles.css\");\n\n\n\n\n//# sourceURL=webpack://project-battleship/./src/index.js?");
 
 /***/ })
 

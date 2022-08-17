@@ -1,62 +1,42 @@
-class Ship {
-  #length;
-  #hits;
+// hasbro rules
+const ships = [
+  { name: 'patrol boat', length: 2 },
+  { name: 'submarine', length: 3 },
+  { name: 'destroyer', length: 3 },
+  { name: 'battleship', length: 4 },
+  { name: 'carrier', length: 5 },
+];
 
-  constructor(length) {
-    this.#length = length;
-    this.#hits = [];
-    for (let i = 0; i < length; i++) {
-      this.#hits.push(false);
-    }
-  }
-
-  /**
-   * Set the length of the ship (in board squares).
-   * @param {number} length
-   */
-  set length(length) {
-    this.#length = length;
-  }
-
-  get length() { return this.#length; }
-
-  get hits() { return this.#hits; }
-
-  /**
-   * Hit this ship at position
-   * @param {number} position 
-   */
-  hit(position) {
-    if (position < 0 || position >= this.#length) {
-      throw new Error(`incorrect position specified to hit. must be between 0 and ${this.#length - 1} but was ${position}`);
-    }
-    this.#hits[position] = true;
-  }
-
-  isSunk() {
-    for (const hit of this.#hits) {
-      if (!hit) return false;
-    }
-    return true;
-  }
-
-  
-  toString() {
-    return `ship length: [${this.length}], hits: [${this.#hits.toString()}]`;
-  }
+/**
+ * Create a ship object, by specifying the name of the ship required.
+ * @param {string} ship name of ship, corresponds to a length.
+ */
+function Ship(ship) {
+  this.length = determineShipLength(ship);
+  this.hull = new Array(this.length).fill(false);
 }
 
-// function Ship(length) {
-//   this.length = length;
-//   this.hits = new Array(length).fill(false);
-// };
+/**
+ * 'hit' / attack this ship at specified index
+ * @param {number} position the zero-indexed positon of this ships hull to record a hit
+ */
+Ship.prototype.hit = function hit(index) {
+  if (index >= this.length) {
+    throw new Error(`specified hit index "${index}" is greater than allowable for a ship of length ${this.length}.`);
+  } else if (index < 0) {
+    throw new Error(`specified hit index "${index}" cannot be negative.`);
+  }
+  this.hull[index] = true;
+};
 
-// Ship.prototype.isSunk = function() {
-//   return this.hits.reduce((prev, cur) => (prev) ? cur === true : prev, true);
-// };
+Ship.prototype.isSunk = function isSunk() {
+  return this.hull.reduce((prev, current) => current === false ? false : prev, true);
+};
 
-// Ship.prototype.hit = function (position) {
-//   this.hits[position] = true;
-// };
+function determineShipLength(ship) {
+  const shipLength = ships.reduce((prev, current) => (current.name === ship) ? current.length : prev, null);
+  if (shipLength === null) throw new Error(`ship parameter string not recognised: "${ship}". Allowable values: ${ships.map(e => e.name)}`);
+  return shipLength;
+}
 
 export default Ship;

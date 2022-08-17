@@ -1,133 +1,67 @@
+/* eslint-disable no-console */
+/* eslint-disable no-undef */
 import Ship from '../../src/obj/Ship.js';
 
-let ship2Long, ship3Long, ship4Long, ship5Long;
+// test objects
+let patrolBoat, submarine, destroyer, battleship, carrier;
 
-beforeEach(() => {
-  ship2Long = new Ship(2);
-  ship3Long = new Ship(3);
-  ship4Long = new Ship(4);
-  ship5Long = new Ship(5);
+// setup
+beforeAll(() => {
+  patrolBoat = new Ship('patrol boat');
+  submarine = new Ship('submarine');
+  destroyer = new Ship('destroyer');
+  battleship = new Ship('battleship');
+  carrier = new Ship('carrier');
 });
 
-describe('ship is of expected length', () => {
-  test('ship2 has a length of 2', () => {
-    expect(ship2Long.length).toBe(2);
-  });
-  test('ship3 has a length of 3', () => {
-    expect(ship3Long.length).toBe(3);
-  });
-  test('ship4 has a length of 4', () => {
-    expect(ship4Long.length).toBe(4);
-  });
-  test('ship5 has a length of 5', () => {
-    expect(ship5Long.length).toBe(5);
-  });
-});
+// tests
+describe('construction', () => {
+  describe('successful construction', () => {
+    test('object properties', () => {
+      const props = Object.getOwnPropertyNames(carrier);
+      console.log(`Ship properties: ${props}`);
+      expect(props).toContain('hull');
+      expect(props).toContain('length');
+    });
 
-describe('ship - not hit > hits array contains all falses', () => {
-  test('ship2 - with no hits -> [false, false]', () => {
-    expect(ship2Long.hits).toEqual([false, false]);
+    test('object methods', () => {
+      const methods = Object.getOwnPropertyNames(Ship.prototype);
+      console.log(`Ship methods: ${methods}`);
+      expect(methods).toContain('hit');
+      expect(methods).toContain('isSunk');
+    });
   });
-  test('ship3 - with no hits -> [false, false, false]', () => {
-    expect(ship3Long.hits).toEqual([false, false, false]);
-  });
-  test('ship4 - with no hits -> [false, false, false, false]', () => {
-    expect(ship4Long.hits).toEqual([false, false, false, false]);
-  });
-  test('ship5 - with no hits -> [false, false, false, false, false]', () => {
-    expect(ship5Long.hits).toEqual([false, false, false, false, false]);
-  });
-});
-
-describe('ship - hits in valid positions', () => {
-  test('ship2 hits', () => {
-    ship2Long.hit(0);
-    expect(ship2Long.hits).toEqual([true, false]);
-    ship2Long.hit(1);
-    expect(ship2Long.hits).toEqual([true, true]);
-  });
-
-  test('ship3 hits', () => {
-    ship3Long.hit(0);
-    expect(ship3Long.hits).toEqual([true, false, false]);
-    ship3Long.hit(2);
-    expect(ship3Long.hits).toEqual([true, false, true]);
-  });
-
-  test('ship4 hits', () => {
-    ship4Long.hit(0);
-    expect(ship4Long.hits).toEqual([true, false, false, false]);
-    ship4Long.hit(3);
-    expect(ship4Long.hits).toEqual([true, false, false, true]);
-  });
-  
-  test('ship5 hits', () => {
-    ship5Long.hit(0);
-    expect(ship5Long.hits).toEqual([true, false, false, false, false]);
-    ship5Long.hit(4);
-    expect(ship5Long.hits).toEqual([true, false, false, false, true]);
-  });
-
-});
-
-describe('ship.isSunk() test', () => {
-  test('no hits - ship.isSunk() is false', () => {
-    expect(ship2Long.isSunk()).toBe(false);
-    expect(ship3Long.isSunk()).toBe(false);
-    expect(ship4Long.isSunk()).toBe(false);
-    expect(ship5Long.isSunk()).toBe(false);
-  });
-
-  test('some hits - ship.isSunk() is false',()=>{ 
-    // end pos hit
-    ship2Long.hit(1);
-    expect(ship2Long.isSunk()).toBe(false);
-    
-    ship3Long.hit(0);
-    ship3Long.hit(2);
-    expect(ship3Long.isSunk()).toBe(false);
-
-    //start hit and others
-    ship4Long.hit(0);
-    ship4Long.hit(1);
-    ship4Long.hit(2);
-    expect(ship4Long.isSunk()).toBe(false);
-
-    //start and end and others
-    ship5Long.hit(0);
-    ship5Long.hit(1);
-    ship5Long.hit(2);
-    ship5Long.hit(4);
-    expect(ship5Long.isSunk()).toBe(false);
-  });
-
-  test('all positions hit - ship.isSunk() is true',()=>{
-    ship2Long.hit(0);
-    ship2Long.hit(1);
-    expect(ship2Long.isSunk()).toBe(true);
-    
-    ship3Long.hit(0);
-    ship3Long.hit(1);
-    ship3Long.hit(2);
-    expect(ship3Long.isSunk()).toBe(true);
-
-    ship4Long.hit(0);
-    ship4Long.hit(1);
-    ship4Long.hit(2);
-    ship4Long.hit(3);
-    expect(ship4Long.isSunk()).toBe(true);
-
-    ship5Long.hit(0);
-    ship5Long.hit(1);
-    ship5Long.hit(2);
-    ship5Long.hit(3);
-    ship5Long.hit(4);
-    expect(ship5Long.isSunk()).toBe(true);
+  describe('failed construction', () => {
+    test('incorrect parameter', () => {
+      expect(() => new Ship('train'))
+        .toThrow('ship parameter string not recognised: "train". Allowable values: patrol boat,submarine,destroyer,battleship,carrier');
+    });
   });
 });
 
+describe('length method', () => {
+  test('ship lengths are correct', () => {
+    expect(patrolBoat.length).toBe(2);
+    expect(submarine.length).toBe(3);
+    expect(destroyer.length).toBe(3);
+    expect(battleship.length).toBe(4);
+    expect(carrier.length).toBe(5);
+  });
+});
 
-//test('',()=>{});
-//expect(actual).toBe(expected);
+describe('hit method', () => {
+  test('hit success at valid position', () => {
+    expect(patrolBoat.hull[0]).toBe(false);
+    patrolBoat.hit(0);
+    expect(patrolBoat.hull[0]).toBe(true);
 
+    expect(carrier.hull[2]).toBe(false);
+    carrier.hit(2);
+    expect(carrier.hull[2]).toBe(true);
+  });
 
+  test('hit fail at invalid position', () => {
+    expect(() => patrolBoat.hit(2)).toThrow('specified hit index "2" is greater than allowable for a ship of length 2.');
+    expect(() => carrier.hit(-1)).toThrow('specified hit index "-1" cannot be negative.');
+  });
+});

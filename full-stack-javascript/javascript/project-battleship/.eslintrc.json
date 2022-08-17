@@ -22,7 +22,20 @@
         ],
         "no-unused-vars": 1,
         "no-restricted-syntax": [
-            "allow", "ForOfStatement"
-        ]
+            "error", "allow", "ForOfStatement"
+        ],
+        "no-use-before-define": "off",
+        "max-len": [
+            "error",
+            {
+                "code": 140
+            }
+        ],
+        "no-confusing-arrow": "off",
+        "one-var": "off",
+        "one-var-declaration-per-line": "off",
+        "import/extensions": ["off", "js"],
+        "arrow-parens": ["error", "as-needed"],
+        "curly": "off"
     }
 }
