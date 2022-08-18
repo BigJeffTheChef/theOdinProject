@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-undef */
 import Ship from '../../src/obj/Ship.js';
 
@@ -63,5 +62,27 @@ describe('hit method', () => {
   test('hit fail at invalid position', () => {
     expect(() => patrolBoat.hit(2)).toThrow('specified hit index "2" is greater than allowable for a ship of length 2.');
     expect(() => carrier.hit(-1)).toThrow('specified hit index "-1" cannot be negative.');
+  });
+});
+
+describe('isSunk method', () => {
+  test('isSunk = false when all hull positions not hit', () => {
+    expect(patrolBoat.isSunk()).toBe(false);
+  });
+
+  test('isSunk = true when all hull positions hit', () => {
+    expect(patrolBoat.isSunk()).toBe(false);
+    patrolBoat.hit(0);
+    expect(patrolBoat.isSunk()).toBe(false);
+    patrolBoat.hit(1);
+    expect(patrolBoat.isSunk()).toBe(true);
+
+    expect(carrier.isSunk()).toBe(false);
+    carrier.hit(0);
+    carrier.hit(1);
+    carrier.hit(2);
+    carrier.hit(3);
+    carrier.hit(4);
+    expect(carrier.isSunk()).toBe(true);
   });
 });

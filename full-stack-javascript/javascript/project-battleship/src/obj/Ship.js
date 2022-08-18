@@ -1,5 +1,5 @@
 // hasbro rules
-const ships = [
+const shipsTypes = [
   { name: 'patrol boat', length: 2 },
   { name: 'submarine', length: 3 },
   { name: 'destroyer', length: 3 },
@@ -29,14 +29,27 @@ Ship.prototype.hit = function hit(index) {
   this.hull[index] = true;
 };
 
+/**
+ * Check if a ship has sunk, that is, it's hull has been hit at each position
+ * @returns {boolean} representing if this ship has been sunk
+ */
 Ship.prototype.isSunk = function isSunk() {
   return this.hull.reduce((prev, current) => current === false ? false : prev, true);
 };
 
+/**
+ * Determine the length of a ship, by it's name
+ * @param {string} ship a name of a ship
+ * @returns the length of said ship
+ * @throws Error if ship name not recognised
+ */
 function determineShipLength(ship) {
-  const shipLength = ships.reduce((prev, current) => (current.name === ship) ? current.length : prev, null);
-  if (shipLength === null) throw new Error(`ship parameter string not recognised: "${ship}". Allowable values: ${ships.map(e => e.name)}`);
+  const shipLength = shipsTypes.reduce((prev, current) => (current.name === ship) ? current.length : prev, null);
+  if (shipLength === null) {
+    throw new Error(`ship parameter string not recognised: "${ship}". Allowable values: ${shipsTypes.map(e => e.name)}`);
+  }
   return shipLength;
 }
 
 export default Ship;
+export { shipsTypes };
