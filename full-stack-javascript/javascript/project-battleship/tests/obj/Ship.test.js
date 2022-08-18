@@ -5,7 +5,7 @@ import Ship from '../../src/obj/Ship.js';
 let patrolBoat, submarine, destroyer, battleship, carrier;
 
 // setup
-beforeAll(() => {
+beforeEach(() => {
   patrolBoat = new Ship('patrol boat');
   submarine = new Ship('submarine');
   destroyer = new Ship('destroyer');
@@ -18,14 +18,12 @@ describe('construction', () => {
   describe('successful construction', () => {
     test('object properties', () => {
       const props = Object.getOwnPropertyNames(carrier);
-      console.log(`Ship properties: ${props}`);
       expect(props).toContain('hull');
       expect(props).toContain('length');
     });
 
     test('object methods', () => {
       const methods = Object.getOwnPropertyNames(Ship.prototype);
-      console.log(`Ship methods: ${methods}`);
       expect(methods).toContain('hit');
       expect(methods).toContain('isSunk');
     });

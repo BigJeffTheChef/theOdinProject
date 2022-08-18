@@ -12,7 +12,8 @@ const shipsTypes = [
  * @param {string} ship name of ship, corresponds to a length.
  */
 function Ship(ship) {
-  this.length = determineShipLength(ship);
+  this.length = validateShip(ship);
+  this.name = ship;
   this.hull = new Array(this.length).fill(false);
 }
 
@@ -43,7 +44,7 @@ Ship.prototype.isSunk = function isSunk() {
  * @returns the length of said ship
  * @throws Error if ship name not recognised
  */
-function determineShipLength(ship) {
+function validateShip(ship) {
   const shipLength = shipsTypes.reduce((prev, current) => (current.name === ship) ? current.length : prev, null);
   if (shipLength === null) {
     throw new Error(`ship parameter string not recognised: "${ship}". Allowable values: ${shipsTypes.map(e => e.name)}`);
