@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import Gameboard, { BOARD_SIZE } from '../../src/obj/Gameboard.js';
+import { Coord } from '../../src/obj/GameboardObjs.js';
 import Ship, { shipsTypes as ships } from '../../src/obj/Ship.js';
 
 // test objects
@@ -97,5 +98,19 @@ describe('placeShip method', () => {
     test('bottom left placement against edge horizontal', () => {
       expect(gameboard.placeShip(patrolBoat, 0, 9, false)).toBe(true);
     });
+  });
+});
+
+describe('receiveAttack method', () => {
+  test('attack miss recorded', () => {
+    gameboard.placeShip(patrolBoat, 0, 0, true);
+    expect(gameboard.receiveAttack(MAX_COORD_VALUE, MAX_COORD_VALUE)).toBe(false);
+    expect(gameboard.misses).toContainEqual(new Coord(MAX_COORD_VALUE, MAX_COORD_VALUE));
+  });
+  test('attack hit successful', () => {
+    gameboard.placeShip(patrolBoat, 0, 0, true);
+    expect(gameboard.receiveAttack(0, 0)).toBe(true);
+    expect(gameboard.misses).not.toContainEqual(new Coord(MAX_COORD_VALUE, MAX_COORD_VALUE));
+    expect(gameboard.board[0][0].ship.name).toBe('patrol boat');
   });
 });

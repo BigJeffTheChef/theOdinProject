@@ -1,4 +1,5 @@
 import Ship from './Ship.js';
+import { Coord, BoardPlacement } from './GameboardObjs.js';
 
 const BOARD_SIZE = 10;
 
@@ -15,16 +16,6 @@ function Gameboard(size = BOARD_SIZE) {
 }
 
 /**
- * Create a coord object that holds x and y numberic values for a board co-ordinate
- * @param {number} x x co-ordinate
- * @param {number} y y co-ordinate
- */
-function Coord(x, y) {
-  this.x = parseInt(x, 10);
-  this.y = parseInt(y, 10);
-}
-
-/**
  * Place a ship on the board
  * @param {Ship} shipName a Ship object
  * @param {number} x x co-ordinate
@@ -34,13 +25,20 @@ function Coord(x, y) {
 Gameboard.prototype.placeShip = function placeShip(shipName, x, y, vertical) {
   const shipDetails = determineShipDetails(shipName, new Coord(x, y), vertical);
   if (!shipDetails) return false;
-  if (!determineShipOverlap.call(this, shipDetails)) return false;
-  shipDetails.coords.forEach(e => { this.board[e.y][e.x] = shipDetails.ship; });
+  if (!determineShipOverlap.call(this, shipDetails.coords)) return false;
+  let index = 0;
+  shipDetails.coords.forEach(e => { this.board[e.y][e.x] = new BoardPlacement(shipDetails.ship, index++); });
   return true;
 };
 
-Gameboard.prototype.receiveAttack = function receiveAttack() {
-
+Gameboard.prototype.receiveAttack = function receiveAttack(x, y) {
+  const square = this.board[y][x];
+  if (square === null) {
+    this.misses.push(new Coord(x, y));
+    return false;
+  }
+  square.ship.hit(square.shipHullIndex);
+  return true;
 };
 
 Gameboard.prototype.allSunk = function allSunk() {
@@ -49,14 +47,14 @@ Gameboard.prototype.allSunk = function allSunk() {
 
 /**
  *  Determines if a ships placement is acceptable in that it does not overlap another ship.
- * @param {Coord[]} shipDetails ship coords to check
+ * @param {Coord[]} shipCoords ship coords to check
  * @this {Gameboard} this function must have its context/ this set to a gameboard object
  * @return a boolean representing if this ship placement is valid, in that it does not overlap another ship
  */
-function determineShipOverlap(shipDetails) {
+function determineShipOverlap(shipCoords) {
   let overlapFound = false;
-  for (let i = 0; i < shipDetails.coords.length; i++) {
-    if (this.board[shipDetails.coords[i].y][shipDetails.coords[i].x] !== null) {
+  for (let i = 0; i < shipCoords.length; i++) {
+    if (this.board[shipCoords[i].y][shipCoords[i].x] !== null) {
       overlapFound = true;
       break;
     }
