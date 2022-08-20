@@ -1,19 +1,51 @@
 import Ship from './Ship.js';
-import { Coord, BoardPlacement } from './GameboardObjs.js';
+
+/** ***************************
+ * CONSTANTS
+ **************************** */
 
 const BOARD_SIZE = 10;
+
+/** ***************************
+ * CONSTRUCTORS
+ **************************** */
 
 /**
  * Create a Gameboard object
  * @param {number | undefined} size defaults to 10 but can be set manually
  */
 function Gameboard(size = BOARD_SIZE) {
-  this.board = new Array(BOARD_SIZE).fill(null);
+  this.board = new Array(size).fill(null);
   for (let i = 0; i < this.board.length; i++) {
-    this.board[i] = new Array(BOARD_SIZE).fill(null);
+    this.board[i] = new Array(size).fill(null);
   }
   this.misses = [];
+  this.ships = [];
 }
+
+/**
+ * Create a coord object that holds x and y numberic values for a board co-ordinate
+ * @param {number} x x co-ordinate
+ * @param {number} y y co-ordinate
+ */
+export function Coord(x, y) {
+  this.x = parseInt(x, 10);
+  this.y = parseInt(y, 10);
+}
+
+/**
+ * An object that records data required for placement onto a square of the Gameboard objects board property
+ * @param {Ship} ship
+ * @param {number} index
+ */
+export function BoardPlacement(ship, index) {
+  this.ship = ship;
+  this.shipHullIndex = index;
+}
+
+/** ***************************
+ * METHODS
+ **************************** */
 
 /**
  * Place a ship on the board
@@ -28,9 +60,17 @@ Gameboard.prototype.placeShip = function placeShip(shipName, x, y, vertical) {
   if (!determineShipOverlap.call(this, shipDetails.coords)) return false;
   let index = 0;
   shipDetails.coords.forEach(e => { this.board[e.y][e.x] = new BoardPlacement(shipDetails.ship, index++); });
+  this.ships.push(shipDetails.ship);
   return true;
 };
 
+/**
+ * Receive an attack. The attack will either hit a ship, in which case that ship records a hit at that position;
+ * or the attack will miss, in which case it is recorded in the misses array
+ * @param {number} x x co-ordinate
+ * @param {number} y y co-ordinate
+ * @returns true if attack was successful, false if attack was a miss
+ */
 Gameboard.prototype.receiveAttack = function receiveAttack(x, y) {
   const square = this.board[y][x];
   if (square === null) {
@@ -41,9 +81,20 @@ Gameboard.prototype.receiveAttack = function receiveAttack(x, y) {
   return true;
 };
 
+/**
+ * Check if all ships on the board are sunk
+ * @returns true if all sunks are sunk, and false if they are not
+ */
 Gameboard.prototype.allSunk = function allSunk() {
-
+  return this.ships.reduce((prev, cur) => {
+    if (!cur.isSunk()) return false;
+    return prev;
+  }, true);
 };
+
+/** ***************************
+ * HELPER FUNCTIONS
+ **************************** */
 
 /**
  *  Determines if a ships placement is acceptable in that it does not overlap another ship.

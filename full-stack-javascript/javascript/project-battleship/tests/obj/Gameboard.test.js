@@ -114,3 +114,25 @@ describe('receiveAttack method', () => {
     expect(gameboard.board[0][0].ship.name).toBe('patrol boat');
   });
 });
+
+describe('allSunk method', () => {
+  beforeEach(() => {
+    gameboard.placeShip(patrolBoat, 0, 0, false);
+    gameboard.placeShip(submarine, 0, 5, true);
+  });
+
+  test('allSunk false when all ships not sunk', () => {
+    expect(gameboard.allSunk()).toBe(false);
+    expect(gameboard.receiveAttack(0, 0)).toBe(true);
+    expect(gameboard.allSunk()).toBe(false);
+  });
+
+  test('allSunk true when all ships are sunk', () => {
+    expect(gameboard.receiveAttack(0, 0)).toBe(true);
+    expect(gameboard.receiveAttack(1, 0)).toBe(true);
+    expect(gameboard.receiveAttack(0, 5)).toBe(true);
+    expect(gameboard.receiveAttack(0, 6)).toBe(true);
+    expect(gameboard.receiveAttack(0, 7)).toBe(true);
+    expect(gameboard.allSunk()).toBe(true);
+  });
+});
