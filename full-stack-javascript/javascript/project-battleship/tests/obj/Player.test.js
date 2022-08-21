@@ -3,12 +3,13 @@ import Gameboard from '../../src/obj/Gameboard.js';
 import Player from '../../src/obj/Player.js';
 
 let playerHuman, playerComputer;
-let gameboard;
+let gameboardHuman, gameboardComputer;
 
 beforeEach(() => {
-  gameboard = new Gameboard(10);
-  playerHuman = new Player(true, gameboard.size);
-  playerComputer = new Player(false, gameboard.size);
+  gameboardHuman = new Gameboard(10);
+  gameboardComputer = new Gameboard(10);
+  playerHuman = new Player(true, gameboardHuman);
+  playerComputer = new Player(false, gameboardComputer);
 });
 
 describe('construction', () => {
@@ -48,29 +49,30 @@ describe('human property', () => {
 describe('validMoves property', () => {
   test('validMoves contains 100x moves for a default gameboard', () => {
     expect(playerComputer.validMoves.length).toBe(100);
+    expect(playerHuman.validMoves.length).toBe(100);
   });
 });
 
 describe('attack method', () => {
   test('computer can attack only 100 times (for a 10x10 gameboard)', () => {
-    for (let x = 0; x < gameboard.size ** 2; x++) {
-      playerComputer.attack(gameboard);
+    for (let x = 0; x < gameboardComputer.size ** 2; x++) {
+      playerComputer.attack(gameboardComputer);
     }
-    expect(() => playerComputer.attack(gameboard)).toThrow('no valid moves remaining');
+    expect(() => playerComputer.attack(gameboardComputer)).toThrow('no valid moves remaining');
   });
 
   test('human can attack only 100 times (for a 10x10 gameboard)', () => {
-    for (let x = 0; x < gameboard.size; x++) {
-      for (let y = 0; y < gameboard.size; y++) {
-        playerHuman.attack(gameboard, x, y);
+    for (let x = 0; x < gameboardHuman.size; x++) {
+      for (let y = 0; y < gameboardHuman.size; y++) {
+        playerHuman.attack(gameboardHuman, x, y);
       }
     }
-    expect(() => playerHuman.attack(gameboard, 0, 0)).toThrow('no valid moves remaining');
+    expect(() => playerHuman.attack(gameboardHuman, 0, 0)).toThrow('no valid moves remaining');
   });
 
   test('attacking a coordinate removes it from validMoves', () => {
     expect(playerHuman.validMoves).toContainEqual({ x: 5, y: 5 });
-    playerHuman.attack(gameboard, 5, 5);
+    playerHuman.attack(gameboardHuman, 5, 5);
     expect(playerHuman.validMoves).not.toContainEqual({ x: 5, y: 5 });
   });
 });

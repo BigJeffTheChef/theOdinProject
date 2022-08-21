@@ -10,7 +10,7 @@ div.board-container {
   justify-items: center;
   align-items: center;
 
-  width: 50%;
+  width: 100%;
 
   border: 1px solid blueviolet;
 }

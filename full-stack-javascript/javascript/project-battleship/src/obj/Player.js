@@ -4,11 +4,12 @@ import { Coord } from './Gameboard.js';
  * Create a player object
  * @param {boolean} human true if this is a human player, false if it is a computer player
  */
-function Player(human, boardSize) {
+function Player(human, gameboard) {
+  this.gameboard = gameboard;
   this.human = human;
   this.validMoves = [];
-  for (let x = 0; x < boardSize; x++) {
-    for (let y = 0; y < boardSize; y++) {
+  for (let x = 0; x < gameboard.size; x++) {
+    for (let y = 0; y < gameboard.size; y++) {
       this.validMoves.push(new Coord(x, y));
     }
   }
