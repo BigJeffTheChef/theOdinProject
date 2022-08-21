@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
-import Gameboard, { BOARD_SIZE } from '../../src/obj/Gameboard.js';
-import { Coord } from '../../src/obj/GameboardObjs.js';
-import Ship, { shipsTypes as ships } from '../../src/obj/Ship.js';
+import Gameboard, { BOARD_SIZE, Coord } from '../../src/obj/Gameboard.js';
+import { shipsTypes } from '../../src/obj/Ship.js';
 
 // test objects
 let gameboard;
@@ -11,11 +10,11 @@ const MAX_COORD_VALUE = BOARD_SIZE - 1;
 // setup
 beforeEach(() => {
   gameboard = new Gameboard();
-  patrolBoat = ships[0].name;
-  submarine = ships[1].name;
-  destroyer = ships[2].name;
-  battleship = ships[3].name;
-  carrier = ships[4].name;
+  patrolBoat = shipsTypes[0].name;
+  submarine = shipsTypes[1].name;
+  destroyer = shipsTypes[2].name;
+  battleship = shipsTypes[3].name;
+  carrier = shipsTypes[4].name;
 });
 
 describe('construction', () => {
@@ -29,6 +28,7 @@ describe('construction', () => {
     test('properties', () => {
       expect(props).toContain('board');
       expect(props).toContain('misses');
+      expect(props).toContain('size');
     });
 
     test('property types', () => {

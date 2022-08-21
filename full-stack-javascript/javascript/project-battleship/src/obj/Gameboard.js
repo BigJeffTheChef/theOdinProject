@@ -15,6 +15,7 @@ const BOARD_SIZE = 10;
  * @param {number | undefined} size defaults to 10 but can be set manually
  */
 function Gameboard(size = BOARD_SIZE) {
+  this.size = size;
   this.board = new Array(size).fill(null);
   for (let i = 0; i < this.board.length; i++) {
     this.board[i] = new Array(size).fill(null);
