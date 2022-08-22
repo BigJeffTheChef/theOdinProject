@@ -17,6 +17,7 @@ beforeEach(() => {
 describe('construction', () => {
   describe('successful construction', () => {
     test('object properties', () => {
+      let x = new Ship('patrol boat');
       const props = Object.getOwnPropertyNames(carrier);
       expect(props).toContain('hull');
       expect(props).toContain('length');

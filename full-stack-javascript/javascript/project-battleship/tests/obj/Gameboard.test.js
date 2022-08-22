@@ -1,20 +1,20 @@
 /* eslint-disable no-undef */
 import Gameboard, { BOARD_SIZE, Coord } from '../../src/obj/Gameboard.js';
-import { shipsTypes } from '../../src/obj/Ship.js';
 
 // test objects
 let gameboard;
-let patrolBoat, submarine, destroyer, battleship, carrier;
+let patrolBoat, submarine, carrier;
+// let destroyer, battleship; // unused ship types
 const MAX_COORD_VALUE = BOARD_SIZE - 1;
 
 // setup
 beforeEach(() => {
   gameboard = new Gameboard();
-  patrolBoat = shipsTypes[0].name;
-  submarine = shipsTypes[1].name;
-  destroyer = shipsTypes[2].name;
-  battleship = shipsTypes[3].name;
-  carrier = shipsTypes[4].name;
+  patrolBoat = 'patrol boat';
+  submarine = 'submarine';
+  // destroyer = 'destroyer';
+  // battleship = 'battleship';
+  carrier = 'carrier';
 });
 
 describe('construction', () => {

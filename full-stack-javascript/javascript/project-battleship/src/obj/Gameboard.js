@@ -1,10 +1,11 @@
 import Ship from './Ship.js';
+import settings from './settings.json';
 
 /** ***************************
  * CONSTANTS
  **************************** */
 
-const BOARD_SIZE = 10;
+const BOARD_SIZE = settings['gameboard-size'];
 
 /** ***************************
  * CONSTRUCTORS
@@ -14,11 +15,11 @@ const BOARD_SIZE = 10;
  * Create a Gameboard object
  * @param {number | undefined} size defaults to 10 but can be set manually
  */
-function Gameboard(size = BOARD_SIZE) {
-  this.size = size;
-  this.board = new Array(size).fill(null);
+function Gameboard() {
+  this.size = BOARD_SIZE;
+  this.board = new Array(this.size).fill(null);
   for (let i = 0; i < this.board.length; i++) {
-    this.board[i] = new Array(size).fill(null);
+    this.board[i] = new Array(this.size).fill(null);
   }
   this.misses = [];
   this.ships = [];

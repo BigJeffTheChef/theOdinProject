@@ -55,24 +55,26 @@ describe('validMoves property', () => {
 
 describe('attack method', () => {
   test('computer can attack only 100 times (for a 10x10 gameboard)', () => {
-    for (let x = 0; x < gameboardComputer.size ** 2; x++) {
-      playerComputer.attack(gameboardComputer);
+    for (let x = 0; x < gameboardComputer.size; x++) {
+      for (let y = 0; y < gameboardComputer.size; y++) {
+        expect(playerComputer.attack(x, y)).toBe(true);
+      }
     }
-    expect(() => playerComputer.attack(gameboardComputer)).toThrow('no valid moves remaining');
+    expect(playerComputer.attack(9, 9)).toBe(false);
   });
 
   test('human can attack only 100 times (for a 10x10 gameboard)', () => {
     for (let x = 0; x < gameboardHuman.size; x++) {
       for (let y = 0; y < gameboardHuman.size; y++) {
-        playerHuman.attack(gameboardHuman, x, y);
+        expect(playerHuman.attack(x, y)).toBe(true);
       }
     }
-    expect(() => playerHuman.attack(gameboardHuman, 0, 0)).toThrow('no valid moves remaining');
+    expect(playerHuman.attack(9, 9)).toBe(false);
   });
 
   test('attacking a coordinate removes it from validMoves', () => {
     expect(playerHuman.validMoves).toContainEqual({ x: 5, y: 5 });
-    playerHuman.attack(gameboardHuman, 5, 5);
+    playerHuman.attack(5, 5);
     expect(playerHuman.validMoves).not.toContainEqual({ x: 5, y: 5 });
   });
 });

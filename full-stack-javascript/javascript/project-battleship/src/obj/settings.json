@@ -1,0 +1,35 @@
+{
+  "gameboard-size": 10,
+  "rules": {
+    "base ruleset": "hasbro rules",
+    "url": "https://web.archive.org/web/20190813104535/https://www.hasbro.com/common/instruct/BattleShip_(2002).PDF",
+    "modified": true
+  },
+  "ships": [
+    {
+      "name": "patrol boat",
+      "numberOf": 5,
+      "size": 2
+    },
+    {
+      "name": "submarine",
+      "numberOf": 4,
+      "size": 3
+    },
+    {
+      "name": "destroyer",
+      "numberOf": 3,
+      "size": 3
+    },
+    {
+      "name": "battleship",
+      "numberOf": 2,
+      "size": 4
+    },
+    {
+      "name": "carrier",
+      "numberOf": 1,
+      "size": 5
+    }
+  ]
+}

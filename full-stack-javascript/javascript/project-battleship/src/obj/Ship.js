@@ -1,11 +1,4 @@
-// hasbro rules
-const shipsTypes = [
-  { name: 'patrol boat', length: 2 },
-  { name: 'submarine', length: 3 },
-  { name: 'destroyer', length: 3 },
-  { name: 'battleship', length: 4 },
-  { name: 'carrier', length: 5 },
-];
+import settings from './settings.json';
 
 /**
  * Create a ship object, by specifying the name of the ship required.
@@ -45,12 +38,12 @@ Ship.prototype.isSunk = function isSunk() {
  * @throws Error if ship name not recognised
  */
 function validateShip(ship) {
-  const shipLength = shipsTypes.reduce((prev, current) => (current.name === ship) ? current.length : prev, null);
+  // const shipLength = shipsTypes.reduce((prev, current) => (current.name === ship) ? current.length : prev, null);
+  const shipLength = settings.ships.reduce((prev, cur) => (cur.name === ship) ? cur.size : prev, null);
   if (shipLength === null) {
-    throw new Error(`ship parameter string not recognised: "${ship}". Allowable values: ${shipsTypes.map(e => e.name)}`);
+    throw new Error(`ship parameter string not recognised: "${ship}". Allowable values: ${settings.ships.map(e => e.name)}`);
   }
   return shipLength;
 }
 
 export default Ship;
-export { shipsTypes };
