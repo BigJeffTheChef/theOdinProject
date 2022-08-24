@@ -1,5 +1,6 @@
 :root {
   --square-dimension: 45px;
+  --border-color: rgb(160, 151, 247);
 }
 
 /* Board */
@@ -19,7 +20,7 @@ div.board-container {
   display: flex;
   flex-direction: column;
   
-  border: 5px solid red;
+  border: 2px solid var(--border-color);
 }
 
 .board>.row {
@@ -34,8 +35,6 @@ div.board-container {
   width: var(--square-dimension);
 
   /* border: 1px solid blue; */
-  border-top: 1px solid blue;
-  border-right: 1px solid blue;
 }
 
 .board.square.ship {
@@ -48,12 +47,4 @@ div.board-container {
 
 .board.square.struck-miss {
   background-color: red;
-}
-
-.board .square[data-row="9"] {
-  border-bottom: 1px solid blue;
-}
-
-.board .square[data-col="0"] {
-  border-left: 1px solid blue;
 }

@@ -26,7 +26,6 @@ async function startGame() {
   placeShipsRandomly();
   renderBoards(gameData);
 
-  // !gameObjs[0].board.allSunk() && !gameObjs[1].board.allSunk()
   while (validMovesRemaining(gameData)) {
     const attackMove = await getAttackCoords(gameData[currentPlayer].player);
     gameData[enemyPlayer].board.receiveAttack(attackMove.x, attackMove.y);
@@ -58,7 +57,7 @@ async function startGame() {
 }
 
 function validMovesRemaining(gameData) {
-  return false;
+  // return false;
   // eslint-disable-next-line no-unreachable
   return gameData[0].player.validMoves.length > 0 && gameData[1].player.validMoves.length > 0;
 }
