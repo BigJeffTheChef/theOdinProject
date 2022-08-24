@@ -74,6 +74,9 @@ Gameboard.prototype.placeShip = function placeShip(shipName, x, y, vertical) {
  * @returns true if attack was successful, false if attack was a miss
  */
 Gameboard.prototype.receiveAttack = function receiveAttack(x, y) {
+  // eslint-disable-next-line prefer-template
+  // console.log('x and y:' + x + ' ' + y);
+  // console.log(this.board[y]);
   const square = this.board[y][x];
   if (square === null) {
     this.misses.push(new Coord(x, y));

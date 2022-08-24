@@ -11,23 +11,24 @@ function Player(human) {
   this.validMoves = [];
   for (let x = 0; x < BOARD_SIZE; x++) {
     for (let y = 0; y < BOARD_SIZE; y++) {
-      this.validMoves.push(new Coord(x, y));
+      this.validMoves.push((this.human) ? null : new Coord(x, y));
     }
   }
 }
 /**
- * Uses this valid move, that is, if this is a computer player, attack coordinates will be chosen randomly from
- * this Players validMoves array. If this is a human player, null will be returned, so that the UI can prompt
- * the player for attack coordinates.
- * @param {number} x x co-ordinate
- * @param {number} y y co-ordinate
- * @returns a boolean representing if this is a valid move for this player
+ * If this Player is human, then return null.
+ * If this player is computer, select a random validMove and return it.
+ * In either case, the number of validMoves is reduced by 1.
+ * @returns null for human players, and a Coord object for computers
+ * @throw if validMoves.length is 0.
  */
-Player.prototype.attack = function attack(x, y) {
-  const index = this.validMoves.findIndex(e => e.x === x && e.y === y);
-  if (index === -1) return false;
-  this.validMoves.splice(index, 1);
-  return true;
+Player.prototype.attack = function attack() {
+  if (this.validMoves.length > 0) {
+    return (this.human)
+      ? this.validMoves.pop()
+      : this.validMoves.splice(Math.floor(Math.random() * this.validMoves.length), 1).at(0);
+  }
+  throw new Error('no valid moves remaining');
 };
 
 export default Player;

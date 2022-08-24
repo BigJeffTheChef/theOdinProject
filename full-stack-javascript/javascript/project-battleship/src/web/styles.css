@@ -38,6 +38,18 @@ div.board-container {
   border-right: 1px solid blue;
 }
 
+.board.square.ship {
+  background-color: chartreuse;
+}
+
+.board.square.struck-hit {
+  background-color: green;
+}
+
+.board.square.struck-miss {
+  background-color: red;
+}
+
 .board .square[data-row="9"] {
   border-bottom: 1px solid blue;
 }

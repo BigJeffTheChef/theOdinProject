@@ -35,14 +35,44 @@ function buildBoardElement(boardSize, id) {
   return board;
 }
 
-/**
- *
- * @param {*} playerHuman
- * @param {*} playerComputer
- */
-function placeShips(players, boards) {
-  console.log('placeShips not implemented');
+function renderBoards(gameData) {
+  const b1Obj = gameData[0].board;
+  const b1Dom = document.querySelector('#boardPlayer');
+
+  const b2Obj = gameData[1].board;
+  const b2Dom = document.querySelector('#boardComputer');
+
+  for (let row = 0; row < b1Obj.size; row++) {
+    for (let col = 0; col < b1Obj.size; col++) {
+      const p1SquareObj = b1Obj.board[row][col];
+      const p1SquareDom = b1Dom.childNodes[row].childNodes[col];
+      const p2SquareObj = b2Obj.board[row][col];
+      const p2SquareDom = b2Dom.childNodes[row].childNodes[col];
+
+      humanSquareHandle(p1SquareObj, p1SquareDom);
+      const missAt = b2Obj.misses.reduce((prev, cur) => (cur.x === col && cur.y === row) ? true : prev, false);
+      // const missAt = b2Obj.misses.indexOf({ x: col, y: row }) !== -1;
+      const shipAtStruck = (p2SquareObj !== null && p2SquareObj.ship.hull[p2SquareObj.shipHullIndex] === true);
+      if (shipAtStruck) {
+        p2SquareDom.className = 'board square struck-hit';
+      } else if (missAt) {
+        p2SquareDom.className = 'board square struck-miss';
+      } else {
+        p2SquareDom.className = 'board square';
+      }
+    }
+  }
+
+  function humanSquareHandle(squareObj, squareDom) {
+    if (squareObj === null) {
+      // eslint-disable-next-line no-param-reassign
+      squareDom.className = 'board square';
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      squareDom.className = 'board square ship';
+    }
+  }
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export { initializeDOM };
+export { initializeDOM, renderBoards };
