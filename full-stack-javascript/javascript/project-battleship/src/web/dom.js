@@ -36,11 +36,15 @@ function buildBoardElement(boardSize, id) {
   return board;
 }
 
+/**
+ * 
+ * @param {GameData} gameData an object that holds game state
+ */
 function renderBoards(gameData) {
   const data = {
-    b1Obj: gameData[0].board,
+    b1Obj: gameData.p1.board,
     b1Dom: document.querySelector('#boardPlayer'),
-    b2Obj: gameData[1].board,
+    b2Obj: gameData.p2.board,
     b2Dom: document.querySelector('#boardComputer'),
   };
 
@@ -56,14 +60,18 @@ function renderBoards(gameData) {
   }
 
   function humanSquareHandle() {
-    if (data.p1SquareObj === null) {
-      data.p1SquareDom.className = 'board square';
-    } else {
-      data.p1SquareDom.className = 'board square ship';
-    }
+    data.p1SquareDom.className = 'board square';
+    const shipFound = data.p1SquareObj !== null;
+    if (shipFound) data.p1SquareDom.classList.add('ship');
+    const positionStruck = data.p1SquareObj.ship.hull[data.p1SquareObj.shipHullIndex];
+
+    if (shipFound)
+    
+    if (shipIsStruck) data.p1SquareDom.classList.add('struck');
   }
 
   function computerSquareHandle(row, col) {
+    data.p2SquareDom.className = 'board square';
     const missAt = data.b2Obj.misses.reduce((prev, cur) => (cur.x === col && cur.y === row) ? true : prev, false);
     // const missAt = b2Obj.misses.indexOf({ x: col, y: row }) !== -1;
     const shipAtStruck = (data.p2SquareObj !== null && data.p2SquareObj.ship.hull[data.p2SquareObj.shipHullIndex] === true);
