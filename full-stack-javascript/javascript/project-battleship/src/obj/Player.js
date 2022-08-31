@@ -1,4 +1,4 @@
-import { Coord } from './Gameboard.js';
+import Coord from './Coord.js';
 import settings from './settings.json';
 
 const BOARD_SIZE = settings['gameboard-size'];

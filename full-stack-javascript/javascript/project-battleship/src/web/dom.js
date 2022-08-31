@@ -1,5 +1,6 @@
-/* eslint-disable no-param-reassign */
 import settings from '../obj/settings.json';
+// eslint-disable-next-line import/no-cycle
+import { onSquareClick } from '../obj/Game.js';
 
 const BOARD_SIZE = settings['gameboard-size'];
 
@@ -29,6 +30,9 @@ function buildBoardElement(boardSize, id) {
     for (let y = 0; y < boardSize; y++) {
       const square = document.createElement('div');
       square.className = 'board square';
+      square.dataset.col = y;
+      square.dataset.row = x;
+      square.addEventListener('click', () => onSquareClick(y, x, id));
       row.appendChild(square);
     }
     board.appendChild(row);
@@ -37,50 +41,50 @@ function buildBoardElement(boardSize, id) {
 }
 
 /**
- * 
- * @param {GameData} gameData an object that holds game state
+ * Iterate through.
+ * @param {GameData} gameData
  */
 function renderBoards(gameData) {
-  const data = {
-    b1Obj: gameData.p1.board,
-    b1Dom: document.querySelector('#boardPlayer'),
-    b2Obj: gameData.p2.board,
-    b2Dom: document.querySelector('#boardComputer'),
-  };
-
-  for (let row = 0; row < data.b1Obj.size; row++) {
-    for (let col = 0; col < data.b1Obj.size; col++) {
-      data.p1SquareObj = data.b1Obj.board[row][col];
-      data.p1SquareDom = data.b1Dom.childNodes[row].childNodes[col];
-      data.p2SquareObj = data.b2Obj.board[row][col];
-      data.p2SquareDom = data.b2Dom.childNodes[row].childNodes[col];
-      humanSquareHandle();
-      computerSquareHandle(row, col);
+  for (let row = 0; row < gameData.p1.board.size; row++) {
+    for (let col = 0; col < gameData.p1.board.size; col++) {
+      squareHandle(
+        document.querySelector('#boardPlayer').childNodes[row].childNodes[col],
+        gameData.p1.board.board[row][col],
+      );
+      squareHandle(
+        document.querySelector('#boardComputer').childNodes[row].childNodes[col],
+        gameData.p2.board.board[row][col],
+      );
     }
   }
 
-  function humanSquareHandle() {
-    data.p1SquareDom.className = 'board square';
-    const shipFound = data.p1SquareObj !== null;
-    if (shipFound) data.p1SquareDom.classList.add('ship');
-    const positionStruck = data.p1SquareObj.ship.hull[data.p1SquareObj.shipHullIndex];
+  /**
+   * Takes a pair of connected squares. One is a HTMLDivElement from the UI, the other is a square from the Gameboard object's
+   * board property.
+   * @param {HTMLDivElement} uiSquare
+   * @param {BoardPlacement} dataSquare
+   */
+  function squareHandle(uiSquare, dataSquare) {
+    // if ship found, add ship class
+    // if spot struck, add struck class
+    //    empty square struck
+    //    ship struck
 
-    if (shipFound)
-    
-    if (shipIsStruck) data.p1SquareDom.classList.add('struck');
-  }
+    // if square is empty
+    if (dataSquare === null) {
+      uiSquare.classList.remove('ship');
+      return;
+    }
 
-  function computerSquareHandle(row, col) {
-    data.p2SquareDom.className = 'board square';
-    const missAt = data.b2Obj.misses.reduce((prev, cur) => (cur.x === col && cur.y === row) ? true : prev, false);
-    // const missAt = b2Obj.misses.indexOf({ x: col, y: row }) !== -1;
-    const shipAtStruck = (data.p2SquareObj !== null && data.p2SquareObj.ship.hull[data.p2SquareObj.shipHullIndex] === true);
-    if (shipAtStruck) {
-      data.p2SquareDom.className = 'board square struck-hit';
-    } else if (missAt) {
-      data.p2SquareDom.className = 'board square struck-miss';
-    } else {
-      data.p2SquareDom.className = 'board square';
+    if (typeof dataSquare === 'object') {
+      uiSquare.classList.add('ship');
+      if (dataSquare.isStruck()) {
+        uiSquare.classList.add('struck');
+      }
+    }
+
+    if (typeof dataSquare === 'string') {
+      uiSquare.classList.add('struck');
     }
   }
 }

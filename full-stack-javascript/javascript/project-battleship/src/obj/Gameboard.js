@@ -1,5 +1,7 @@
 import Ship from './Ship.js';
 import settings from './settings.json';
+import BoardPlacement from './BoardPlacement.js';
+import Coord from './Coord.js';
 
 /** ***************************
  * CONSTANTS
@@ -23,26 +25,6 @@ function Gameboard() {
   }
   this.misses = [];
   this.ships = [];
-}
-
-/**
- * Create a coord object that holds x and y numberic values for a board co-ordinate
- * @param {number} x x co-ordinate
- * @param {number} y y co-ordinate
- */
-export function Coord(x, y) {
-  this.x = parseInt(x, 10);
-  this.y = parseInt(y, 10);
-}
-
-/**
- * An object that records data required for placement onto a square of the Gameboard objects board property
- * @param {Ship} ship
- * @param {number} index
- */
-export function BoardPlacement(ship, index) {
-  this.ship = ship;
-  this.shipHullIndex = index;
 }
 
 /** ***************************
@@ -80,6 +62,7 @@ Gameboard.prototype.receiveAttack = function receiveAttack(x, y) {
   const square = this.board[y][x];
   if (square === null) {
     this.misses.push(new Coord(x, y));
+    this.board[y][x] = 'miss';
     return false;
   }
   square.ship.hit(square.shipHullIndex);
