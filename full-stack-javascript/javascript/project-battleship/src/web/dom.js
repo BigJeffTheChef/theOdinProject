@@ -10,7 +10,6 @@ function initializeDOM() {
   const containerBoard = document.body.querySelector('.board-container');
   const containerGameInfo = document.body.querySelector('.game-info-container');
   const currentPlayer = containerGameInfo.querySelector('.current-player>span');
-  console.dir(currentPlayer);
   const containerIntro = document.querySelector('.intro-container');
   const buttonPlay = containerIntro.querySelector('#button-play');
 
@@ -36,15 +35,23 @@ function buildBoardElement(boardSize, playerIndex) {
   const board = document.createElement('div');
   board.className = 'board';
   board.id = (playerIndex === 0) ? 'boardPlayer' : 'boardComputer';
-  for (let x = 0; x < boardSize; x++) {
+  for (let rowIndex = 0; rowIndex < boardSize; rowIndex++) {
     const row = document.createElement('div');
     row.className = 'row';
-    for (let y = 0; y < boardSize; y++) {
+    for (let colIndex = 0; colIndex < boardSize; colIndex++) {
       const square = document.createElement('div');
       square.className = 'board square';
-      square.dataset.col = y;
-      square.dataset.row = x;
-      square.addEventListener('click', () => onSquareClick(y, x, playerIndex));
+      square.dataset.col = colIndex;
+      square.dataset.row = rowIndex;
+      square.addEventListener('click', (el, event) => {
+        if (!el.srcElement.classList.contains('struck')) {
+          onSquareClick(colIndex, rowIndex, playerIndex);
+        } else {
+          const msg = document.querySelector('.info-msg');
+          msg.textContent = 'already attacked this square!';
+          setTimeout(() => { msg.textContent = ''; }, 3000);
+        }
+      });
       row.appendChild(square);
     }
     board.appendChild(row);
@@ -57,6 +64,9 @@ function buildBoardElement(boardSize, playerIndex) {
  * @param {GameData} gameData
  */
 function renderBoards(gameData) {
+  const uib1 = document.querySelector('boardPlayer');
+  const uib2 = document.querySelector('boardComputer');
+
   for (let row = 0; row < gameData.p1.board.size; row++) {
     for (let col = 0; col < gameData.p1.board.size; col++) {
       processBoardSquare(

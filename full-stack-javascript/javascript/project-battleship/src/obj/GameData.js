@@ -21,3 +21,7 @@ GameData.prototype.changePlayer = function changePlayer() {
   this.currentPlayer = (this.currentPlayer === 0) ? 1 : 0;
   this.enemyPlayer = (this.enemyPlayer === 0) ? 1 : 0;
 };
+
+GameData.prototype.currentPlayerHuman = function currentPlayerHuman() {
+  return this.players[this.currentPlayer].player.human;
+};

@@ -20,13 +20,27 @@ export function initGame() {
 
 export function onSquareClick(x, y, playerIndex) {
   if (gameData.enemyPlayer === playerIndex) {
-    console.log(`x: ${x}, y: ${y}, playerIndex ${playerIndex}`);
+    // console.log(`x: ${x}, y: ${y}, playerIndex ${playerIndex}`);
     gameData.players[playerIndex].board.receiveAttack(x, y);
+    if (gameData.players[playerIndex].board.allSunk()) {
+      declareWinner();
+    }
     gameData.changePlayer();
     renderBoards(gameData);
+    if (!gameData.currentPlayerHuman()) {
+      // console.log('computer players go now');
+      setTimeout(() => {
+        const attackCoords = gameData.players[gameData.currentPlayer].player.attack();
+        onSquareClick(attackCoords.x, attackCoords.y, gameData.enemyPlayer);
+      }, 1);
+    }
   } else {
-    console.log('aint ya go son, simmer down');
+    // console.log('aint ya go son, simmer down');
   }
+}
+
+function declareWinner() {
+  console.log('we found ourselves a winner ... psst this isnt really implemented yet');
 }
 
 function placeShipsRandomly() {
