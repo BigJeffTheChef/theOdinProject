@@ -60,6 +60,7 @@ Gameboard.prototype.receiveAttack = function receiveAttack(x, y) {
   // console.log('x and y:' + x + ' ' + y);
   // console.log(this.board[y]);
   const square = this.board[y][x];
+  if (typeof square === 'string') return false;
   if (square === null) {
     this.misses.push(new Coord(x, y));
     this.board[y][x] = 'miss';

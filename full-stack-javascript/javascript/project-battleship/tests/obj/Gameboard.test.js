@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
-import Gameboard, { BOARD_SIZE, Coord } from '../../src/obj/Gameboard.js';
+import Gameboard, { BOARD_SIZE } from '../../src/obj/Gameboard.js';
+import Coord from '../../src/obj/Coord.js';
 
 // test objects
 let gameboard;

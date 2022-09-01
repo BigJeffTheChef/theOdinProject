@@ -5,7 +5,7 @@
 
 /* Board */
 
-div.board-container {
+.board-container {
   display: grid;
   grid-template: 1fr/ repeat(2, 1fr);
   justify-items: center;
@@ -34,15 +34,19 @@ div.board-container {
   box-sizing: border-box;
 }
 
-.board.square.ship {
+#boardPlayer .board.square.ship {
   background-color: lightgreen;
 }
 
 .board.square.struck {
   background-color: rgb(182, 182, 182);
+  /* border: 3px solid black; */
 }
-
-.board.square.struck.ship {
+#boardPlayer .board.square.struck.ship,
+#boardComputer .board.square.struck.ship {
   background-color:crimson;
 }
 
+.hidden {
+  display: none;
+}

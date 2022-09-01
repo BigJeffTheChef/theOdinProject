@@ -1,5 +1,6 @@
 import GameData from './GameData.js';
 import Player from './Player.js';
+// eslint-disable-next-line import/no-cycle
 import { renderBoards } from '../web/dom.js';
 import settings from './settings.json';
 import Gameboard from './Gameboard.js';
@@ -17,8 +18,15 @@ export function initGame() {
   renderBoards(gameData);
 }
 
-export function onSquareClick(x, y, boardId) {
-  console.log(`x: ${x}, y: ${y} - ${boardId}`);
+export function onSquareClick(x, y, playerIndex) {
+  if (gameData.enemyPlayer === playerIndex) {
+    console.log(`x: ${x}, y: ${y}, playerIndex ${playerIndex}`);
+    gameData.players[playerIndex].board.receiveAttack(x, y);
+    gameData.changePlayer();
+    renderBoards(gameData);
+  } else {
+    console.log('aint ya go son, simmer down');
+  }
 }
 
 function placeShipsRandomly() {
