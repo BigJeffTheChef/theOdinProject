@@ -1,4 +1,4 @@
 import './styles.css';
-import { initializeDOM } from './dom.js';
+import initialize from './ui.js';
 
-initializeDOM();
+initialize();

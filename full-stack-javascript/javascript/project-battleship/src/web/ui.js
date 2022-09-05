@@ -1,12 +1,12 @@
 import settings from '../obj/settings.json';
 // eslint-disable-next-line import/no-cycle
-import { initGame, onSquareClick } from '../obj/Game.js';
+import { startGame, onSquareClick } from '../obj/Game.js';
 
 const BOARD_SIZE = settings['gameboard-size'];
 /**
  * Build Battleships UI
  */
-function initializeDOM() {
+export default function initialize() {
   const containerBoard = document.body.querySelector('.board-container');
   const containerGameInfo = document.body.querySelector('.game-info-container');
   const currentPlayer = containerGameInfo.querySelector('.current-player>span');
@@ -21,7 +21,7 @@ function initializeDOM() {
     containerGameInfo.classList.remove('hidden');
     containerIntro.classList.add('hidden');
     currentPlayer.textContent = '1';
-    initGame();
+    startGame();
   });
 }
 
@@ -63,7 +63,7 @@ function buildBoardElement(boardSize, playerIndex) {
  * Iterate through.
  * @param {GameData} gameData
  */
-function renderBoards(gameData) {
+export function renderBoards(gameData) {
   const uib1 = document.querySelector('boardPlayer');
   const uib2 = document.querySelector('boardComputer');
 
@@ -109,5 +109,8 @@ function processBoardSquare(uiSquare, dataSquare) {
   }
 }
 
+export function declareWinner(message) {
+  document.querySelector('.info-msg').textContent = message;
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export { initializeDOM, renderBoards };
