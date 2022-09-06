@@ -1,28 +1,69 @@
-import settings from '../obj/settings.json';
+import settings from '../settings.json';
 // eslint-disable-next-line import/no-cycle
 import { startGame, onSquareClick } from '../obj/Game.js';
+import Ship from '../obj/Ship.js';
 
 const BOARD_SIZE = settings['gameboard-size'];
+const SHIPS = settings.ships;
 /**
  * Build Battleships UI
  */
-export default function initialize() {
-  const containerBoard = document.body.querySelector('.board-container');
-  const containerGameInfo = document.body.querySelector('.game-info-container');
-  const currentPlayer = containerGameInfo.querySelector('.current-player>span');
-  const containerIntro = document.querySelector('.intro-container');
-  const buttonPlay = containerIntro.querySelector('#button-play');
+// export default function initialize() {
+//   const containerBoard = document.body.querySelector('.container-board');
+//   const containerGameInfo = document.body.querySelector('.container-game-info');
+//   const currentPlayer = containerGameInfo.querySelector('.current-player>span');
+//   const containerIntro = document.querySelector('.container-intro');
+//   const buttonPlay = containerIntro.querySelector('#button-play');
 
-  containerBoard.innerHTML = ''; // clear old dom elements out of board-container
-  containerBoard.appendChild(buildBoardElement(BOARD_SIZE, 0));
-  containerBoard.appendChild(buildBoardElement(BOARD_SIZE, 1));
+//   containerBoard.innerHTML = ''; // clear old dom elements out of container-board
+//   containerBoard.appendChild(buildBoardElement(BOARD_SIZE, 0));
+//   containerBoard.appendChild(buildBoardElement(BOARD_SIZE, 1));
+//   buttonPlay.addEventListener('click', () => {
+//     containerBoard.classList.remove('hidden');
+//     containerGameInfo.classList.remove('hidden');
+//     containerIntro.classList.add('hidden');
+//     currentPlayer.textContent = '1';
+//     startGame();
+//   });
+// }
+
+export default function initialize() {
+  // dom elements
+  const containerBoard = document.body.querySelector('.container-board');
+  const containerGameInfo = document.body.querySelector('.container-game-info');
+  const containerShipPlacer = document.body.querySelector('.container-ship-placer');
+  const currentPlayer = containerGameInfo.querySelector('.current-player>span');
+  const containerIntro = document.querySelector('.container-intro');
+  const buttonPlay = containerIntro.querySelector('#button-play');
+  const placingBoard = containerShipPlacer.querySelector('.placing-board');
+  const shipChooser = containerShipPlacer.querySelector('.ship-chooser');
+
+  // ship placer values
+  // TODO
+  const shipNames = SHIPS.map(e => e.name);
+  const longestShip = SHIPS.reduce((prev, cur) => {
+    if (cur.size > prev) return cur.size;
+    return prev;
+  }, 0);
+  placingBoard.appendChild(buildBoardElement(BOARD_SIZE, 0));
+  const ships = []''
+  for (const ship of shipNames) {
+    const e = document.createElement('div');
+    ships.push(new Ship(ship));
+  }
+
+
+  containerBoard.innerHTML = ''; // clear old dom elements out of container-board
   buttonPlay.addEventListener('click', () => {
-    containerBoard.classList.remove('hidden');
-    containerGameInfo.classList.remove('hidden');
+    // containerBoard.classList.remove('hidden');
+    // containerGameInfo.classList.remove('hidden');
+    containerShipPlacer.classList.remove('hidden');
     containerIntro.classList.add('hidden');
     currentPlayer.textContent = '1';
     startGame();
   });
+
+  buttonPlay.click(); // jumps past play button by pressing it
 }
 
 /**

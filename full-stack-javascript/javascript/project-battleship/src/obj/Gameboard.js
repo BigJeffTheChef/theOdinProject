@@ -1,5 +1,5 @@
 import Ship from './Ship.js';
-import settings from './settings.json';
+import settings from '../settings.json';
 import BoardPlacement from './BoardPlacement.js';
 import Coord from './Coord.js';
 

@@ -1,5 +1,5 @@
 import Coord from './Coord.js';
-import settings from './settings.json';
+import settings from '../settings.json';
 
 const BOARD_SIZE = settings['gameboard-size'];
 /**

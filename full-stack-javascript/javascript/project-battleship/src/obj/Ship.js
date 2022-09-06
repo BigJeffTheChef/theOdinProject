@@ -1,4 +1,4 @@
-import settings from './settings.json';
+import settings from '../settings.json';
 
 /**
  * Create a ship object, by specifying the name of the ship required.
