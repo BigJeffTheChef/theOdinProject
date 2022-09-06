@@ -57,6 +57,30 @@
   background-color:crimson;
 }
 
+.ship-chooser {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin: 0px 10px;
+}
+
+.ship-chooser-ship {
+  display: flex;
+  flex-direction: row;
+}
+
+.ship-chooser-ship>div {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid goldenrod;
+}
+
+.ship-chooser-ship>div>div{
+  width: var(--square-dimension);
+  height: var(--square-dimension);
+  border: 1px solid goldenrod;
+}
+
 .hidden {
   display: none;
 }

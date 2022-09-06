@@ -46,12 +46,21 @@ export default function initialize() {
     return prev;
   }, 0);
   placingBoard.appendChild(buildBoardElement(BOARD_SIZE, 0));
-  const ships = []''
-  for (const ship of shipNames) {
+  const ships = [];
+  const es = [];
+  for (const ship of SHIPS) {
     const e = document.createElement('div');
-    ships.push(new Ship(ship));
-  }
+    e.classList.add('ship-chooser-ship');
 
+    const innerShip = document.createElement('div');
+    for (let i = 0; i < ship.size; i++) {
+      innerShip.appendChild(document.createElement('div'));
+    }
+    ships.push(new Ship(ship.name));
+    e.append(innerShip);
+    es.push(e);
+  }
+  shipChooser.append(...es);
 
   containerBoard.innerHTML = ''; // clear old dom elements out of container-board
   buttonPlay.addEventListener('click', () => {
