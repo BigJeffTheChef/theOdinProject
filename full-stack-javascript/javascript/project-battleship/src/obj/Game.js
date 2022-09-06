@@ -8,7 +8,7 @@ import Gameboard from './Gameboard.js';
 let gameData = null;
 let gameActive = false;
 
-export function startGame() {
+export async function startGame() {
   gameActive = true;
   gameData = new GameData(
     new Player(false),
@@ -16,8 +16,14 @@ export function startGame() {
     new Gameboard(),
     new Gameboard(),
   );
-  placeShipsRandomly();
-  renderBoards(gameData);
+  //placeShipsRandomly();
+  // eslint-disable-next-line prefer-template
+  console.log('start ' + Date());
+  placeShipsIntentionally().then(() => {
+    renderBoards(gameData);
+    // eslint-disable-next-line prefer-template
+    console.log('end ' + Date());
+  });
 }
 
 /**
@@ -48,6 +54,26 @@ export function onSquareClick(x, y, playerIndex) {
     // console.log('aint ya go son, simmer down');
   }
 }
+
+async function placeShipsIntentionally() {
+  // const { ships } = settings;
+  // // eslint-disable-next-line no-restricted-syntax
+  // let y = 0;
+  // // eslint-disable-next-line no-restricted-syntax
+  // for (const ship of ships) {
+  //   gameData.p1.board.placeShip(ship.name, 0, y, false);
+  //   // gameData.p1.board.receiveAttack(0, y);
+  //   gameData.p2.board.placeShip(ship.name, 0, y, false);
+  //   // gameData.p2.board.receiveAttack(0, y);
+  //   y++;
+  // }
+  //const result = await setTimeout(() => 'hello', 5000);
+  //return result;
+  // const wait = 
+  // gameData.p1.board.receiveAttack(9, 9);
+  // gameData.p2.board.receiveAttack(3, 0);
+}
+
 
 function placeShipsRandomly() {
   const { ships } = settings;
