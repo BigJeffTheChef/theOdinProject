@@ -11,12 +11,12 @@ let gameActive = false;
 export async function startGame() {
   // set game data
   gameActive = true;
-  gameData = new GameData(
-    new Player(false),
-    new Player(false),
-    new Gameboard(),
-    new Gameboard(),
-  );
+  // gameData = new GameData(
+  //   new Player(true),
+  //   new Player(false),
+  //   new Gameboard(),
+  //   new Gameboard(),
+  // );
 
   // prepare ship placing functionality and start
   // placeShipsRandomly();
@@ -36,7 +36,7 @@ export async function startGame() {
  * @param {number} playerIndex the index of the current player for use in gameData.players[index].
  */
 export function onSquareClick(x, y, playerIndex) {
-  if (!gameActive) return;
+  if (!gameActive || gameData === null) return;
   if (gameData.enemyPlayer === playerIndex) {
     gameData.players[playerIndex].board.receiveAttack(x, y);
     if (gameData.players[playerIndex].board.allSunk()) {
