@@ -6,29 +6,11 @@ import Gameboard from '../obj/Gameboard';
 
 const BOARD_SIZE = settings['gameboard-size'];
 const SHIPS = settings.ships;
-let constructionBoard = null;
+let constructionBoard = new Gameboard();
+
 /**
- * Build Battleships UI
+ * Prepares components for game play
  */
-// export default function initialize() {
-//   const containerBoard = document.body.querySelector('.container-board');
-//   const containerGameInfo = document.body.querySelector('.container-game-info');
-//   const currentPlayer = containerGameInfo.querySelector('.current-player>span');
-//   const containerIntro = document.querySelector('.container-intro');
-//   const buttonPlay = containerIntro.querySelector('#button-play');
-
-//   containerBoard.innerHTML = ''; // clear old dom elements out of container-board
-//   containerBoard.appendChild(buildBoardElement(BOARD_SIZE, 0));
-//   containerBoard.appendChild(buildBoardElement(BOARD_SIZE, 1));
-//   buttonPlay.addEventListener('click', () => {
-//     containerBoard.classList.remove('hidden');
-//     containerGameInfo.classList.remove('hidden');
-//     containerIntro.classList.add('hidden');
-//     currentPlayer.textContent = '1';
-//     startGame();
-//   });
-// }
-
 export default function initialize() {
   // dom elements
   const containerShipPlacer = document.body.querySelector('.container-ship-placer');
@@ -38,7 +20,10 @@ export default function initialize() {
   const shipChooser = containerShipPlacer.querySelector('.ship-chooser');
   constructionBoard = new Gameboard();
 
+  // create a board for placing ships onto
   placingBoard.appendChild(buildBoardElement(BOARD_SIZE, 0, true));
+
+  // create draggable ship representations
   for (const ship of SHIPS) {
     const shipDraggable = document.createElement('div');
     shipDraggable.classList.add('ship-draggable');
@@ -47,33 +32,32 @@ export default function initialize() {
     for (let i = 0; i < ship.size; i++) { // add boxs up to ship length
       shipDraggable.appendChild(document.createElement('div'));
     }
-    shipDraggable.addEventListener('dragstart', () => shipDraggable.classList.add('dragging'));
-    shipDraggable.addEventListener('dragend', () => shipDraggable.classList.remove('dragging'));
+    //shipDraggable.addEventListener('dragstart', () => shipDraggable.classList.add('dragging'));
+    //shipDraggable.addEventListener('dragend', () => shipDraggable.classList.remove('dragging'));
     shipChooser.append(shipDraggable);
   }
 
+  // register event listeners
   buttonPlay.addEventListener('click', () => {
     // containerBoard.classList.remove('hidden');
     containerShipPlacer.classList.remove('hidden');
     containerIntro.classList.add('hidden');
     startGame();
   });
-
-  buttonPlay.click(); // jumps past play button by pressing it
-
-
-}
-
-// function dragShip(event) {
-//   console.log('dragging ship! ' + event.target.id);
-//   event.dataTransfer.setData('shipName', event.target.dataset.shipName);
-//   event.dataTransfer.setData('shipDraggableId', '#' + event.target.id);
-// }
-
-function dropShip(event) {
-  event.preventDefault();
-  const draggingShip = document.querySelector('.dragging');
-  const accepted = constructionBoard.placeShip(
+  for (const draggable of document.querySelectorAll('.ship-draggable')) {
+    draggable.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', draggable.dataset.shipName);
+    });
+  }
+  for (const droppable of document.querySelectorAll('.board.square')) {
+    droppable.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+    droppable.addEventListener('drop', e => {
+      const id = e.dataTransfer.getData('text/plain');
+      console.log(id);
+      const draggingShip = document.querySelector('#' + id);
+      const accepted = constructionBoard.placeShip(
     draggingShip.dataset.shipName,
     parseInt(event.target.dataset.col),
     parseInt(event.target.dataset.row),
@@ -83,10 +67,33 @@ function dropShip(event) {
     renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
     document.querySelector('.ship-chooser').removeChild(draggingShip);
   }
+    });
+  }
+
+  buttonPlay.click(); // jumps past play button by pressing it
 }
 
+/**
+ * draggable ship dropping event handler
+ * @param {event} event drop event
+ */
+// function dropShipHandler(event) {
+//   event.preventDefault();
+//   const draggingShip = document.querySelector('.dragging');
+//   const accepted = constructionBoard.placeShip(
+//     draggingShip.dataset.shipName,
+//     parseInt(event.target.dataset.col),
+//     parseInt(event.target.dataset.row),
+//     false
+//   );
+//   if (accepted) {
+//     renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
+//     document.querySelector('.ship-chooser').removeChild(draggingShip);
+//   }
+// }
+
 function allowDropShip(event) {
-  event.preventDefault();
+
 }
 
 /**
@@ -117,15 +124,15 @@ function buildBoardElement(boardSize, playerIndex, isChooser = false) {
           setTimeout(() => { msg.textContent = ''; }, 3000);
         }
       });
-      if (isChooser) {
-        square.addEventListener('dragenter', () => square.classList.add('ship-hovered'));
-        square.addEventListener('dragleave', () => square.classList.remove('ship-hovered'));
-        square.addEventListener('dragover', allowDropShip);
-        square.addEventListener('drop', e => {
-          square.classList.remove('ship-hovered');
-          dropShip(e)
-        });
-      }
+      // if (isChooser) {
+      //   square.addEventListener('dragenter', () => square.classList.add('ship-hovered'));
+      //   square.addEventListener('dragleave', () => square.classList.remove('ship-hovered'));
+      //   square.addEventListener('dragover', e => e.preventDefault());
+      //   square.addEventListener('drop', e => {
+      //     square.classList.remove('ship-hovered');
+      //     dropShipHandler(e)
+      //   });
+      // }
       row.appendChild(square);
     }
     board.appendChild(row);

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .drop-zone {
+            border: 5px dashed black;
+            width: 150px;
+            height: 150px;
+            margin: 20px;
+        }
+
+        .draggable {
+            width: 75px;
+            height: 75px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="drop-zone" id="left">
+        <div class="draggable" id="uniqueId" draggable="true"></div>
+    </div>
+    <div class="drop-zone" id="right"></div>
+
+    <script>
+        const draggable = document.querySelector('.draggable');
+        draggable.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', draggable.id);
+        });
+        for (const dropZone of document.querySelectorAll('.drop-zone')) {
+            dropZone.addEventListener('dragover', e => e.preventDefault());
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                console.log(e.dataTransfer.getData('text/plain'));
+            });
+        }
+    </script>
+</body>
+</html>
