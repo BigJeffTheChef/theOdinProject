@@ -54,19 +54,19 @@ export default function initialize() {
       e.preventDefault();
     });
     droppable.addEventListener('drop', e => {
-      const id = e.dataTransfer.getData('text/plain');
-      console.log(id);
-      const draggingShip = document.querySelector('#' + id);
+      const dataShipName = e.dataTransfer.getData('text/plain'); // "patrol boat" etc
+      e.preventDefault();
+      const draggingShip = document.querySelector(`.ship-draggable[data-ship-name="${dataShipName}"]`);
       const accepted = constructionBoard.placeShip(
-    draggingShip.dataset.shipName,
-    parseInt(event.target.dataset.col),
-    parseInt(event.target.dataset.row),
-    false
-  );
-  if (accepted) {
-    renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
-    document.querySelector('.ship-chooser').removeChild(draggingShip);
-  }
+        draggingShip.dataset.shipName,
+        parseInt(e.target.dataset.col),
+        parseInt(e.target.dataset.row),
+        false
+      );
+      if (accepted) {
+        renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
+        document.querySelector('.ship-chooser').removeChild(draggingShip);
+      }
     });
   }
 
