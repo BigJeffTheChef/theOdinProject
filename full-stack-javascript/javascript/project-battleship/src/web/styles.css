@@ -44,7 +44,7 @@
   box-sizing: border-box;
 }
 
-#boardPlayer .board.square.ship {
+#player1 .board.square.ship {
   background-color: lightgreen;
 }
 
@@ -52,8 +52,8 @@
   background-color: rgb(182, 182, 182);
   /* border: 3px solid black; */
 }
-#boardPlayer .board.square.struck.ship,
-#boardComputer .board.square.struck.ship {
+#player1 .board.square.struck.ship,
+#player2 .board.square.struck.ship {
   background-color:crimson;
 }
 
@@ -85,6 +85,10 @@
 
 .ship-hovered {
   border: 1px dashed red;
+}
+
+.vertical {
+  transform: rotate(-45deg);
 }
 
 .hidden {

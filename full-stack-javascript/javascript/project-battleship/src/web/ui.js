@@ -7,12 +7,15 @@ import Gameboard from '../obj/Gameboard';
 const BOARD_SIZE = settings['gameboard-size'];
 const SHIPS = settings.ships;
 let constructionBoard = new Gameboard();
+let direction = null;
+let placedShips = 0;
 
 /**
  * Prepares components for game play
  */
 export default function initialize() {
   // dom elements
+
   const containerShipPlacer = document.body.querySelector('.container-ship-placer');
   const containerIntro = document.querySelector('.container-intro');
   const buttonPlay = containerIntro.querySelector('#button-play');
@@ -21,9 +24,11 @@ export default function initialize() {
   constructionBoard = new Gameboard();
 
   // create a board for placing ships onto
+
   placingBoard.appendChild(buildBoardElement(BOARD_SIZE, 0, true));
 
   // create draggable ship representations
+
   for (const ship of SHIPS) {
     const shipDraggable = document.createElement('div');
     shipDraggable.classList.add('ship-draggable');
@@ -32,23 +37,36 @@ export default function initialize() {
     for (let i = 0; i < ship.size; i++) { // add boxs up to ship length
       shipDraggable.appendChild(document.createElement('div'));
     }
-    //shipDraggable.addEventListener('dragstart', () => shipDraggable.classList.add('dragging'));
-    //shipDraggable.addEventListener('dragend', () => shipDraggable.classList.remove('dragging'));
     shipChooser.append(shipDraggable);
   }
 
+  // ship placement direction button (vertical/ horizontal)
+
+  const directionButton = document.createElement('button');
+  directionButton.type = 'button';
+  directionButton.className = 'direction-button';
+  directionButton.textContent = 'horizontal';
+  directionButton.addEventListener('click', () => {
+    const vertical = directionButton.textContent == 'vertical';
+    directionButton.textContent = vertical ? 'horizontal' : 'vertical';
+    direction = vertical;
+  });
+  shipChooser.appendChild(directionButton);
+
+
   // register event listeners
+
   buttonPlay.addEventListener('click', () => {
-    // containerBoard.classList.remove('hidden');
     containerShipPlacer.classList.remove('hidden');
     containerIntro.classList.add('hidden');
-    startGame();
   });
+
   for (const draggable of document.querySelectorAll('.ship-draggable')) {
     draggable.addEventListener('dragstart', e => {
       e.dataTransfer.setData('text/plain', draggable.dataset.shipName);
     });
   }
+
   for (const droppable of document.querySelectorAll('.board.square')) {
     droppable.addEventListener('dragover', e => {
       e.preventDefault();
@@ -61,52 +79,33 @@ export default function initialize() {
         draggingShip.dataset.shipName,
         parseInt(e.target.dataset.col),
         parseInt(e.target.dataset.row),
-        false
+        document.querySelector('.direction-button').textContent === 'vertical'
       );
       if (accepted) {
+        placedShips++;
         renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
         document.querySelector('.ship-chooser').removeChild(draggingShip);
+        if (placedShips === settings.ships.length) {
+          startGame();
+        }
       }
     });
   }
 
+  // dev
   buttonPlay.click(); // jumps past play button by pressing it
-}
-
-/**
- * draggable ship dropping event handler
- * @param {event} event drop event
- */
-// function dropShipHandler(event) {
-//   event.preventDefault();
-//   const draggingShip = document.querySelector('.dragging');
-//   const accepted = constructionBoard.placeShip(
-//     draggingShip.dataset.shipName,
-//     parseInt(event.target.dataset.col),
-//     parseInt(event.target.dataset.row),
-//     false
-//   );
-//   if (accepted) {
-//     renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
-//     document.querySelector('.ship-chooser').removeChild(draggingShip);
-//   }
-// }
-
-function allowDropShip(event) {
-
 }
 
 /**
  * Create a visual representation of a Gameboard
  * @param {number} boardSize the length of the gameboard sides
  * @param {string} id id attribute of this HTML element
- * @param {boolean} isChooser set to true when a UI board is being created for ship placement. Defaults to false.
  * @returns HTMLDivElement
  */
-function buildBoardElement(boardSize, playerIndex, isChooser = false) {
+function buildBoardElement(boardSize, playerIndex) {
   const board = document.createElement('div');
   board.className = 'board';
-  board.id = (playerIndex === 0) ? 'boardPlayer' : 'boardComputer';
+  board.id = (playerIndex === 0) ? 'player1' : 'player2';
   for (let rowIndex = 0; rowIndex < boardSize; rowIndex++) {
     const row = document.createElement('div');
     row.className = 'row';
@@ -124,15 +123,6 @@ function buildBoardElement(boardSize, playerIndex, isChooser = false) {
           setTimeout(() => { msg.textContent = ''; }, 3000);
         }
       });
-      // if (isChooser) {
-      //   square.addEventListener('dragenter', () => square.classList.add('ship-hovered'));
-      //   square.addEventListener('dragleave', () => square.classList.remove('ship-hovered'));
-      //   square.addEventListener('dragover', e => e.preventDefault());
-      //   square.addEventListener('drop', e => {
-      //     square.classList.remove('ship-hovered');
-      //     dropShipHandler(e)
-      //   });
-      // }
       row.appendChild(square);
     }
     board.appendChild(row);
@@ -161,17 +151,17 @@ function renderNew(uiElement, board) {
  * @param {GameData} gameData
  */
 export function renderBoards(gameData) {
-  const uib1 = document.querySelector('boardPlayer');
-  const uib2 = document.querySelector('boardComputer');
+  const uib1 = document.querySelector('player1');
+  const uib2 = document.querySelector('player2');
 
   for (let row = 0; row < gameData.p1.board.size; row++) {
     for (let col = 0; col < gameData.p1.board.size; col++) {
       processBoardSquare(
-        document.querySelector('#boardPlayer').childNodes[row].childNodes[col],
+        document.querySelector('#player1').childNodes[row].childNodes[col],
         gameData.p1.board.board[row][col],
       );
       processBoardSquare(
-        document.querySelector('#boardComputer').childNodes[row].childNodes[col],
+        document.querySelector('#player2').childNodes[row].childNodes[col],
         gameData.p2.board.board[row][col],
       );
     }
