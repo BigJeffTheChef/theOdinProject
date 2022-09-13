@@ -2,31 +2,21 @@ import GameData from './GameData.js';
 import Player from './Player.js';
 // eslint-disable-next-line import/no-cycle
 import { renderBoards, declareWinner } from '../web/ui.js';
-import settings from '../settings.json';
 import Gameboard from './Gameboard.js';
 
 let gameData = null;
 let gameActive = false;
 
-export async function startGame() {
+export async function startGame(b1, b2) {
   // set game data
   gameActive = true;
-  // gameData = new GameData(
-  //   new Player(true),
-  //   new Player(false),
-  //   new Gameboard(),
-  //   new Gameboard(),
-  // );
-
-  // prepare ship placing functionality and start
-  // placeShipsRandomly();
-  // eslint-disable-next-line prefer-template
-  // console.log('start ' + Date());
-  // placeShipsIntentionally().then(() => {
-  //   renderBoards(gameData);
-  //   // eslint-disable-next-line prefer-template
-  //   console.log('end ' + Date());
-  // });
+  gameData = new GameData(
+    new Player(true),
+    new Player(false),
+    b1,
+    b2,
+  );
+  renderBoards(gameData);
 }
 
 /**
@@ -58,37 +48,22 @@ export function onSquareClick(x, y, playerIndex) {
   }
 }
 
-async function placeShipsIntentionally() {
-  // const { ships } = settings;
-  // // eslint-disable-next-line no-restricted-syntax
-  // let y = 0;
-  // // eslint-disable-next-line no-restricted-syntax
-  // for (const ship of ships) {
-  //   gameData.p1.board.placeShip(ship.name, 0, y, false);
-  //   // gameData.p1.board.receiveAttack(0, y);
-  //   gameData.p2.board.placeShip(ship.name, 0, y, false);
-  //   // gameData.p2.board.receiveAttack(0, y);
-  //   y++;
-  // }
-  // const result = await setTimeout(() => 'hello', 5000);
-  // return result;
-  // const wait = '';
-  // gameData.p1.board.receiveAttack(9, 9);
-  // gameData.p2.board.receiveAttack(3, 0);
-}
-
-function placeShipsRandomly() {
-  const { ships } = settings;
-  // eslint-disable-next-line no-restricted-syntax
-  let y = 0;
-  // eslint-disable-next-line no-restricted-syntax
+/**
+ * @param {String[]} ships names of all ships to be placed
+ * @param {Gameboard} gameboard 
+ */
+export function placeShipsForComputer(ships) {
+  const board = new Gameboard();
   for (const ship of ships) {
-    gameData.p1.board.placeShip(ship.name, 0, y, false);
-    // gameData.p1.board.receiveAttack(0, y);
-    gameData.p2.board.placeShip(ship.name, 0, y, false);
-    // gameData.p2.board.receiveAttack(0, y);
-    y++;
+    let complete = false;
+    while (!complete) {
+      complete = board.placeShip(
+        ship,
+        parseInt(Math.random() * 10),
+        parseInt(Math.random() * 10),
+        Math.random() < 0.5 ? true : false
+      );
+    }
   }
-  // gameData.p1.board.receiveAttack(9, 9);
-  // gameData.p2.board.receiveAttack(3, 0);
+  return board;
 }

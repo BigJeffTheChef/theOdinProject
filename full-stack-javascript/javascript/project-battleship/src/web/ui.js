@@ -3,6 +3,7 @@ import settings from '../settings.json';
 import { startGame, onSquareClick } from '../obj/Game.js';
 import Ship from '../obj/Ship.js';
 import Gameboard from '../obj/Gameboard';
+import { placeShipsForComputer } from '../obj/Game.js';
 
 const BOARD_SIZE = settings['gameboard-size'];
 const SHIPS = settings.ships;
@@ -63,6 +64,7 @@ export default function initialize() {
 
   for (const draggable of document.querySelectorAll('.ship-draggable')) {
     draggable.addEventListener('dragstart', e => {
+      e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', draggable.dataset.shipName);
     });
   }
@@ -73,6 +75,7 @@ export default function initialize() {
     });
     droppable.addEventListener('drop', e => {
       const dataShipName = e.dataTransfer.getData('text/plain'); // "patrol boat" etc
+      e.dataTransfer.dropEffect = 'move';
       e.preventDefault();
       const draggingShip = document.querySelector(`.ship-draggable[data-ship-name="${dataShipName}"]`);
       const accepted = constructionBoard.placeShip(
@@ -85,8 +88,10 @@ export default function initialize() {
         placedShips++;
         renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
         document.querySelector('.ship-chooser').removeChild(draggingShip);
-        if (placedShips === settings.ships.length) {
-          startGame();
+        if (placedShips === SHIPS.length) {
+          const b = placeShipsForComputer(SHIPS.map(e => e.name));
+          prepareUIForGame();
+          startGame(constructionBoard, b);
         }
       }
     });
@@ -94,6 +99,18 @@ export default function initialize() {
 
   // dev
   buttonPlay.click(); // jumps past play button by pressing it
+}
+
+function prepareUIForGame() {
+  document.body.removeChild(document.querySelector('.container-ship-placer'));
+  const containerBoards = document.querySelector('.container-board');
+  containerBoards.classList.remove('hidden');
+
+  const containerGameInfo = document.querySelector('.container-game-info');
+  containerGameInfo.classList.remove('hidden');
+
+  containerBoards.appendChild(buildBoardElement(BOARD_SIZE, 0));
+  containerBoards.appendChild(buildBoardElement(BOARD_SIZE, 1));
 }
 
 /**
@@ -135,7 +152,7 @@ function buildBoardElement(boardSize, playerIndex) {
  * @param {HTMLDivElement} uiElement 
  * @param {Gameboard} board 
  */
-function renderNew(uiElement, board) {
+export function renderNew(uiElement, board) {
   for (let row = 0; row < board.size; row++) {
     for (let col = 0; col < board.size; col++) {
       processBoardSquare(
@@ -151,22 +168,24 @@ function renderNew(uiElement, board) {
  * @param {GameData} gameData
  */
 export function renderBoards(gameData) {
-  const uib1 = document.querySelector('player1');
-  const uib2 = document.querySelector('player2');
+  // const uib1 = document.querySelector('player1');
+  // const uib2 = document.querySelector('player2');
 
-  for (let row = 0; row < gameData.p1.board.size; row++) {
-    for (let col = 0; col < gameData.p1.board.size; col++) {
-      processBoardSquare(
-        document.querySelector('#player1').childNodes[row].childNodes[col],
-        gameData.p1.board.board[row][col],
-      );
-      processBoardSquare(
-        document.querySelector('#player2').childNodes[row].childNodes[col],
-        gameData.p2.board.board[row][col],
-      );
-    }
-  }
-  document.querySelector('.current-player>span').textContent = gameData.currentPlayer + 1;
+  // for (let row = 0; row < gameData.p1.board.size; row++) {
+  //   for (let col = 0; col < gameData.p1.board.size; col++) {
+  //     processBoardSquare(
+  //       document.querySelector('#player1').childNodes[row].childNodes[col],
+  //       gameData.p1.board.board[row][col],
+  //     );
+  //     processBoardSquare(
+  //       document.querySelector('#player2').childNodes[row].childNodes[col],
+  //       gameData.p2.board.board[row][col],
+  //     );
+  //   }
+  // }
+  // document.querySelector('.current-player>span').textContent = gameData.currentPlayer + 1;
+  renderNew(document.querySelector('#player1'), gameData.p1.board);
+  renderNew(document.querySelector('#player2'), gameData.p2.board);
 }
 
 /**
