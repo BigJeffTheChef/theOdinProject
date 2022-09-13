@@ -1,14 +1,11 @@
 import settings from '../settings.json';
 // eslint-disable-next-line import/no-cycle
-import { startGame, onSquareClick } from '../obj/Game.js';
-import Ship from '../obj/Ship.js';
+import { startGame, onSquareClick, placeShipsForComputer } from '../obj/Game.js';
 import Gameboard from '../obj/Gameboard';
-import { placeShipsForComputer } from '../obj/Game.js';
 
 const BOARD_SIZE = settings['gameboard-size'];
 const SHIPS = settings.ships;
-let constructionBoard = new Gameboard();
-let direction = null;
+const TEST_MODE = settings['test-mode'];
 let placedShips = 0;
 
 /**
@@ -22,7 +19,7 @@ export default function initialize() {
   const buttonPlay = containerIntro.querySelector('#button-play');
   const placingBoard = containerShipPlacer.querySelector('.placing-board');
   const shipChooser = containerShipPlacer.querySelector('.ship-chooser');
-  constructionBoard = new Gameboard();
+  const constructionBoard = new Gameboard();
 
   // create a board for placing ships onto
 
@@ -48,12 +45,10 @@ export default function initialize() {
   directionButton.className = 'direction-button';
   directionButton.textContent = 'horizontal';
   directionButton.addEventListener('click', () => {
-    const vertical = directionButton.textContent == 'vertical';
+    const vertical = directionButton.textContent === 'vertical';
     directionButton.textContent = vertical ? 'horizontal' : 'vertical';
-    direction = vertical;
   });
   shipChooser.appendChild(directionButton);
-
 
   // register event listeners
 
@@ -73,6 +68,7 @@ export default function initialize() {
     droppable.addEventListener('dragover', e => {
       e.preventDefault();
     });
+    // eslint-disable-next-line no-loop-func
     droppable.addEventListener('drop', e => {
       const dataShipName = e.dataTransfer.getData('text/plain'); // "patrol boat" etc
       e.dataTransfer.dropEffect = 'move';
@@ -80,16 +76,17 @@ export default function initialize() {
       const draggingShip = document.querySelector(`.ship-draggable[data-ship-name="${dataShipName}"]`);
       const accepted = constructionBoard.placeShip(
         draggingShip.dataset.shipName,
-        parseInt(e.target.dataset.col),
-        parseInt(e.target.dataset.row),
-        document.querySelector('.direction-button').textContent === 'vertical'
+        parseInt(e.target.dataset.col, 10),
+        parseInt(e.target.dataset.row, 10),
+        document.querySelector('.direction-button').textContent === 'vertical',
       );
       if (accepted) {
         placedShips++;
         renderNew(document.querySelector('.placing-board>.board'), constructionBoard);
         document.querySelector('.ship-chooser').removeChild(draggingShip);
         if (placedShips === SHIPS.length) {
-          const b = placeShipsForComputer(SHIPS.map(e => e.name));
+          placedShips = 0;
+          const b = placeShipsForComputer(SHIPS.map(shipDetails => shipDetails.name));
           prepareUIForGame();
           startGame(constructionBoard, b);
         }
@@ -97,17 +94,41 @@ export default function initialize() {
     });
   }
 
-  // dev
-  buttonPlay.click(); // jumps past play button by pressing it
+  // if test mode is true, then skip play button, and ship placement screen, and just start game with randomly placed ships
+
+  if (TEST_MODE) {
+    buttonPlay.click();
+    containerShipPlacer.classList.add('hidden');
+    containerIntro.classList.add('hidden');
+    prepareUIForGame();
+    startGame(
+      placeShipsForComputer(SHIPS.map(e => e.name)),
+      placeShipsForComputer(SHIPS.map(e => e.name)),
+    );
+  }
 }
 
+/**
+ * Prepares the UI for a new game.
+ * The ship-placer board  is removed, and the ship placer container div is hidden.
+ * The real board container and game info container are then shown.
+ */
 function prepareUIForGame() {
-  document.body.removeChild(document.querySelector('.container-ship-placer'));
+  // Close ship placer (and also remove placing board - regenerate if needed)
+
+  const containerShipPlacer = document.querySelector('.container-ship-placer');
+  containerShipPlacer.removeChild(document.querySelector('.placing-board'));
+  containerShipPlacer.classList.add('hidden');
+
+  // show container board and container game info
+
   const containerBoards = document.querySelector('.container-board');
   containerBoards.classList.remove('hidden');
 
   const containerGameInfo = document.querySelector('.container-game-info');
   containerGameInfo.classList.remove('hidden');
+
+  // append new empty board to container boards
 
   containerBoards.appendChild(buildBoardElement(BOARD_SIZE, 0));
   containerBoards.appendChild(buildBoardElement(BOARD_SIZE, 1));
@@ -131,6 +152,7 @@ function buildBoardElement(boardSize, playerIndex) {
       square.className = 'board square';
       square.dataset.col = colIndex;
       square.dataset.row = rowIndex;
+      // eslint-disable-next-line no-unused-vars
       square.addEventListener('click', (el, event) => {
         if (!el.srcElement.classList.contains('struck')) {
           onSquareClick(colIndex, rowIndex, playerIndex);
@@ -148,9 +170,8 @@ function buildBoardElement(boardSize, playerIndex) {
 }
 
 /**
- * 
- * @param {HTMLDivElement} uiElement 
- * @param {Gameboard} board 
+ * @param {HTMLDivElement} uiElement the board div
+ * @param {Gameboard} board the Gameboard object underpinning the uiElement
  */
 export function renderNew(uiElement, board) {
   for (let row = 0; row < board.size; row++) {

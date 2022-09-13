@@ -1,4 +1,5 @@
 {
+    "root": true,
     "env": {
         "browser": true,
         "es2021": true
@@ -22,7 +23,7 @@
         ],
         "no-unused-vars": 1,
         "no-restricted-syntax": [
-            "allow", "ForOfStatement"
+            0, "ForOfStatement"
         ],
         "no-use-before-define": "off",
         "max-len": [
@@ -37,6 +38,7 @@
         "import/extensions": ["off", "js"],
         "arrow-parens": ["error", "as-needed"],
         "curly": "off",
-        "no-await-in-loop": "off"
+        "no-await-in-loop": "off",
+        "linebreak-style": "off"
     }
 }
