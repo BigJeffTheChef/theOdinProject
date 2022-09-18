@@ -1,0 +1,43 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  color: white;
+  background-color: rgb(35, 32, 41);
+}
+
+#app-container {
+  border: 1px solid red;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#section-info {
+  position: relative;
+  background-color: blueviolet;
+}
+
+#section-info>p>span:first-child {
+  font-weight: 1000;
+  font-size: large;
+}
+
+#edit-btn-info {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#section-education {
+  background-color: green;
+}
+
+#section-work {
+  background-color: rgb(165, 125, 25);
+}
+
+.modal-info {
+  position: absolute;
+}
+
+.hidden {
+  display: none;
+}
