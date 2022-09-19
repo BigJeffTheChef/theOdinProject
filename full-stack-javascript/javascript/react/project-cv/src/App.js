@@ -4,6 +4,7 @@ import React from 'react';
 import Info from './components/Info';
 import Education from './components/Education';
 import Work from './components/Work';
+import Modal from './components/Modal';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -56,19 +57,45 @@ export default class App extends React.Component {
       },
     };
     this.onClickEditInfo = this.onClickEditInfo.bind(this);
+    this.onClickUpdateButtonInfo = this.onClickUpdateButtonInfo.bind(this);
   }
 
   onClickEditInfo() {
+    const { edit } = this.state.education;
+    this.setState({
+      education: {
+        edit: !edit,
+      }
+    });
+    document.querySelector('#modal-info').classList.remove('hidden');
+    //}, () => {setTimeout(() => {console.log(this.state.education.edit);}, 1)});
 
+  }
+
+  onClickUpdateButtonInfo() {
+    this.setState({
+      info: {
+        details: {
+          name: document.querySelector('.name-field').value,
+          address:document.querySelector('.address-field').value,
+          email:document.querySelector('.email-field').value,
+        }
+      }
+    });
   }
 
   render() {
     const { info, work, education } = this.state;
     return (
       <div id="app-container">
-        <Info details={info.details} onClick={ this.onClickEditInfo }/>
+        <Info details={info.details} onClick={this.onClickEditInfo} />
         <Education />
         <Work />
+        <Modal section="info" onClickUpdateButton={this.onClickUpdateButtonInfo} fields={[
+          { id: "name", type: "text", val: info.details.name },
+          { id: "address", type: "text", val: info.details.address },
+          { id: "email", type: "email", val: info.details.email }
+        ]} />
       </div>
     );
   }

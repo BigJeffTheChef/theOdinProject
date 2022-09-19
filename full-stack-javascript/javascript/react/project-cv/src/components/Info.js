@@ -20,9 +20,6 @@ export default class Info extends React.Component {
           <span>{email}</span>
         </p>
         <button type="button" id="edit-btn-info" onClick={onClick}>Edit</button>
-        <div className={"modal-info" + (edit ? "" : " hidden")}>
-          <p>modal placeholder</p>
-        </div>
       </div>
     );
   }

@@ -34,8 +34,23 @@ body {
   background-color: rgb(165, 125, 25);
 }
 
-.modal-info {
+.container-modal {
+  width: 100%;
+  height: 100%;
   position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inner-modal {
+  background-color: aqua;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .hidden {
