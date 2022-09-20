@@ -15,15 +15,25 @@ body {
   background-color: blueviolet;
 }
 
-#section-info>p>span:first-child {
+.section-detail>p>span:first-child,
+.section-list>div>p>span:first-child
+ {
   font-weight: 1000;
   font-size: large;
 }
 
-#edit-btn-info {
+.section-list, .section-detail {
+  position: relative;
+}
+
+.edit-btn {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.section {
+  position: relative;
 }
 
 #section-education {
