@@ -1,0 +1,44 @@
+:root {
+    font-family: Arial;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.App {
+    max-width: 700px;
+}
+.hidden{
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+.FormTextInput {
+    display: flex;
+}
+
+.FormTextInput p {
+    border: 1px solid blue;
+}
+
+.FormTextInput input[type="button"] {
+    margin-left: auto;
+}
+
+.SectionGeneral {
+    border: 1px solid red;
+}
+
+.SectionGeneral,
+.SectionEducation,
+.SectionExperience {
+    border: 1px solid red;
+}
+
+.form-section {
+    margin: 10px;
+    border: 1px solid goldenrod;
+}
