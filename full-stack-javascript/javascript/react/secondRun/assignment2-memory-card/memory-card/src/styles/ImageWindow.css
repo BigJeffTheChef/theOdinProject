@@ -1,0 +1,22 @@
+.ImageWindowContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* width: 100vw; */
+  height: 100vh;
+
+  /*TEMP*/
+  border: 1px solid red;
+  box-sizing: border-box;
+}
+
+.ImageWindow {
+  display: grid;
+  grid-template: repeat(2, 200px) / repeat(2, 200px);
+  background-color: goldenrod;
+  gap:1em;
+  min-height: 400px;
+  min-width: 400px;
+  padding: 1em;
+  border-radius: 1em;
+}
