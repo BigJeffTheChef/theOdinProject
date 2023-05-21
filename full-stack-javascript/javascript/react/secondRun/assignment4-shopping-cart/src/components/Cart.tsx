@@ -1,4 +1,7 @@
-const Cart = ({itemsInCart}) => {
+import ICartItem from "../ICartItem";
+import React from "react";
+
+const Cart = ({itemsInCart} : {itemsInCart: ICartItem[]}) => {
     return (
         <div>
             {itemsInCart.map(item => {

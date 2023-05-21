@@ -1,6 +1,7 @@
 import '../styles/Layout.css';
+import React from "react";
 
-const Layout = ({ bodyComponent }) => {
+const Layout = ({ bodyComponent }: {bodyComponent: React.ReactNode}) => {
     return (
         <div className='Spa'>
             <div className='header'>

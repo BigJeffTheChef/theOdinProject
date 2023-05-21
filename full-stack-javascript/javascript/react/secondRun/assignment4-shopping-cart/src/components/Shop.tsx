@@ -2,11 +2,14 @@ import LineItem from "./LineItem";
 import Cart from "./Cart";
 import lineItems from '../lineItems.json';
 import {useEffect, useState} from "react";
+import ICartItem from "../ICartItem";
+import React from "react";
 
 function Shop() {
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState<ICartItem[]>([]);
 
     useEffect(() => console.dir(cart), [cart]);
+
 
     /**
      {
@@ -14,7 +17,7 @@ function Shop() {
         amount: amount
      }
      */
-    const addToCart =  (itemNameToAdd) => {
+    const addToCart =  (itemNameToAdd: string) => {
         let cartItemIndex = cart.findIndex(item => item.name === itemNameToAdd);
         let localCart = [...cart];
         if (cartItemIndex !== -1) {
@@ -26,11 +29,11 @@ function Shop() {
             };
             localCart.push(newCartItem);
         }
-        localCart.sort((a,b) => a.name > b.name);
+        localCart.sort((a,b) => a.name > b.name ? 1 : a.name < b.name ? -1 : 0);
         setCart(localCart);
     };
 
-    const removeFromCart = (itemNameToRemove) => {
+    const removeFromCart = (itemNameToRemove: string) => {
         const index = cart.findIndex(item => itemNameToRemove === item.name);
         const localCart = [...cart];
         if (index !== -1) {
