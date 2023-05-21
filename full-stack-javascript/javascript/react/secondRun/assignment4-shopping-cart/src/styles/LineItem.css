@@ -1,0 +1,9 @@
+.LineItem__details,
+.LineItem__controls,
+.LineItem__increments {
+    display: flex;
+}
+
+.LineItem__addAmount {
+    align-self: center;
+}

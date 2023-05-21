@@ -1,9 +1,7 @@
-import '../styles/Home.css';
-
 function Home() {
   return (
-    <div className="App">
-      Home
+    <div className="Home">
+      Welcome to rat shop. For all your ratlike needs ye rat.
     </div>
   );
 }

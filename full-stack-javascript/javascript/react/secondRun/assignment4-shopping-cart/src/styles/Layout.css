@@ -1,0 +1,24 @@
+.Spa {
+
+}
+
+.header {
+    display: flex;
+    background-color: #535c83;
+}
+
+.title {
+    font-family: 'Lobster', serif;
+    font-size: 2em;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.nav {
+    color: white;
+}
+

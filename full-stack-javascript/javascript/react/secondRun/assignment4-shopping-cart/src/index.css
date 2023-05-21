@@ -7,7 +7,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  border: 1px solid red;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+a, a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* FONTS */
+
+@font-face {
+  font-family: 'Lobster';
+  src: url("./styles/fonts/Lobster-Regular.ttf");
 }
