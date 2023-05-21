@@ -24,20 +24,26 @@ describe('Line Item component', () => {
     describe('Line item details', () => {
         test('Line item has name', () => {
             render(generateTestLineItem(jest.fn(), jest.fn(), jest.fn()));
-            const nameEl = screen.getByText(`Name: ${testName}`);
+            const nameEl = screen.getByText(`Name:`);
+            const nameValueEl = screen.getByText(`${testName}`);
             expect(nameEl).toBeInTheDocument();
+            expect(nameValueEl).toBeInTheDocument();
         });
 
         test('Line item has price', () => {
             render(generateTestLineItem(jest.fn(), jest.fn(), jest.fn()));
-            const priceEl = screen.getByText(`Price: £${testPrice}`);
+            const priceEl = screen.getByText(`Price:`);
+            const priceValueEl = screen.getByText(`£${Number(testPrice).toFixed(2)}`)
             expect(priceEl).toBeInTheDocument();
+            expect(priceValueEl).toBeInTheDocument();
         });
 
         test('Line item has quantity', () => {
             render(generateTestLineItem(jest.fn(), jest.fn(), jest.fn()));
-            const quantityEl = screen.getByText(`Name: ${testName}`);
-            expect(quantityEl).toBeInTheDocument();
+            const quantityNameEl = screen.getByText(`In Stock:`);
+            const quantityValueEl = screen.getByText(`${testQuantity} units`)
+            expect(quantityNameEl).toBeInTheDocument();
+            expect(quantityValueEl).toBeInTheDocument();
         });
     });
 });
