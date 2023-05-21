@@ -5,10 +5,11 @@ import uniqid from 'uniqid';
 import CartAdjust from "./CartAdjust";
 import '../styles/Cart.css'
 
-const Cart = ({itemsInCart, addToCart, removeFromCart}: {
+const Cart = ({itemsInCart, addToCart, removeFromCart, addAmountToCart}: {
     itemsInCart: ICartItem[],
     addToCart: (name: string) => void,
-    removeFromCart: (name: string) => void
+    removeFromCart: (name: string) => void,
+    addAmountToCart: (name: string, number: number) => void
 }) => {
     const emptyCartMsg = itemsInCart.length === 0 ? <p>Nothing in the Cart</p> : null;
     return (
@@ -19,9 +20,15 @@ const Cart = ({itemsInCart, addToCart, removeFromCart}: {
                 {itemsInCart.map(item => {
                     const {name, quantity, price} = item;
                     return (
-                        <div className='cart-item'>
-                            <p key={uniqid()}>Name: {name} | Quantity: {quantity} | price={price * quantity}</p>
-                            <CartAdjust name={name} addToCart={addToCart} removeFromCart={removeFromCart}/>
+                        <div className='cart-item' key={uniqid()}>
+                            <p>Name: {name} | Quantity: {quantity} | price={Number(price * quantity).toFixed(2)}</p>
+                            <CartAdjust
+                                showTextInput={false}
+                                name={name}
+                                addToCart={addToCart}
+                                removeFromCart={removeFromCart}
+                                addAmountToCart={addAmountToCart}
+                            />
                         </div>
                     );
                 })}

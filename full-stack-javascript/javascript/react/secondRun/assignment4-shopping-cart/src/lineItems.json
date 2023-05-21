@@ -38,5 +38,15 @@
     "name": "feeding tray",
     "price": 5.2,
     "quantityInStock": 3
+  },
+  {
+    "name": "actually a hamster",
+    "price": 5.2,
+    "quantityInStock": 3
+  },
+  {
+    "name": "unidentified rodent",
+    "price": 5.2,
+    "quantityInStock": 3
   }
 ]

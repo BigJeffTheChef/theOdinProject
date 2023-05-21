@@ -16,48 +16,49 @@ jest.mock('../components/Home', () => () => (
 // helper functions
 const generateTestLayout = () => (<Layout bodyComponent={<Home/>}/>);
 
-describe('Header layout', () => {
-    test('header is present', () => {
-        render(generateTestLayout());
-        // eslint-disable-next-line testing-library/no-node-access
-        const header = document.querySelector('.header');
-        expect(header).toBeInTheDocument();
+describe('Layout component tests', () => {
+    describe('Header layout', () => {
+        describe('Header', () => {
+            test('header is present', () => {
+                render(generateTestLayout());
+                // eslint-disable-next-line testing-library/no-node-access
+                const header = document.querySelector('.header');
+                expect(header).toBeInTheDocument();
+            });
+
+            test('header title is present & correct', () => {
+                render(generateTestLayout());
+                const title = screen.getByText('Welcome to RatShop');
+                expect(title).toBeInTheDocument();
+            });
+        });
+        describe('Nav', () => {
+            test('header nav is present', () => {
+                render(generateTestLayout());
+                // eslint-disable-next-line testing-library/no-node-access
+                const nav = document.querySelector('.nav');
+                expect(nav).toBeInTheDocument();
+            });
+
+            test('header nav contains home link', () => {
+                render(generateTestLayout());
+                const nav = screen.getByText('Home');
+                expect(nav.getAttribute('href')).toBe('/');
+            });
+
+            test('header nav contains shop link', () => {
+                render(generateTestLayout());
+                const nav = screen.getByText('Shop');
+                expect(nav.getAttribute('href')).toBe('/shop');
+            });
+        });
     });
-
-    test('header title is present', () => {
-        render(generateTestLayout());
-        const title = screen.getByText('Welcome to RatShop');
-        expect(title).toBeInTheDocument();
-    });
-
-    describe('Nav', () => {
-      test('header nav is present', () => {
-        render(generateTestLayout());
-        // eslint-disable-next-line testing-library/no-node-access
-        const nav = document.querySelector('.nav');
-        expect(nav).toBeInTheDocument();
-      });
-
-      test('header nav contains home link', () => {
-        render(generateTestLayout());
-        const nav = screen.getByText('Home');
-        expect(nav.getAttribute('href')).toBe('/');
-      });
-
-      test('header nav contains shop link', () => {
-        render(generateTestLayout());
-        const nav = screen.getByText('Shop');
-        expect(nav.getAttribute('href')).toBe('/shop');
-      });
+    describe('Body layout', () => {
+        test('body is present', () => {
+            render(generateTestLayout());
+            // eslint-disable-next-line testing-library/no-node-access
+            const body = document.querySelector('.body');
+            expect(body).toBeInTheDocument();
+        });
     });
 });
-describe('Body layout', () => {
-    test('body is present', () => {
-        render(generateTestLayout());
-        // eslint-disable-next-line testing-library/no-node-access
-        const body = document.querySelector('.body');
-        expect(body).toBeInTheDocument();
-    });
-});
-
-

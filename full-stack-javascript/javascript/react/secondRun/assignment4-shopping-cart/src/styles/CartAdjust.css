@@ -1,0 +1,32 @@
+.CartAdjust {
+    display: flex;
+    font-family: "Courier New", monospace;
+    align-items: center;
+}
+
+.CartAdjust__addAmount * {
+    margin: var(--general-padding-small);
+}
+
+.CartAdjust__addAmount input {
+    max-width: 50%;
+}
+
+.CartAdjust__increment {
+    font-weight: bold;
+    color: var(--font-2);
+    width: 0.6em;
+    height: 0.6em;
+    padding: var(--general-padding-small);
+    border-radius: 50%;
+    display: flex;
+    border: 1px solid var(--color-bg-3);
+    background-color: var(--color-bg-3);
+    align-items: center;
+    justify-content: center;
+}
+
+.CartAdjust__increment:hover {
+    background-color: var(--color-accent);
+    cursor: pointer;
+}

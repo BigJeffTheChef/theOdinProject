@@ -1,10 +1,6 @@
-.Spa {
-
-}
-
 .header {
     display: flex;
-    background-color: #535c83;
+    background-color: var(--color-1);
 }
 
 .title {

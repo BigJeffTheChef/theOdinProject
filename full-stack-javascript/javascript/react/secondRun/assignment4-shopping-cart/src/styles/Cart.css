@@ -1,9 +1,18 @@
 .Cart {
     position: sticky;
     top:0;
-    background-color: white;
+    background-color: var(--color-bg-2);
+    margin: var(--general-margin-big);
+    border: 1px solid var(--color-bg-3);
+    padding: var(--general-padding-small);
+    border-radius: 0.5em;
 }
 
 .cart-item {
+    border: 1px solid var(--color-bg-3);
+    border-radius: 0.5em;
+    background-color: var(--color-bg-2);
     display: flex;
+    margin: var(--general-margin-small);
+    padding: var(--general-padding-small);
 }
