@@ -1,7 +1,9 @@
+// @ts-ignore
 import {render, screen} from '@testing-library/react';
 import "@testing-library/jest-dom";
 import Home from '../components/Home';
 import Layout from "../components/Layout";
+import React from "react";
 
 // configure mocks
 jest.mock('../components/Home', () => () => (

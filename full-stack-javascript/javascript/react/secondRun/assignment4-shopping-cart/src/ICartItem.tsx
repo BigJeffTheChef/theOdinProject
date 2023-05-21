@@ -1,4 +1,5 @@
 export default interface ICartItem {
     name: string,
-    quantity: number
+    quantity: number,
+    price: number
 }

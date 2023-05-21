@@ -1,4 +1,5 @@
 import '../styles/LineItem.css';
+import CartAdjust from "./CartAdjust";
 import React from "react";
 
 const LineItem = ({name, price, quantityInStock, addToCart, removeFromCart}: {
@@ -16,10 +17,15 @@ const LineItem = ({name, price, quantityInStock, addToCart, removeFromCart}: {
                 <p>Quantity In Stock: {quantityInStock}</p>
             </div>
             <div className='LineItem__controls'>
-                <div className='LineItem__increments'>
-                    &nbsp;<p onClick={() => removeFromCart(name)}>-</p>&nbsp;&nbsp;<p
-                    onClick={() => addToCart(name)}>+</p>&nbsp;
-                </div>
+                <CartAdjust
+                    name={name}
+                    addToCart={addToCart}
+                    removeFromCart={removeFromCart}
+                />
+                {/*<div className='LineItem__increments'>*/}
+                {/*    &nbsp;<p onClick={() => removeFromCart(name)}>-</p>&nbsp;&nbsp;<p*/}
+                {/*    onClick={() => addToCart(name)}>+</p>&nbsp;*/}
+                {/*</div>*/}
                 <div className='LineItem__addAmount'>
                     <input type='text'></input>
                     <button>Add To Cart</button>

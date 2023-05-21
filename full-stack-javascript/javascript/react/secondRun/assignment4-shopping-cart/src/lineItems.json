@@ -13,5 +13,30 @@
     "name": "food",
     "price": 0.2,
     "quantityInStock": 50
+  },
+  {
+    "name": "tiny trousers",
+    "price": 5.2,
+    "quantityInStock": 3
+  },
+  {
+    "name": "sawdust",
+    "price": 5.2,
+    "quantityInStock": 3
+  },
+  {
+    "name": "an actual rat",
+    "price": 5.2,
+    "quantityInStock": 3
+  },
+  {
+    "name": "water bottle",
+    "price": 5.2,
+    "quantityInStock": 3
+  },
+  {
+    "name": "feeding tray",
+    "price": 5.2,
+    "quantityInStock": 3
   }
 ]

@@ -4,6 +4,10 @@ import lineItems from '../lineItems.json';
 import {useEffect, useState} from "react";
 import ICartItem from "../ICartItem";
 import React from "react";
+// @ts-ignore
+import uniqid from 'uniqid';
+import '../styles/Shop.css'
+import data from '../lineItems.json';
 
 function Shop() {
     const [cart, setCart] = useState<ICartItem[]>([]);
@@ -18,14 +22,18 @@ function Shop() {
      }
      */
     const addToCart =  (itemNameToAdd: string) => {
+
         let cartItemIndex = cart.findIndex(item => item.name === itemNameToAdd);
         let localCart = [...cart];
         if (cartItemIndex !== -1) {
             localCart[cartItemIndex].quantity = localCart[cartItemIndex].quantity + 1;
         } else {
+            const itemFromData = data.find(d => d.name === itemNameToAdd);
+            if (!itemFromData) return;
             const newCartItem = {
                 name: itemNameToAdd,
-                quantity: 1
+                quantity: 1,
+                price: itemFromData.price
             };
             localCart.push(newCartItem);
         }
@@ -47,7 +55,7 @@ function Shop() {
 
     return (
         <div className="Shop">
-            <Cart itemsInCart={cart}/>
+            <Cart itemsInCart={cart} addToCart={addToCart} removeFromCart={removeFromCart}/>
             <div className='line-items'>
                 {lineItems.map(li => {
                     const {name, price, quantityInStock} = li;
@@ -57,7 +65,7 @@ function Shop() {
                         quantityInStock={quantityInStock}
                         addToCart={addToCart}
                         removeFromCart={removeFromCart}
-                        key={"" + Math.random()}
+                        key={uniqid()}
                     />;
                 })}
             </div>
